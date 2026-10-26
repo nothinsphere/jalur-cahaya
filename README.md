@@ -4,6 +4,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 
 - Tahap 1: https://nothinsphere.github.io/jalur-cahaya/
 - Tahap 2: https://nothinsphere.github.io/jalur-cahaya/tahap-2/
+- Tahap 3: https://nothinsphere.github.io/jalur-cahaya/tahap-3/
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -22,6 +23,15 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 2.3 Bahan habis pakai: sleeve pelindung, alkohol IPA, tisu, dan lainnya
 - 2.4 Alat ukur: VFL, OPM, dan OTDR dengan event yang bisa diketuk
 - Kuis: cocokkan alat dengan pekerjaannya + 5 soal
+
+**Tahap 3 · Praktik persiapan** (`tahap-3/index.html`)
+
+- 3.1 Urutan kerja: susun 8 langkah persiapan kabel loose tube di closure
+- 3.2 Mengupas: kaitan panjang kupas, panjang belah, dan panjang sleeve
+- 3.3 Membersihkan: benar atau salah
+- 3.4 Membelah: langkah memakai cleaver
+- 3.5 Siap sambung: checklist sebelum masuk splicer
+- Kuis 6 soal
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
 Angka di dalamnya adalah patokan umum untuk belajar; di lapangan, ikuti datasheet perangkat dan standar operator.

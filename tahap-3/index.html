@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalur Cahaya Tahap 3</title>
+<meta name="description" content="Modul belajar interaktif teknisi fiber optik Tahap 3: urutan persiapan, panjang kupas dan belah, membersihkan, membelah, dan checklist siap sambung.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Public+Sans:ital,wght@0,400..800;1,400..800&display=swap">
+<style>
+/* dasar */
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: lembar datasheet / gambar teknik. Kertas + tinta, gambar di dalam bingkai berkisi,
+   penanda bab memakai urutan kode warna serat (TIA-598). Merah = cahaya VFL & coretan koreksi. */
+:root {
+  --paper: #fafbfb;
+  --paper-2: #eef1f2;
+  --grid: #e3e8ea;
+  --ink: #16191b;
+  --ink-2: #454e54;
+  --ink-3: #737e85;
+  --rule: #c5cdd1;
+  --red: #cf2a1e;
+  --red-ink: #b0231a;
+  --ok: #1b7a3c;
+  --bad: #c42a1f;
+  --warn: #93600a;
+  --iso: #f5c400;
+  --glass: #dcebf1;
+  --glass-2: #b7d3de;
+  --jacket: #33393d;
+  --hatch: rgba(22, 25, 27, .5);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  /* warna penanda bab = kode warna tabung */
+  --c1: #1f6fe0; --c2: #f47b20; --c3: #22a04b; --c4: #8b5a2b; --c5: #8c969c; --c6: #f3f3ef; --c7: #d92b2b;
+  /* satu keluarga sans-serif untuk semua peran; angka memakai tabular-nums, bukan monospace */
+  --font-display: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  /* Garamond untuk judul, Source Serif untuk teks bacaan; label, data, dan gambar tetap sans */
+  --font-serif: "EB Garamond", Garamond, "Times New Roman", serif;
+  --font-read: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+    --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+    --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+  --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+  --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 650; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.5rem, 6.2vw, 4.3rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.02; }
+h2 { font-size: clamp(1.85rem, 4.2vw, 2.7rem); font-weight: 700; letter-spacing: -.025em; }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.1rem; }
+p { margin: 0; }
+a { color: var(--red-ink); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.small { font-size: .875rem; color: var(--ink-3); }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.col { max-width: 880px; margin-inline: auto; }
+.prose { display: grid; gap: .9rem; max-width: 66ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: .35rem; }
+
+/* ---------- rel bab ---------- */
+.rail { position: fixed; left: max(22px, env(safe-area-inset-left, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: none; }
+.rail::before { content: ""; position: absolute; left: 4px; top: 4px; bottom: 4px; width: 1px; background: var(--rule); }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; position: relative; }
+.rail a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink-3); font-size: 13px; }
+.rail a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; transition: transform .15s; }
+.rail a span { background: var(--paper); padding: 1px 6px; opacity: 0; transition: opacity .15s; white-space: nowrap; border: 1px solid var(--rule); }
+.rail:hover a span, .rail a.on span { opacity: 1; }
+.rail a.on { color: var(--ink); }
+.rail a.on i { transform: scale(1.5); }
+.topbar { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 3px; z-index: 20; }
+.topbar i { display: block; height: 100%; width: 0; background: var(--red); }
+@media (min-width: 1200px) { .rail { display: block; } .topbar { display: none; } }
+
+/* ---------- hero: lembar gambar ---------- */
+.hero { padding-block: clamp(36px, 7vw, 80px) 32px; }
+.hero .col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.kicker { font-size: .9375rem; color: var(--ink-2); }
+.kicker b { color: var(--ink); }
+.hero .lede { font-size: 1.25rem; color: var(--ink-2); max-width: 44ch; line-height: 1.5; }
+.sheet { border: 1.5px solid var(--ink); background: var(--paper); }
+.sheet-draw { background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; padding: 18px; overflow-x: auto; }
+.sheet-draw svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.tblock { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; border-top: 1.5px solid var(--ink); }
+.tblock div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; gap: 1px; min-width: 0; }
+.tblock div:first-child { border-left: 0; }
+.tblock small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.tblock b { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+@media (max-width: 620px) { .tblock { grid-template-columns: 1fr 1fr; } .tblock div:nth-child(3) { border-left: 0; } .tblock div:nth-child(n+3) { border-top: 1px solid var(--ink); } }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+
+/* svg gambar teknik */
+.ln { stroke: var(--ink); stroke-width: 1.4; }
+.ln-thin { fill: none; stroke: var(--ink-2); stroke-width: 1; }
+.txt { fill: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+.txt-2 { fill: var(--ink-2); font-family: var(--font-body); font-size: 12.5px; }
+.txt-m { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
+.balloon circle { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.balloon text { fill: var(--ink); font-family: var(--font-display); font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.f-jacket { fill: var(--jacket); }
+.f-glass { fill: var(--glass); }
+.f-glass2 { fill: var(--glass-2); }
+.f-paper { fill: var(--paper); }
+.f-ink { fill: var(--ink); }
+.f-red { fill: var(--red); }
+.s-red { stroke: var(--red); }
+
+/* daftar tahap */
+.stages { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.stages td { padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+.stages td:first-child { font-family: var(--font-display); font-weight: 600; width: 5.5em; color: var(--ink-3); }
+.stages tr.now td { color: var(--ink); font-weight: 700; }
+.stages tr.now td:first-child { color: var(--red-ink); }
+.stages td:last-child { text-align: right; color: var(--ink-3); font-size: .8125rem; white-space: nowrap; }
+
+/* ---------- bab ---------- */
+.chapter { padding-block: clamp(64px, 10vw, 112px) 16px; }
+.chapter-head { display: grid; gap: 14px; margin-bottom: 32px; border-top: 1.5px solid var(--ink); padding-top: 14px; }
+.chapter-no { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); }
+.chapter-no i { width: 34px; height: 8px; border-radius: 4px; background: var(--c); border: 1px solid var(--ink); }
+.block { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 56px; }
+.chapter-head, .sheet-q, .game, .rx, .fig-ctl, .dive-card { grid-template-columns: minmax(0, 1fr); }
+
+/* tabel umum */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .9375rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl thead th { border-bottom: 1.5px solid var(--ink); font-family: var(--font-display); font-weight: 600; font-size: .9375rem; }
+.tbl tbody th { font-weight: 400; color: var(--ink-3); }
+.tbl .sw { display: inline-block; width: 22px; height: 6px; border-radius: 3px; vertical-align: 3px; margin-right: 6px; border: 1px solid var(--ink); }
+.tbl .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- gambar (figure) ---------- */
+.fig { margin: 0; border: 1.5px solid var(--ink); background: var(--paper); }
+.fig-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 8px 10px; border-bottom: 1px solid var(--ink); }
+.fig-bar .lbl { font-size: .875rem; color: var(--ink-2); }
+.fig-draw { position: relative; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; }
+.fig-draw canvas { display: block; width: 100%; }
+.fig-ctl { padding: 12px 14px; border-top: 1px solid var(--ink); display: grid; gap: 12px; }
+.fig + figcaption, .fig figcaption, .cap { font-size: .875rem; color: var(--ink-2); margin-top: 8px; }
+.cap b { font-family: var(--font-display); font-weight: 600; color: var(--ink); margin-right: 6px; }
+.msg { font-size: .9375rem; color: var(--ink-2); }
+.msg strong { color: var(--ink); }
+
+/* kontrol */
+.tabs { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--ink); }
+.tabs button { border: 0; border-left: 1px solid var(--ink); background: var(--paper); padding: 5px 12px; cursor: pointer; font-size: .875rem; }
+.tabs button:first-child { border-left: 0; }
+.tabs button:hover { background: var(--paper-2); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.range { display: grid; gap: 4px; }
+.range label { display: flex; justify-content: space-between; gap: 12px; font-size: .9375rem; color: var(--ink-2); }
+.range output { font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--red); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 9px 16px; border-radius: 2px; cursor: pointer; font-weight: 700; text-decoration: none; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+
+/* label peringatan laser (bentuk stiker asli) */
+.warnlabel { display: flex; gap: 14px; align-items: center; border: 2px solid #111; background: var(--iso); color: #111; padding: 10px 14px; max-width: 560px; }
+.warnlabel svg { flex: none; width: 46px; height: 41px; }
+.warnlabel p { font-family: var(--font-display); font-weight: 600; font-size: 1rem; line-height: 1.25; }
+.warnlabel small { display: block; font-family: var(--font-body); font-weight: 400; font-size: .8125rem; }
+
+/* ---------- K3 ---------- */
+.eye-view { aspect-ratio: 16 / 6.5; min-height: 210px; max-width: 100%; }
+.eye-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sheet-q { border: 1.5px solid var(--ink); padding: 20px; display: grid; gap: 16px; min-height: 220px; align-content: start; }
+.sheet-q .q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; line-height: 1.25; }
+.ticks { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-size: .8125rem; color: var(--ink-3); }
+.ticks i { width: 18px; height: 18px; border: 1px solid var(--ink); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
+.ticks i.r { color: var(--ok); }
+.ticks i.w { color: var(--bad); }
+.ticks i.c { background: var(--ink); }
+.ticks span { margin-left: 8px; }
+.row-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.row-actions .btn { flex: 1 1 140px; }
+.mark { display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 12px; }
+.mark b { font-family: var(--font-display); font-size: 1.15rem; }
+.mark.good b { color: var(--ok); }
+.mark.bad b { color: var(--bad); }
+
+/* ---------- dive (struktur) ---------- */
+.dive { position: relative; }
+.dive-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.dive-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: 1fr 1fr; min-width: 250px; z-index: 3; }
+.dive-hud > div { padding: 6px 10px; display: grid; gap: 0; border-top: 1px solid var(--ink); min-width: 0; }
+.dive-hud > div:first-child { border-top: 0; }
+.dive-hud .h-scale, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+.dive-hud label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud select { font: inherit; font-weight: 650; font-size: 1rem; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); padding: 4px 6px; width: 100%; margin-top: 2px; }
+.dive-hud small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.dive-hud .wide { grid-column: 1 / -1; }
+.scalebar { display: flex; align-items: center; gap: 8px; }
+.scalebar i { display: block; height: 7px; border: 1.5px solid var(--ink); border-top: 0; }
+.scalebar span { font-family: var(--font-mono); font-size: 12px; }
+.dive-steps { position: relative; margin-top: -100vh; margin-top: -100svh; }
+.dive-step { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; pointer-events: none; }
+.dive-card { pointer-events: auto; max-width: 380px; background: var(--paper); border: 1.5px solid var(--ink); padding: 18px 20px; display: grid; gap: 10px; }
+.dive-card .chapter-no { font-size: .9375rem; }
+.dive-card p { color: var(--ink-2); font-size: .9375rem; line-height: 1.6; }
+.dive-card ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); }
+.dive-card ol li { display: flex; gap: 8px; align-items: center; }
+.dive-card ol b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+.dive-intro { padding-block: clamp(64px, 10vw, 112px) 40px; }
+@media (min-width: 1200px) { .dive-steps { padding-left: 210px; } }
+@media (max-width: 760px) {
+  .dive-step { align-items: flex-end; padding-bottom: 5vh; }
+  .dive-card { max-width: none; width: 100%; padding: 14px 16px; }
+  .dive-hud { min-width: 0; left: max(16px, env(safe-area-inset-left, 0px)); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dive-hud .h-view, .dive-hud .h-bar { display: none; }
+  .dive-hud .h-sel { display: flex; align-items: center; gap: 10px; padding-block: 5px; }
+  .dive-hud .h-sel label { flex: none; }
+  .dive-hud .h-sel select { margin-top: 0; }
+  .dive-hud .h-scale { border-left: 0; }
+  .dive-hud .h-w, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+}
+
+/* katalog jenis kabel */
+.cable-cat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 900px) { .cable-cat { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.cable-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 8px 8px 10px; display: grid; gap: 2px; text-align: left; cursor: pointer; align-content: start; }
+.cable-btn canvas { width: 100%; height: auto; aspect-ratio: 1 / 1; display: block; margin-bottom: 6px; }
+.cable-btn b { font-weight: 650; font-size: .9375rem; line-height: 1.25; }
+.cable-btn span { font-size: .8125rem; color: var(--ink-3); line-height: 1.3; }
+.cable-btn:hover { background: var(--paper-2); }
+.cable-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--ink); }
+.dive-intro .col { display: grid; gap: 14px; }
+.dive-after .block { margin-top: 0; padding-block: 56px 0; }
+@media (max-width: 600px) { .cable-cat { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- SM vs MM ---------- */
+.bits { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 13px; }
+.bits .bitwrap { display: contents; }
+.bits span { width: 26px; text-align: center; padding: 2px 0; border: 1px solid var(--ink); }
+.bits span.err { background: var(--red); border-color: var(--red); color: #fff; }
+.bits .lab { width: 76px; border: 0; text-align: left; font-family: var(--font-body); color: var(--ink-2); }
+
+/* ---------- kode warna ---------- */
+.fan { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+@media (max-width: 600px) { .fan { grid-template-columns: 1fr; } }
+.fan h4 { font-size: 1rem; padding-bottom: 6px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
+.fiber-btn { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: none; padding: 8px 4px; cursor: pointer; }
+.fiber-btn b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; text-align: right; }
+.fiber-btn i { height: 8px; border-radius: 4px; border: 1px solid var(--ink); }
+.fiber-btn span { font-size: .9375rem; min-width: 5.5em; }
+.fiber-btn:hover { background: var(--paper-2); }
+.fiber-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 -2px 0 var(--ink); }
+.fiber-btn.right { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.fiber-btn.wrong { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.finder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+@media (max-width: 760px) { .finder { grid-template-columns: 1fr; } }
+.finder-form { padding: 16px; display: grid; gap: 12px; align-content: start; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .finder-form { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.field { display: grid; gap: 4px; }
+.field label { font-size: .875rem; color: var(--ink-2); }
+.field input, .field select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 8px 10px; font-family: var(--font-mono); font-size: 16px; width: 100%; }
+.finder-result { display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.finder-result .row { display: flex; align-items: center; gap: 10px; }
+.finder-result .chip { width: 30px; height: 8px; border-radius: 4px; border: 1px solid var(--ink); flex: none; }
+.finder-result .formula { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); line-height: 1.75; }
+.finder .fig-draw { display: grid; place-items: center; padding: 14px; }
+.finder svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.game { display: grid; gap: 14px; border: 1.5px solid var(--ink); padding: 18px; }
+.game-q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.game-q .num { font-size: 2.6rem; line-height: 1; color: var(--red-ink); }
+.game-q .chipbig { width: 64px; height: 12px; border-radius: 6px; border: 1px solid var(--ink); display: inline-block; }
+.game-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 18px; }
+
+/* ---------- redaman ---------- */
+.dbbars { padding: 18px 16px 8px; display: grid; gap: 10px; }
+.dbbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 72px; align-items: center; gap: 10px; font-size: .875rem; color: var(--ink-2); }
+.dbbar .track { height: 16px; border: 1px solid var(--ink); background: var(--paper); position: relative; }
+.dbbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--red); transition: width .15s; }
+.dbbar output { font-family: var(--font-mono); color: var(--ink); text-align: right; }
+.db-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.db-stats div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; }
+.db-stats div:first-child { border-left: 0; }
+.db-stats small { font-size: .8125rem; color: var(--ink-3); }
+.db-stats b { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--ink); background: var(--paper); padding: 4px 10px; cursor: pointer; font-size: .8125rem; }
+.chips button:hover { background: var(--paper-2); }
+.formula-line { font-family: var(--font-mono); font-size: .9375rem; border: 1px solid var(--ink); padding: 10px 14px; width: fit-content; max-width: 100%; color: var(--ink); }
+
+.budget { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.bt td, .bt th { vertical-align: middle; }
+.bt td:last-child, .bt th:last-child { text-align: right; }
+.bt tfoot td { border-top: 1.5px solid var(--ink); border-bottom: 0; font-weight: 700; }
+.bt .key { display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: 0; border: 1px solid var(--ink); }
+.bt small { display: block; font-size: .8125rem; color: var(--ink-3); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); }
+.stepper button { border: 0; background: var(--paper); width: 32px; height: 30px; cursor: pointer; font-weight: 700; }
+.stepper button:hover { background: var(--paper-2); }
+.stepper output { min-width: 72px; text-align: center; font-family: var(--font-mono); font-size: 14px; border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); line-height: 30px; }
+.bt select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 5px 8px; font-family: var(--font-mono); font-size: 14px; }
+.rx { display: grid; gap: 16px; border: 1.5px solid var(--ink); padding: 16px; }
+.rx-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.rx-big small { width: 100%; font-size: .875rem; color: var(--ink-3); }
+.rx-big b { font-family: var(--font-mono); font-size: clamp(34px, 7vw, 50px); font-weight: 500; line-height: 1; }
+.verdict { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.verdict.ok { color: var(--ok); } .verdict.warn { color: var(--warn); } .verdict.bad { color: var(--bad); }
+.stack { display: flex; height: 30px; gap: 2px; position: relative; }
+.stack div { height: 100%; min-width: 0; }
+.stack div:first-child { border-radius: 4px 0 0 4px; }
+.stack .margin { background-image: repeating-linear-gradient(135deg, var(--ink-3) 0 1px, transparent 1px 6px); border: 1px dashed var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8125rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border: 1px solid var(--ink); }
+.legend b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
+.scale { position: relative; height: 46px; margin-top: 4px; }
+.scale .zones { position: absolute; left: 0; right: 0; top: 6px; height: 8px; display: flex; gap: 2px; }
+.scale .zones div { height: 100%; }
+.scale .marker { position: absolute; top: -4px; width: 0; height: 26px; border-left: 2px solid var(--ink); transition: left .2s; }
+.scale .marker::before { content: ""; position: absolute; left: -7px; top: -8px; border: 6px solid transparent; border-top-color: var(--ink); }
+.scale .tk { position: absolute; left: 0; right: 0; top: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.scale .tk span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 13px; padding: 5px 9px; font-family: var(--font-mono); white-space: nowrap; }
+
+/* ---------- konektor ---------- */
+.conn { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .conn { grid-template-columns: 1fr; } }
+.conn .fig-draw { display: grid; place-items: center; padding: 16px; min-height: 240px; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .conn .fig-draw { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.conn .fig-draw svg { width: 100%; max-width: 400px; height: auto; }
+.conn-info { padding: 18px; display: grid; gap: 12px; align-content: start; }
+.conn-info h3 { font-size: 2.4rem; }
+.conn-info p { color: var(--ink-2); font-size: .9375rem; }
+.conn-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; margin: 0; font-size: .9375rem; border-top: 1px solid var(--ink); }
+.conn-info dt, .conn-info dd { padding: 6px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+.conn-info dt { color: var(--ink-3); padding-right: 16px; }
+.polish-view { aspect-ratio: 16 / 6.5; min-height: 220px; max-width: 100%; }
+.polish-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---------- kuis ---------- */
+.quiz { display: grid; gap: 0; border-top: 1.5px solid var(--ink); }
+.qitem { padding: 22px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 12px; }
+.qitem h4 { font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; line-height: 1.4; display: flex; gap: 10px; }
+.qitem h4 span { font-family: var(--font-display); font-weight: 600; color: var(--ink-3); flex: none; }
+.opts { display: grid; gap: 6px; padding-left: 28px; }
+.opts button { display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; gap: 10px; align-items: center; text-align: left; border: 0; background: none; padding: 5px 4px; cursor: pointer; line-height: 1.4; }
+.opts button .l { width: 24px; height: 24px; border: 1px solid var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+.opts button:hover:not(:disabled) .l { background: var(--paper-2); }
+.opts button:disabled { cursor: default; }
+.opts button .m { font-weight: 700; font-size: 18px; }
+.opts button.right .l { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opts button.right .m { color: var(--ok); }
+.opts button.wrong .l { background: var(--bad); border-color: var(--bad); color: #fff; }
+.opts button.wrong .m { color: var(--bad); }
+.qexp { font-size: .9375rem; color: var(--ink-2); padding-left: 28px; }
+.score { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; padding: 22px 0; }
+.grade { width: 96px; height: 96px; border: 3px solid var(--red); border-radius: 50%; display: grid; place-items: center; color: var(--red-ink); font-family: var(--font-display); font-weight: 700; font-size: 2rem; transform: rotate(-8deg); flex: none; }
+.next { margin-top: 56px; border: 1.5px dashed var(--ink-3); padding: 18px 20px; display: grid; gap: 6px; color: var(--ink-2); }
+footer { padding-block: 40px 56px; color: var(--ink-3); font-size: .875rem; }
+footer .col { border-top: 1.5px solid var(--ink); padding-top: 14px; }
+
+/* ---------- ponsel ---------- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, input, select { touch-action: manipulation; }
+.bm, .hero-legend { display: none; }
+.balloon.big circle { stroke-width: 1.6; }
+.balloon.big text { font-size: 24px; }
+@media (max-width: 640px) {
+  .sheet-draw { padding: 8px; overflow: visible; }
+  .sheet-draw svg { min-width: 0; }
+  .bd { display: none; }
+  .bm { display: inline; }
+  .hero-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; list-style: none; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ink); font-size: .9375rem; color: var(--ink-2); }
+  .hero-legend li { display: flex; gap: 8px; align-items: center; }
+  .hero-legend b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+}
+@media (max-width: 760px) {
+  .dive-stage { height: 56vh; height: 56svh; z-index: 2; }
+  .dive-steps { margin-top: 0; z-index: 1; }
+  .dive-step { min-height: 72vh; min-height: 72svh; align-items: center; padding-block: 12px; }
+  .dive-card { padding: 14px 16px; gap: 8px; }
+  .dive-card h3 { font-size: 1.3rem; }
+  .dive-card ol { grid-template-columns: 1fr 1fr; }
+  .dive-hud { top: 10px; }
+  .dive-hud b { font-size: 1rem; }
+}
+@media (max-width: 600px) {
+  .fig-bar { padding: 8px; }
+  .fig-bar .lbl { width: 100%; }
+  .fig-bar .tabs, .dive-card .tabs { display: flex; width: 100%; }
+  .fig-bar .tabs button, .dive-card .tabs button { flex: 1 1 0; padding-inline: 6px; }
+  .fig-ctl { padding: 12px; }
+  .tbl.rs { min-width: 0; }
+  .tbl.rs thead { display: none; }
+  .tbl.rs tr { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .tbl.rs th, .tbl.rs td { display: block; padding: 0; border: 0; }
+  .tbl.rs tbody th { color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .tbl.rs td[data-label]::before { content: attr(data-label); display: block; font-size: .8125rem; color: var(--ink-3); }
+  .bt { min-width: 0; }
+  .bt thead { display: none; }
+  .bt tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .bt td { border: 0; padding: 0; }
+  .bt td:first-child { grid-row: span 2; }
+  .bt td:nth-child(3) { grid-column: 2; text-align: right; font-size: .8125rem; color: var(--ink-3); padding-top: 4px; }
+  .bt tfoot tr { border-bottom: 0; border-top: 1.5px solid var(--ink); }
+  .bt tfoot td { border: 0; }
+  .bt tfoot td:nth-child(2) { display: none; }
+  .bt tfoot td:nth-child(3) { grid-row: 1; color: var(--ink); font-size: 1rem; padding: 0; }
+  .rx { padding: 14px; }
+  .opts, .qexp { padding-left: 0; }
+  .sheet-q, .game { padding: 16px; }
+  .sheet-q .q, .game-q { font-size: 1.3rem; }
+  .conn svg .txt-2 { font-size: 15px; }
+  .db-stats div { padding: 8px; }
+  .db-stats b { font-size: 1.1rem; }
+  .dbbar { grid-template-columns: 52px minmax(0, 1fr) 54px; }
+}
+@media (pointer: coarse) {
+  .tabs button { min-height: 44px; }
+  .stepper button { width: 42px; height: 40px; }
+  .stepper output { line-height: 40px; min-width: 64px; }
+  .chips button { min-height: 40px; padding-inline: 12px; }
+  .btn { min-height: 46px; }
+  .opts button { padding-block: 8px; }
+  input[type="range"] { height: 34px; }
+  .bt select, .field select, .field input { font-size: 16px; min-height: 40px; }
+}
+
+/* angka sejajar kolom tanpa font monospace */
+.range output, .bits, .field input, .finder-result .formula, .db-stats b, .dbbar output, .formula-line, .stepper output,
+.bt select, .rx-big b, .legend b, .scale .tk, .tip, .scalebar span, .dive-hud b, .tblock b, .fiber-btn b, .game-q .num, .grade, .tbl .num { font-variant-numeric: tabular-nums; }
+.rx-big b { font-weight: 650; letter-spacing: -.02em; }
+.db-stats b, .range output, .stepper output { font-weight: 600; }
+.conn-info h3 { font-weight: 750; letter-spacing: -.02em; }
+
+/* ---------- Garamond untuk judul, Source Serif 4 untuk teks bacaan ---------- */
+h1, h2, h3, h4, .sheet-q .q, .game-q, .qitem h4 { font-family: var(--font-serif); font-variant-numeric: lining-nums; }
+.prose, .lede, .dive-card p, .msg, .qexp, .conn-info p, .mark, .next p, footer, .cap {
+  font-family: var(--font-read); font-variant-numeric: lining-nums; font-optical-sizing: auto;
+}
+h1 { font-size: clamp(2.9rem, 7.4vw, 5.2rem); font-weight: 500; letter-spacing: -.015em; line-height: 1; }
+h2 { font-size: clamp(2.1rem, 4.8vw, 3.1rem); font-weight: 500; letter-spacing: -.01em; line-height: 1.05; }
+h3 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; }
+h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
+.conn-info h3 { font-size: 2.6rem; font-weight: 600; letter-spacing: 0; }
+.prose { font-size: 1.125rem; line-height: 1.62; }
+.hero .lede { font-size: 1.3rem; line-height: 1.5; }
+.msg, .dive-card p, .conn-info p, .qexp, .mark { font-size: 1rem; line-height: 1.58; }
+.cap { font-size: .9375rem; font-style: italic; }
+.cap b { font-style: normal; font-weight: 600; }
+.sheet-q .q, .game-q { font-size: 1.6rem; font-weight: 500; line-height: 1.2; }
+.qitem h4 { font-size: 1.3rem; font-weight: 600; line-height: 1.3; }
+.qitem h4 span { font-family: var(--font-serif); }
+.mark b { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; }
+.prose .mono, .msg .mono { font-family: var(--font-mono); font-size: .92em; }
+footer { font-size: 1rem; }
+@media (max-width: 600px) {
+  .prose { font-size: 1.0625rem; }
+  .sheet-q .q, .game-q { font-size: 1.4rem; }
+}
+
+/* ---------- Tahap 2 ---------- */
+.kicker a { color: var(--ink-2); }
+.fig-draw > svg { display: block; width: 100%; height: auto; }
+.toolkit-wrap { padding: 14px; }
+.toolkit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.toolkit svg, .tool-opt svg { min-width: 0 !important; width: 100%; height: auto; display: block; }
+.tool { display: grid; gap: 4px; padding: 8px 10px 10px; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); }
+.tool:hover { border-color: var(--ink); }
+.tool span { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: .9375rem; line-height: 1.2; }
+.tool span b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; flex: none; }
+.parts { list-style: none; margin: 0; padding: 14px; border-top: 1px solid var(--ink); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; }
+.parts li { display: flex; gap: 10px; align-items: baseline; font-family: var(--font-read); font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.parts li strong { color: var(--ink); }
+.parts li b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink); flex: none; transform: translateY(5px); font-family: var(--font-body); }
+.rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 4px; max-width: 640px; }
+.rule b { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); }
+.rule p { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.5; }
+.tool-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tool-opt { border: 1px solid var(--rule); background: var(--paper); padding: 6px 8px 8px; cursor: pointer; display: grid; gap: 2px; text-align: left; }
+.tool-opt:hover:not(:disabled) { border-color: var(--ink); }
+.tool-opt span { font-size: .875rem; font-weight: 650; }
+.tool-opt:disabled { cursor: default; }
+.tool-opt.right { border: 2px solid var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.tool-opt.wrong { border: 2px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.otdr-read { font-size: .9375rem; color: var(--ink-2); }
+.otdr-info { display: grid; gap: 4px; border-top: 1px solid var(--rule); padding-top: 10px; }
+.otdr-info b { font-weight: 700; }
+.otdr-info .mono { font-size: .875rem; color: var(--ink-2); }
+.otdr-info p { font-family: var(--font-read); font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+#otdrCanvas { touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) {
+  #stripSvg .txt, #stripSvg .txt-2 { font-size: 24px; }
+  #sleeveSvg .txt, #sleeveSvg .txt-2 { font-size: 20px; }
+  #opmSvg .txt-2 { font-size: 18px; }
+  .parts { grid-template-columns: 1fr; }
+  .tool span { font-size: .8125rem; }
+  .tool-opt span { font-size: .75rem; }
+  .toolkit-wrap { padding: 8px; }
+}
+
+/* ---------- Tahap 3 ---------- */
+.tabs button:disabled { opacity: .4; cursor: default; }
+.order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.order-list li { display: flex; gap: 12px; align-items: center; padding: 8px 2px; border-bottom: 1px solid var(--rule); min-height: 42px; }
+.order-list li b { width: 24px; height: 24px; border: 1.2px solid var(--ink-3); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink-3); flex: none; }
+.order-list li.ok b { border-color: var(--ok); background: var(--ok); color: #fff; }
+.order-list li.ok span { font-weight: 650; }
+.step-pool { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.step-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 10px 12px; text-align: left; cursor: pointer; line-height: 1.35; min-height: 48px; }
+.step-btn:hover { background: var(--paper-2); }
+.step-btn.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+@media (max-width: 600px) { .step-pool { grid-template-columns: 1fr; } }
+svg .ln-thin.bad { stroke: var(--bad); } svg .f-ink.bad { fill: var(--bad); } svg text.bad { fill: var(--bad); }
+svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); } svg text.warn { fill: var(--warn); }
+.checks { display: grid; gap: 6px; }
+.check { display: flex; gap: 10px; align-items: baseline; font-size: .9375rem; color: var(--ink-2); }
+.check i { font-style: normal; font-weight: 800; width: 20px; height: 20px; display: grid; place-items: center; flex: none; border: 1.5px solid currentColor; font-size: 12px; transform: translateY(4px); }
+.check.ok i { color: var(--ok); } .check.warn i { color: var(--warn); } .check.bad i { color: var(--bad); }
+.check strong { color: var(--ink); }
+.checklist { border: 1.5px solid var(--ink); display: grid; }
+.check-head { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--ink); }
+.check-head b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ck-bar { flex: 1; height: 8px; border: 1px solid var(--ink); }
+.ck-bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .2s; }
+.ck { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.ck:hover { background: var(--paper-2); }
+.ck input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--ok); flex: none; }
+.ck b { display: block; font-weight: 650; }
+.ck small { display: block; color: var(--ink-3); font-size: .875rem; margin-top: 2px; }
+.ck:has(input:checked) b { text-decoration: line-through; text-decoration-color: var(--ok); text-decoration-thickness: 2px; }
+.checklist .msg { padding: 12px 14px; }
+@media (max-width: 600px) {
+  #lenSvg .txt, #lenSvg .txt-2 { font-size: 18px; }
+  #heroSvg .txt, #heroSvg .txt-2 { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<nav class="rail" aria-label="Bagian Tahap 3">
+  <ol>
+    <li><a href="#urutan" style="--c:var(--c1)"><i></i><span>3.1 Urutan kerja</span></a></li>
+    <li><a href="#kupas" style="--c:var(--c2)"><i></i><span>3.2 Mengupas</span></a></li>
+    <li><a href="#bersih" style="--c:var(--c3)"><i></i><span>3.3 Membersihkan</span></a></li>
+    <li><a href="#belah" style="--c:var(--c4)"><i></i><span>3.4 Membelah</span></a></li>
+    <li><a href="#siap" style="--c:var(--c5)"><i></i><span>3.5 Siap sambung</span></a></li>
+    <li><a href="#kuis" style="--c:var(--c7)"><i></i><span>Cek pemahaman</span></a></li>
+  </ol>
+</nav>
+
+<header class="hero wrap">
+  <div class="col">
+    <p class="kicker"><b>Jalur Cahaya</b> · modul pelatihan teknisi fiber optik · <a href="https://nothinsphere.github.io/jalur-cahaya/tahap-2/">← Tahap 2</a></p>
+    <h1>Praktik persiapan</h1>
+    <p class="lede">Sebelum dua serat disambung, ujungnya harus dikupas, dibersihkan, dan dibelah dengan ukuran yang tepat. Tahap ini membahas urutannya, ukurannya, dan kesalahan yang paling sering terjadi.</p>
+    <div class="sheet">
+      <div class="sheet-draw">
+        <svg id="heroSvg" viewBox="0 0 960 250" role="img" aria-label="Ujung serat yang siap disambung: tabung, coating, sleeve yang diparkir, kaca yang dikupas, titik belah, dan potongan yang dibuang, lengkap dengan ukuran"></svg>
+      </div>
+      <div class="tblock">
+        <div><small>Judul</small><b>Praktik persiapan</b></div>
+        <div><small>Tahap</small><b>3 dari 7</b></div>
+        <div><small>Durasi</small><b>±35 menit</b></div>
+        <div><small>Isi</small><b>5 bagian + kuis</b></div>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:-12px"><b>Gambar 0</b> Ujung serat yang siap disambung. Panjang digambar sesuai skala; diameter tidak. Ukuran adalah contoh umum, ikuti manual cleaver dan splicer yang kamu pakai.</p>
+    <table class="stages" aria-label="Tujuh tahap pelatihan">
+      <tr><td>Tahap 1</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/">K3 &amp; teori</a></td><td>buka</td></tr>
+      <tr><td>Tahap 2</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-2/">Pengenalan alat</a></td><td>buka</td></tr>
+      <tr class="now"><td>Tahap 3</td><td>Praktik persiapan</td><td>sedang dibaca</td></tr>
+      <tr><td>Tahap 4</td><td>Penyambungan &amp; finishing</td><td>berikutnya</td></tr>
+      <tr><td>Tahap 5</td><td>Pengukuran</td><td></td></tr>
+      <tr><td>Tahap 6</td><td>Troubleshooting &amp; perawatan</td><td></td></tr>
+      <tr><td>Tahap 7</td><td>Aplikasi lapangan</td><td></td></tr>
+    </table>
+  </div>
+</header>
+
+<main>
+<!-- ================= 3.1 URUTAN ================= -->
+<section class="chapter wrap" id="urutan" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c1)"><i></i>3.1 · Urutan kerja</p>
+      <h2>Urutan sebelum menyambung</h2>
+      <div class="prose"><p>Sambungan yang buruk paling sering berawal dari persiapan yang terburu-buru: kaca tergores, kotor, atau dibelah miring. Urutan yang benar juga mencegah kesalahan yang tidak bisa diperbaiki, misalnya lupa memasang sleeve.</p><p>Contoh di sini: menyiapkan kabel loose tube (duct atau udara) di dalam closure. Ketuk langkah-langkahnya sesuai urutan.</p></div>
+    </div>
+    <div class="game" id="orderGame"></div>
+    <div class="block">
+      <h3>Kalau kabelnya tight buffer (pigtail atau patchcord)</h3>
+      <div class="prose">
+        <ul>
+          <li>Tidak ada tabung dan gel. Setelah jaket dan aramid, langsung ke tight buffer 900 µm.</li>
+          <li>Kupas buffer 900 µm <strong>bertahap</strong>, sekitar 10–15 mm sekali tarik. Buffer keras; tarikan panjang sekaligus sering membuat kaca patah di dalamnya.</li>
+          <li>Banyak stripper mengupas buffer dan coating sekaligus dari 900 µm ke 125 µm. Tetap tarik pelan dan lurus.</li>
+          <li>Sleeve tetap dimasukkan sebelum mengupas.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3.2 MENGUPAS ================= -->
+<section class="chapter wrap" id="kupas" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c2)"><i></i>3.2 · Mengupas</p>
+      <h2>Ukur dulu, baru kupas</h2>
+      <div class="prose">
+        <p>Tiga ukuran saling berkaitan: <strong>panjang kupas</strong> (coating yang dibuang dari ujung), <strong>panjang belah</strong> (kaca yang tersisa setelah dibelah), dan <strong>panjang sleeve</strong>. Kaca yang terbuka di kedua serat harus seluruhnya tertutup sleeve, dengan coating di kedua sisi ikut masuk.</p>
+        <p><strong>Tekniknya:</strong> pegang stripper tegak lurus terhadap serat, jepit, lalu tarik lurus dengan kecepatan tetap. Jangan menekuk serat saat menarik, dan jangan memutar stripper.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar">
+          <span class="lbl">Panjang sleeve</span>
+          <div class="tabs" role="group" aria-label="Panjang sleeve">
+            <button type="button" id="sv-40" data-sv="40" aria-pressed="false">40 mm</button>
+            <button type="button" id="sv-45" data-sv="45" aria-pressed="false">45 mm</button>
+            <button type="button" id="sv-60" data-sv="60" aria-pressed="true">60 mm</button>
+          </div>
+        </div>
+        <div class="fig-draw"><svg id="lenSvg" viewBox="0 0 720 300" role="img" aria-label="Satu serat yang dikupas dan dibelah, serta dua serat yang sudah disambung di dalam sleeve"></svg></div>
+        <div class="fig-ctl">
+          <div class="range"><label for="clvRange">Panjang belah (kaca yang tersisa) <output id="clvOut">16 mm</output></label><input type="range" id="clvRange" min="6" max="26" value="16"></div>
+          <div class="range"><label for="stripRange">Panjang kupas <output id="stripOut">30 mm</output></label><input type="range" id="stripRange" min="10" max="50" value="30"></div>
+          <div class="checks" id="lenChecks" aria-live="polite"></div>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 3.2</b> Atas: satu serat sebelum disambung. Bawah: dua serat setelah disambung, di dalam sleeve. Batas-batasnya adalah contoh umum; ikuti manual alatmu.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl rs">
+        <thead><tr><th>Panjang belah</th><th>Sleeve yang cocok</th><th>Catatan</th></tr></thead>
+        <tbody>
+          <tr><th class="num">16 mm</th><td>60 mm</td><td>Kombinasi paling umum untuk closure dan ODP.</td></tr>
+          <tr><th class="num">10 mm</th><td>40 atau 45 mm</td><td>Untuk tray yang lebih kecil. Butuh cleaver yang diatur ke 10 mm.</td></tr>
+          <tr><th class="num">8–9 mm</th><td>Sleeve mikro 20–25 mm</td><td>Untuk ruang sangat sempit; butuh splicer dan pemanas yang mendukung.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3.3 MEMBERSIHKAN ================= -->
+<section class="chapter wrap" id="bersih" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c3)"><i></i>3.3 · Membersihkan</p>
+      <h2>Bersih, sekali usap</h2>
+      <div class="prose">
+        <p><strong>Gel</strong> dari loose tube dibersihkan dulu dengan tisu dan pembersih gel sampai serat tidak licin. Serat yang masih berminyak membuat stripper selip dan kaca kotor.</p>
+        <p><strong>Kaca</strong> dibersihkan setelah coating dikupas: lipat tisu lint-free, basahi dengan alkohol IPA, jepit kaca di dalam lipatan, lalu tarik <strong>sekali</strong> ke arah ujung. Kaca yang bersih biasanya berbunyi "cit" halus saat diusap. Setelah itu, ujung kaca tidak boleh menyentuh apa pun.</p>
+        <p>Coba tebak: benar atau salah?</p>
+      </div>
+    </div>
+    <div id="cleanGame"></div>
+  </div>
+</section>
+
+<!-- ================= 3.4 MEMBELAH ================= -->
+<section class="chapter wrap" id="belah" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c4)"><i></i>3.4 · Membelah</p>
+      <h2>Ukur, jepit, potong</h2>
+      <div class="prose"><p>Cleaver hanya bekerja baik kalau serat diletakkan lurus dengan tepi coating tepat di tanda ukur. Ikuti langkahnya satu per satu. Bentuk cleaver berbeda tiap merek, tetapi urutannya hampir sama.</p></div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar">
+          <span class="lbl" id="cvStepLbl">Langkah 1 dari 6</span>
+          <div class="tabs" role="group" aria-label="Pindah langkah">
+            <button type="button" id="cvPrev" aria-pressed="false">← Sebelumnya</button>
+            <button type="button" id="cvNext" aria-pressed="false">Berikutnya →</button>
+          </div>
+        </div>
+        <div class="fig-draw"><canvas id="cvCanvas" style="height:280px" aria-label="Cleaver tampak atas dengan serat di dalamnya" role="img"></canvas></div>
+        <div class="fig-ctl"><p class="msg" id="cvMsg" aria-live="polite"></p></div>
+      </figure>
+      <p class="cap"><b>Gambar 3.4</b> Cleaver tampak atas, disederhanakan. Mistar di alurnya menunjukkan panjang belah.</p>
+    </div>
+    <div class="block">
+      <h3>Kalau hasil belahan jelek</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Gejala</th><th>Penyebab yang paling mungkin</th><th>Yang dilakukan</th></tr></thead>
+          <tbody>
+            <tr><th>Sudut terlalu besar</th><td>Serat tidak lurus di alur, atau bantalan karet kotor</td><td>Bersihkan bantalan dan alur, letakkan serat lurus, belah ulang.</td></tr>
+            <tr><th>Panjang belah salah</th><td>Tepi coating tidak tepat di tanda ukur</td><td>Kupas ulang bila kaca terlalu pendek, lalu letakkan tepat di tanda.</td></tr>
+            <tr><th>Permukaan retak atau gompal</th><td>Mata pisau aus atau kotor</td><td>Bersihkan mata pisau, lalu putar ke posisi berikutnya sesuai manual.</td></tr>
+            <tr><th>Kaca patah sebelum dibelah</th><td>Tergores saat dikupas atau tertekuk saat dipindah</td><td>Kupas ulang dengan stripper tegak lurus; pegang serat di bagian coating.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3.5 SIAP SAMBUNG ================= -->
+<section class="chapter wrap" id="siap" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c5)"><i></i>3.5 · Siap sambung</p>
+      <h2>Cek sebelum masuk splicer</h2>
+      <div class="prose"><p>Biasakan memeriksa daftar ini setiap kali, terutama di lapangan saat terburu-buru. Centang yang sudah kamu pastikan.</p></div>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </div>
+</section>
+
+<!-- ================= KUIS ================= -->
+<section class="chapter wrap" id="kuis" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c7)"><i></i>Cek pemahaman</p>
+      <h2>Enam pertanyaan</h2>
+      <div class="prose"><p>Jawab semuanya, lalu lihat nilaimu. Penjelasan muncul setelah kamu memilih jawaban.</p></div>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <div class="score" id="score" hidden></div>
+    <div class="next">
+      <p class="small">Berikutnya · Tahap 4</p>
+      <h3>Penyambungan &amp; finishing</h3>
+      <p>Fusion splicing, mechanical splice dan fast connector, memanaskan sleeve, dan menata serat di tray.</p>
+      <p><a class="btn" href="https://nothinsphere.github.io/jalur-cahaya/tahap-2/">← Kembali ke Tahap 2</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap"><div class="col">Jalur Cahaya · Tahap 3: praktik persiapan. Ukuran dan urutan di halaman ini adalah contoh umum untuk belajar. Di lapangan, ikuti manual alat dan standar operator tempatmu bekerja.</div></footer>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+/* core.js */
+/* Jalur Cahaya — utilitas bersama: tema, kanvas, animasi, rel bab, tabel ponsel */
+(function () {
+  const JC = (window.JC = {});
+  JC.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  JC.COLORS = [
+    { n: 1, name: "Biru", hex: "#1f6fe0" },
+    { n: 2, name: "Oranye", hex: "#f47b20" },
+    { n: 3, name: "Hijau", hex: "#22a04b" },
+    { n: 4, name: "Cokelat", hex: "#8b5a2b" },
+    { n: 5, name: "Abu-abu", hex: "#8c969c" },
+    { n: 6, name: "Putih", hex: "#f3f3ef" },
+    { n: 7, name: "Merah", hex: "#d92b2b" },
+    { n: 8, name: "Hitam", hex: "#1b1b1b" },
+    { n: 9, name: "Kuning", hex: "#f5d000" },
+    { n: 10, name: "Ungu", hex: "#7d3cc0" },
+    { n: 11, name: "Merah muda", hex: "#f28cb5" },
+    { n: 12, name: "Toska", hex: "#22c7c0" },
+  ];
+
+  // angka gaya Indonesia: koma desimal, tanda minus asli
+  JC.fmt = function (v, d = 1) {
+    const s = Math.abs(v).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (v < 0 && Number(s.replace(/\./g, "").replace(",", ".")) !== 0 ? "−" : "") + s;
+  };
+  JC.clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  JC.lerp = (a, b, t) => a + (b - a) * t;
+  JC.smooth = (e0, e1, x) => { const t = JC.clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+
+  // warna tinta & kertas diambil dari token tema, disegarkan saat tema berganti
+  const TOK = ["paper", "paper-2", "grid", "ink", "ink-2", "ink-3", "rule", "red", "red-ink", "ok", "bad", "glass", "glass-2", "jacket", "hatch"];
+  JC.pal = {};
+  const readPal = () => { const cs = getComputedStyle(document.documentElement); TOK.forEach((k) => (JC.pal[k] = cs.getPropertyValue("--" + k).trim())); };
+  readPal();
+  const canvases = [];
+  const onTheme = () => { readPal(); canvases.forEach((st) => st.draw && st.draw(st.ctx, st.w, st.h)); };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme);
+  if (document.fonts) document.fonts.ready.then(onTheme); // gambar ulang setelah font web selesai dimuat
+  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+
+  // pola arsir potongan (gambar teknik), jarak garis tetap di layar
+  JC.hatch = function (ctx, color, gap = 7, cross = false) {
+    const c = document.createElement("canvas"); c.width = c.height = gap;
+    const x = c.getContext("2d"); x.strokeStyle = color; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(0, gap); x.lineTo(gap, 0); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(gap - 1, gap + 1); x.lineTo(gap + 1, gap - 1);
+    if (cross) { x.moveTo(0, 0); x.lineTo(gap, gap); }
+    x.stroke();
+    return ctx.createPattern(c, "repeat");
+  };
+
+  // kanvas tajam di layar retina; draw(ctx, w, h) dipanggil saat ukuran atau tema berubah
+  // minW: lebar gambar minimum; di layar lebih sempit gambar diperkecil utuh, bukan ditumpuk
+  JC.canvas = function (cv, draw, minW = 0) {
+    const ctx = cv.getContext("2d");
+    const st = { ctx, w: 0, h: 0, draw };
+    const fit = (redraw) => {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const k = minW && r.width < minW ? Math.max(r.width, 1) / minW : 1;
+      st.w = Math.max(1, r.width) / k; st.h = Math.max(1, r.height) / k;
+      cv.width = Math.round(Math.max(1, r.width) * dpr); cv.height = Math.round(Math.max(1, r.height) * dpr);
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
+      if (redraw !== false && st.draw && r.width >= 2 && r.height >= 2) st.draw(ctx, st.w, st.h);
+    };
+    st.fit = fit;
+    fit(false); // ukur dulu; gambar pertama menunggu pemanggil selesai menyimpan st
+    new ResizeObserver(() => fit()).observe(cv);
+    canvases.push(st);
+    return st;
+  };
+
+  // jalankan loop animasi hanya saat elemen terlihat
+  JC.loop = function (el, frame) {
+    let on = false, raf = 0; const t0 = performance.now();
+    const tick = (t) => { frame((t - t0) / 1000); if (on) raf = requestAnimationFrame(tick); };
+    new IntersectionObserver((es) => {
+      const vis = es[0].isIntersecting;
+      if (JC.reduced) { if (vis) frame(1.3); return; }
+      if (vis && !on) { on = true; raf = requestAnimationFrame(tick); }
+      else if (!vis) { on = false; cancelAnimationFrame(raf); }
+    }).observe(el);
+  };
+
+  // jalankan langkah awal sebuah gambar tanpa menghentikan gambar lain bila gagal
+  JC.safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
+
+  // grup tombol dengan aria-pressed
+  JC.seg = function (buttons, attr, cb) {
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      cb(b.dataset[attr], b);
+    }));
+  };
+
+  JC.store = {
+    get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+  };
+
+  /* ---------- rel bab ---------- */
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const railLinks = [...document.querySelectorAll(".rail a")];
+  const topFill = document.getElementById("topFill");
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    topFill.style.width = (max > 0 ? JC.clamp(scrollY / max, 0, 1) : 0) * 100 + "%";
+    let cur = -1;
+    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < innerHeight * 0.45) cur = i; });
+    railLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- ponsel: tabel diberi label kolom ---------- */
+  document.querySelectorAll(".tbl.rs").forEach((tb) => {
+    const heads = [...tb.querySelectorAll("thead th")].map((th) => th.textContent.trim());
+    tb.querySelectorAll("tbody tr").forEach((tr) => [...tr.children].forEach((cell, j) => { if (cell.tagName === "TD" && heads[j]) cell.dataset.label = heads[j]; }));
+  });
+
+})();
+</script>
+<script>
+/* t3-prep.js */
+/* Jalur Cahaya · Tahap 3 — gambar pembuka, urutan kerja, panjang kupas/belah/sleeve, membersihkan */
+(function () {
+  const JC = window.JC;
+  const BLUE = "#1f6fe0";
+
+  /* ---------- gambar pembuka: ujung serat siap sambung (7 px per mm) ---------- */
+  const hero = document.getElementById("heroSvg");
+  const dimH = (x0, x1, y, txt, cls = "") => `<path d="M${x0} ${y} H${x1}" class="ln-thin ${cls}"/><path d="M${x0} ${y} l7 -3.5 v7 Z M${x1} ${y} l-7 -3.5 v7 Z" class="f-ink ${cls}"/>` +
+    `<text x="${(x0 + x1) / 2}" y="${y - 7}" text-anchor="middle" class="txt ${cls}">${txt}</text>`;
+  const ext = (x, y0, y1) => `<path d="M${x} ${y0} V${y1}" class="ln-thin" stroke-dasharray="3 3"/>`;
+  hero.innerHTML = `
+    <rect x="6" y="107" width="36" height="22" rx="3" fill="${BLUE}" class="ln"/>
+    <rect x="42" y="114.5" width="518" height="7" fill="${BLUE}" class="ln"/>
+    <rect x="60" y="106" width="420" height="24" rx="12" class="ln" style="fill:var(--glass);fill-opacity:.4"/>
+    <rect x="66" y="123" width="408" height="4" rx="2" fill="#9aa3a9"/>
+    <rect x="560" y="116.25" width="112" height="3.5" class="ln" style="fill:var(--glass)"/>
+    <rect x="672" y="116.25" width="98" height="3.5" fill="none" style="stroke:var(--ink-3)" stroke-dasharray="4 3"/>
+    <path d="M672 104 V132" style="stroke:var(--red)" stroke-width="2"/><path d="M666 96 L678 96 L672 104 Z" class="f-red"/>
+    ${ext(560, 122, 206)}${ext(672, 122, 206)}${ext(770, 122, 180)}${ext(60, 104, 66)}${ext(480, 104, 66)}
+    ${dimH(60, 480, 72, "sleeve 60 mm, diparkir dulu")}
+    ${dimH(560, 770, 176, "panjang kupas 30 mm")}
+    ${dimH(560, 672, 202, "panjang belah 16 mm")}
+    <path d="M24 107 L32 86" class="ln-thin"/><text x="10" y="80" class="txt-2">tabung</text>
+    <path d="M330 122 L310 156" class="ln-thin"/><text x="230" y="170" class="txt-2">coating 250 µm</text>
+    <path d="M610 116 L596 58" class="ln-thin"/><text x="556" y="52" class="txt-2">kaca 125 µm</text>
+    <text x="682" y="98" class="txt-2" style="fill:var(--red-ink)">titik belah</text>
+    <path d="M740 116 L754 70" class="ln-thin"/><text x="724" y="64" class="txt-2">dibuang 14 mm</text>`;
+  const narrow = window.matchMedia("(max-width: 640px)");
+  const setVB = () => hero.setAttribute("viewBox", narrow.matches ? "390 30 570 190" : "0 0 960 250");
+  narrow.addEventListener("change", setVB); setVB();
+
+  /* ---------- urutan kerja ---------- */
+  const STEPS = [
+    ["Kupas jaket luar sepanjang kebutuhan closure", "Mulai dari lapisan paling luar."],
+    ["Potong benang aramid, jepit batang FRP ke closure", "Setelah jaket terbuka, ikat penguatnya dulu supaya kabel tertahan dan tarikan tidak sampai ke serat."],
+    ["Lepas tabung sepanjang kebutuhan tray", "Tabung dilepas setelah kabel terpasang kuat di closure."],
+    ["Bersihkan gel dari serat", "Serat harus bebas gel sebelum dipegang dan dikupas."],
+    ["Masukkan sleeve ke salah satu serat", "Sleeve masuk sebelum coating dikupas. Setelah dikupas dan dibelah, sleeve tidak bisa lagi dimasukkan tanpa merusak ujungnya."],
+    ["Kupas coating 250 µm", "Coating dikupas sesudah sleeve terpasang."],
+    ["Bersihkan kaca dengan alkohol IPA", "Kaca dibersihkan setelah dikupas, sebelum dibelah."],
+    ["Belah, lalu langsung masukkan ke splicer", "Membelah selalu langkah terakhir, supaya ujungnya tetap bersih."],
+  ];
+  const og = document.getElementById("orderGame");
+  let pool = [], done = [], mistakes = 0, note = "";
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  function startOrder() { pool = shuffle(STEPS.map((_, i) => i)); done = []; mistakes = 0; note = ""; renderOrder(); }
+  function renderOrder(wrong) {
+    const list = STEPS.map((s, i) => i < done.length
+      ? `<li class="ok"><b>${i + 1}</b><span>${STEPS[done[i]][0]}</span></li>`
+      : `<li><b>${i + 1}</b><span class="small">${i === done.length ? "pilih langkah berikutnya" : ""}</span></li>`).join("");
+    const left = pool.filter((i) => !done.includes(i));
+    const btns = left.map((i) => `<button type="button" class="step-btn ${wrong === i ? "bad" : ""}" id="st-${i}" data-step="${i}">${STEPS[i][0]}</button>`).join("");
+    const end = done.length === STEPS.length;
+    og.innerHTML = `<p class="game-q">${end ? (mistakes ? `Selesai, dengan ${mistakes} kali salah pilih.` : "Sempurna, urutannya benar semua.") : "Ketuk langkah berikutnya"}</p>
+      <ol class="order-list">${list}</ol>
+      ${end ? `<div><button type="button" class="btn" id="orderAgain">Ulangi</button></div>` : `<div class="step-pool">${btns}</div>`}
+      <p class="msg" aria-live="polite">${note}</p>`;
+    og.querySelectorAll("[data-step]").forEach((b) => b.onclick = () => {
+      const i = +b.dataset.step, want = done.length;
+      if (i === want) { done.push(i); note = `<strong>Benar.</strong> ${STEPS[i][1]}`; renderOrder(); }
+      else { mistakes++; note = `<strong>Belum.</strong> ${STEPS[want][1]}`; renderOrder(i); }
+    });
+    const again = document.getElementById("orderAgain");
+    if (again) again.onclick = startOrder;
+  }
+  startOrder();
+
+  /* ---------- panjang kupas, belah, dan sleeve (10 px per mm) ---------- */
+  const lenSvg = document.getElementById("lenSvg"), checks = document.getElementById("lenChecks");
+  const clv = document.getElementById("clvRange"), strip = document.getElementById("stripRange");
+  let sleeve = 60;
+  function drawLen() {
+    const L = +clv.value, S = +strip.value, sc = 10;
+    document.getElementById("clvOut").textContent = L + " mm";
+    document.getElementById("stripOut").textContent = S + " mm";
+    let s = "";
+    // atas: satu serat
+    const xc = 190, y = 70;
+    s += `<text x="20" y="28" class="txt">Satu serat, sebelum disambung</text>`;
+    s += `<rect x="20" y="${y - 4}" width="${xc - 20}" height="8" fill="${BLUE}" class="ln"/>`;
+    const glassEnd = xc + Math.min(L, S) * sc;
+    s += `<rect x="${xc}" y="${y - 2}" width="${Math.min(L, S) * sc}" height="4" class="ln" style="fill:var(--glass)"/>`;
+    if (S > L) s += `<rect x="${glassEnd}" y="${y - 2}" width="${(S - L) * sc}" height="4" fill="none" style="stroke:var(--ink-3)" stroke-dasharray="4 3"/>`;
+    if (S >= L) s += `<path d="M${glassEnd} ${y - 12} V${y + 12}" style="stroke:var(--red)" stroke-width="2"/>`;
+    s += ext(xc, y + 4, y + 52) + ext(xc + S * sc, y + 4, y + 30) + ext(xc + L * sc, y + 4, y + 52);
+    s += dimH(xc, xc + S * sc, y + 26, `kupas ${S} mm`) + dimH(xc, xc + L * sc, y + 50, `belah ${L} mm`, S < L ? "bad" : "");
+    // bawah: dua serat di dalam sleeve
+    const cx = 360, yb = 230, half = (sleeve / 2) * sc;
+    s += `<text x="20" y="168" class="txt">Dua serat setelah disambung</text>`;
+    s += `<rect x="20" y="${yb - 4}" width="${cx - L * sc - 20}" height="8" fill="${BLUE}" class="ln"/><rect x="${cx + L * sc}" y="${yb - 4}" width="${700 - cx - L * sc}" height="8" fill="${BLUE}" class="ln"/>`;
+    s += `<rect x="${cx - L * sc}" y="${yb - 2}" width="${2 * L * sc}" height="4" class="ln" style="fill:var(--glass)"/>`;
+    s += `<path d="M${cx} ${yb - 9} V${yb + 9}" style="stroke:var(--red)" stroke-width="2"/>`;
+    const over = sleeve / 2 - L;
+    s += `<rect x="${cx - half}" y="${yb - 15}" width="${2 * half}" height="30" rx="14" class="ln" style="fill:var(--glass);fill-opacity:.35;stroke:${over < 3 ? "var(--red)" : "var(--ink)"}"/>`;
+    if (over < 0) { // kaca menonjol keluar sleeve
+      s += `<rect x="${cx - L * sc}" y="${yb - 6}" width="${-over * sc}" height="12" fill="none" style="stroke:var(--red)" stroke-dasharray="3 2"/><rect x="${cx + half}" y="${yb - 6}" width="${-over * sc}" height="12" fill="none" style="stroke:var(--red)" stroke-dasharray="3 2"/>`;
+    }
+    s += dimH(cx - half, cx + half, yb - 26, `sleeve ${sleeve} mm`);
+    if (over > 0) s += ext(cx - L * sc, yb + 4, yb + 46) + ext(cx - half, yb + 15, yb + 46) + dimH(cx - half, cx - L * sc, yb + 40, `${JC.fmt(over, 0)} mm`, over < 8 ? "warn" : "");
+    lenSvg.innerHTML = s;
+    // pemeriksaan
+    const scrap = S - L;
+    const row = (st, t) => `<div class="check ${st}"><i aria-hidden="true">${st === "ok" ? "✓" : st === "warn" ? "!" : "✕"}</i><span>${t}</span></div>`;
+    let h = "";
+    h += S < L ? row("bad", "<strong>Kaca tidak cukup.</strong> Panjang kupas lebih pendek dari panjang belah.")
+      : scrap < 10 ? row("warn", `<strong>Potongan yang dibuang hanya ${scrap} mm.</strong> Terlalu pendek untuk dijepit cleaver (contoh minimal 10 mm). Kupas lebih panjang.`)
+      : scrap > 25 ? row("warn", `<strong>Kupasan terlalu panjang (${scrap} mm terbuang).</strong> Kaca terbuka lebih lama dan lebih mudah patah.`)
+      : row("ok", `Potongan yang dibuang ${scrap} mm: cukup untuk dijepit cleaver.`);
+    h += over < 0 ? row("bad", `<strong>Kaca keluar dari sleeve ${JC.fmt(-over, 0)} mm di tiap sisi.</strong> Sambungan tidak terlindung. Pakai sleeve lebih panjang atau panjang belah lebih pendek.`)
+      : over < 3 ? row("bad", `<strong>Coating hanya masuk ${JC.fmt(over, 0)} mm ke sleeve.</strong> Terlalu mepet; tepi kaca bisa patah di ujung sleeve.`)
+      : over < 8 ? row("warn", `Coating masuk ${JC.fmt(over, 0)} mm ke sleeve di tiap sisi. Masih bisa, tetapi sambungan harus tepat di tengah.`)
+      : row("ok", `Coating masuk ${JC.fmt(over, 0)} mm ke sleeve di tiap sisi: kaca tertutup aman.`);
+    checks.innerHTML = h;
+  }
+  [clv, strip].forEach((r) => r.addEventListener("input", drawLen));
+  JC.seg([...document.querySelectorAll("[data-sv]")], "sv", (v) => { sleeve = +v; drawLen(); });
+  JC.safe(drawLen);
+
+  /* ---------- membersihkan: benar atau salah ---------- */
+  const CLEAN = [
+    ["Mengusap kaca bolak-balik beberapa kali supaya benar-benar bersih.", false, "Usap sekali ke arah ujung. Bolak-balik mengembalikan kotoran dan menimbulkan listrik statis yang menarik debu."],
+    ["Memakai tisu lint-free yang dibasahi alkohol IPA ≥ 99%.", true, "Tisu tidak berbulu dan alkohol murni tidak meninggalkan sisa."],
+    ["Meniup ujung kaca untuk membuang debu.", false, "Napas mengandung uap air dan percikan ludah halus yang menempel di kaca."],
+    ["Membersihkan kaca lagi setelah dibelah.", false, "Ujung yang sudah dibelah tidak boleh menyentuh apa pun, termasuk tisu. Bersihkan sebelum membelah."],
+    ["Membersihkan gel loose tube sampai serat tidak licin sebelum dikupas.", true, "Serat yang berminyak membuat stripper selip dan kaca kotor."],
+    ["Memakai bagian tisu yang sama untuk banyak serat.", false, "Kotoran dari serat sebelumnya pindah ke serat berikutnya. Pakai bagian tisu yang masih bersih."],
+    ["Kaca berbunyi \"cit\" halus saat diusap.", true, "Itu tanda kaca sudah bersih dan kering."],
+  ];
+  const cg = document.getElementById("cleanGame");
+  let ci = 0, cres = [];
+  function renderClean(answer) {
+    const ticks = CLEAN.map((_, i) => i < cres.length ? `<i class="${cres[i] ? "r" : "w"}">${cres[i] ? "✓" : "✕"}</i>` : `<i class="${i === ci ? "c" : ""}"></i>`).join("");
+    if (ci >= CLEAN.length) {
+      const ok = cres.filter(Boolean).length;
+      cg.innerHTML = `<div class="sheet-q"><div class="ticks">${ticks}</div><p class="q">${ok} dari ${CLEAN.length} benar.</p><div class="row-actions"><button type="button" class="btn" id="cleanAgain">Ulangi</button></div></div>`;
+      document.getElementById("cleanAgain").onclick = () => { ci = 0; cres = []; renderClean(); };
+      return;
+    }
+    const [q, truth, why] = CLEAN[ci];
+    const body = answer === undefined
+      ? `<div class="row-actions"><button type="button" class="btn" data-a="1">Benar</button><button type="button" class="btn" data-a="0">Salah</button></div>`
+      : `<div class="mark ${answer === truth ? "good" : "bad"}"><b>${answer === truth ? "✓ Tepat" : "✕ Kurang tepat"}: ${truth ? "benar" : "salah"}.</b>${why}</div><div class="row-actions"><button type="button" class="btn primary" id="cleanNext">${ci === CLEAN.length - 1 ? "Lihat hasil" : "Pernyataan berikutnya"}</button></div>`;
+    cg.innerHTML = `<div class="sheet-q"><div class="ticks">${ticks}<span>${ci + 1} / ${CLEAN.length}</span></div><p class="q">${q}</p>${body}</div>`;
+    cg.querySelectorAll("[data-a]").forEach((b) => b.onclick = () => { const a = b.dataset.a === "1"; cres.push(a === truth); renderClean(a); document.getElementById("cleanNext").focus(); });
+    const nx = document.getElementById("cleanNext");
+    if (nx) nx.onclick = () => { ci++; renderClean(); };
+  }
+  renderClean();
+})();
+</script>
+<script>
+/* t3-cleave.js */
+/* Jalur Cahaya · Tahap 3 — langkah memakai cleaver, checklist siap sambung, kuis */
+(function () {
+  const JC = window.JC;
+  const BLUE = "#1f6fe0";
+
+  /* ---------- cleaver langkah demi langkah ---------- */
+  const STEPS = [
+    "<strong>Buka penutup dan klem.</strong> Pastikan bantalan karet dan alur bersih dari serpihan sebelumnya.",
+    "<strong>Letakkan serat lurus di alur.</strong> Tepi coating tepat di tanda 16 mm pada mistar. Kaca harus melintang di atas posisi mata pisau.",
+    "<strong>Tutup klem dan penutup.</strong> Serat terjepit lurus di kedua sisi mata pisau. Jangan menekan serat dengan jari.",
+    "<strong>Dorong atau tekan pisau.</strong> Mata pisau menggores kaca, lalu bantalan menekuk kaca sedikit sampai patah rata. Satu gerakan, jangan diulang.",
+    "<strong>Buka dan angkat serat</strong> dengan memegang coating-nya. Ujung kaca jangan menyentuh apa pun; langsung bawa ke splicer.",
+    "<strong>Buang potongan kaca</strong> ke wadah bertutup. Sebagian cleaver punya penampung serpihan otomatis.",
+  ];
+  const cv = document.getElementById("cvCanvas"), msg = document.getElementById("cvMsg"), lbl = document.getElementById("cvStepLbl");
+  const prev = document.getElementById("cvPrev"), next = document.getElementById("cvNext");
+  let step = 0;
+  const st = JC.canvas(cv, () => draw(), 480);
+  function draw() {
+    const { ctx, w, h } = st, P = JC.pal;
+    if (w < 40 || h < 40) return;
+    ctx.clearRect(0, 0, w, h);
+    const L = 16, scrap = 14, bx = w * 0.56, cy = h * 0.52, s = (bx - 70) / 30; // px per mm
+    ctx.font = "600 13px 'Public Sans', sans-serif"; ctx.lineWidth = 1.4; ctx.strokeStyle = P.ink;
+    // badan cleaver
+    const bx0 = 30, bx1 = w - 30, by0 = cy - 70, by1 = cy + 74;
+    ctx.fillStyle = P.paper; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx0, by0, bx1 - bx0, by1 - by0, 12) : ctx.rect(bx0, by0, bx1 - bx0, by1 - by0); ctx.fill(); ctx.stroke();
+    // alur dan mistar (mm dari mata pisau ke kiri)
+    ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(bx0, cy - 5); ctx.lineTo(bx1, cy - 5); ctx.moveTo(bx0, cy + 5); ctx.lineTo(bx1, cy + 5); ctx.stroke();
+    ctx.strokeStyle = P["ink-2"]; ctx.fillStyle = P["ink-2"]; ctx.textAlign = "center"; ctx.font = "11px 'Public Sans', sans-serif";
+    for (let mm = 0; mm <= 26; mm++) {
+      const x = bx - mm * s, tall = mm % 5 === 0 || mm === 16;
+      ctx.beginPath(); ctx.moveTo(x, cy + 18); ctx.lineTo(x, cy + (tall ? 30 : 24)); ctx.stroke();
+      if (mm % 10 === 0 || mm === 16) { ctx.fillStyle = mm === 16 ? P["red-ink"] : P["ink-2"]; ctx.fillText(String(mm), x, cy + 43); }
+    }
+    ctx.fillStyle = P["ink-3"]; ctx.fillText("mm", bx - 26 * s - 18, cy + 43);
+    // bantalan karet kiri dan kanan
+    const pad = (x0, x1) => { ctx.fillStyle = "#2b2f32"; ctx.fillRect(x0, cy - 16, x1 - x0, 32); };
+    pad(bx - 12 * s - 34, bx - 12 * s); pad(bx + 6 * s, bx + 6 * s + 40);
+    // serat
+    const lifted = step >= 4, dy = lifted ? -46 : 0, dx = lifted ? -20 : 0;
+    const xe = bx - L * s + dx, gEnd = step >= 4 ? bx + dx : bx + scrap * s;
+    if (step >= 1) {
+      ctx.fillStyle = BLUE; ctx.fillRect(0, cy - 4 + dy, xe, 8); ctx.strokeStyle = P.ink; ctx.lineWidth = 1; ctx.strokeRect(-1, cy - 4 + dy, xe + 1, 8);
+      ctx.fillStyle = P.glass; ctx.fillRect(xe, cy - 2 + dy, gEnd - xe, 4); ctx.strokeRect(xe, cy - 2 + dy, gEnd - xe, 4);
+      if (step === 4 || step === 5) { /* potongan tertinggal di alur */ }
+      if (step === 4) { ctx.fillStyle = P.glass; ctx.fillRect(bx, cy - 2, scrap * s, 4); ctx.strokeRect(bx, cy - 2, scrap * s, 4); }
+      if (step === 1) { // tanda tepi coating
+        ctx.strokeStyle = P.red; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(xe, cy - 22); ctx.lineTo(xe, cy + 30); ctx.stroke();
+        ctx.fillStyle = P["red-ink"]; ctx.textAlign = "center"; ctx.fillText("tepi coating di 16", xe, cy - 28);
+      }
+    }
+    // mata pisau
+    const bladeY = step === 3 ? cy : cy + 52;
+    ctx.fillStyle = P.red; ctx.beginPath(); ctx.moveTo(bx - 6, bladeY + 10); ctx.lineTo(bx + 6, bladeY + 10); ctx.lineTo(bx, bladeY); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = P["ink-2"]; ctx.textAlign = "center"; ctx.font = "600 12px 'Public Sans', sans-serif";
+    ctx.fillText("mata pisau", bx, cy + 66 + (step === 3 ? -6 : 0));
+    if (step === 3) { ctx.strokeStyle = P.red; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(bx, cy + 50); ctx.lineTo(bx, cy + 16); ctx.stroke(); }
+    // penutup
+    ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "left";
+    if (step === 2 || step === 3) {
+      ctx.fillStyle = P.ink; ctx.globalAlpha = 0.12; ctx.fillRect(bx - 12 * s - 40, by0 + 8, (bx + 6 * s + 46) - (bx - 12 * s - 40), by1 - by0 - 16); ctx.globalAlpha = 1;
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2; ctx.strokeRect(bx - 12 * s - 40, by0 + 8, (bx + 6 * s + 46) - (bx - 12 * s - 40), by1 - by0 - 16);
+      ctx.fillStyle = P["ink-2"]; ctx.fillText("penutup tertutup", bx - 12 * s - 34, by0 + 24);
+    } else {
+      ctx.strokeStyle = P["ink-3"]; ctx.setLineDash([5, 4]); ctx.strokeRect(bx - 12 * s - 40, 6, (bx + 6 * s + 46) - (bx - 12 * s - 40), by0 - 12); ctx.setLineDash([]);
+      ctx.fillStyle = P["ink-3"]; ctx.fillText("penutup terbuka", bx - 12 * s - 34, 22);
+    }
+    // wadah serpihan
+    if (step === 5) {
+      const wx = w - 96, wy = by1 - 54;
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2; ctx.fillStyle = P["paper-2"]; ctx.fillRect(wx, wy, 52, 40); ctx.strokeRect(wx, wy, 52, 40);
+      ctx.fillRect(wx - 4, wy - 7, 60, 7); ctx.strokeRect(wx - 4, wy - 7, 60, 7);
+      ctx.fillStyle = P.glass; ctx.save(); ctx.translate(wx + 26, wy + 20); ctx.rotate(-0.4); ctx.fillRect(-scrap * s / 2, -2, scrap * s * 0.6, 4); ctx.restore();
+      ctx.fillStyle = P["ink-2"]; ctx.textAlign = "center"; ctx.fillText("wadah serpihan", wx + 26, wy + 56);
+    }
+    ctx.textAlign = "left";
+  }
+  function show() {
+    lbl.textContent = `Langkah ${step + 1} dari ${STEPS.length}`;
+    msg.innerHTML = STEPS[step];
+    prev.disabled = step === 0; next.disabled = step === STEPS.length - 1;
+    draw();
+  }
+  prev.addEventListener("click", () => { step = Math.max(0, step - 1); show(); });
+  next.addEventListener("click", () => { step = Math.min(STEPS.length - 1, step + 1); show(); });
+  JC.safe(show);
+
+  /* ---------- checklist siap sambung ---------- */
+  const ITEMS = [
+    ["Sleeve sudah terpasang di salah satu serat", "Kalau lupa, sambungan harus dipotong dan diulang dari awal."],
+    ["Gel sudah bersih, serat tidak licin", "Gel yang tersisa mengotori stripper dan kaca."],
+    ["Coating dikupas sesuai panjang kupas, tanpa goresan", "Goresan kecil membuat kaca patah saat dibelah atau ditekuk."],
+    ["Kaca diusap sekali dengan alkohol dan berbunyi \"cit\"", "Tanda kaca sudah bersih dan kering."],
+    ["Dibelah dengan panjang yang benar", "Tepi coating tepat di tanda ukur cleaver."],
+    ["Ujung kaca tidak menyentuh apa pun setelah dibelah", "Kalau tersentuh, bersihkan dan belah ulang."],
+    ["Serpihan sudah dibuang ke wadah bertutup", "Lihat bagian K3 di Tahap 1."],
+    ["V-groove dan klem splicer bersih", "Sebutir debu di V-groove membuat serat miring."],
+  ];
+  const cl = document.getElementById("checklist");
+  cl.innerHTML = `<div class="check-head"><b id="ckCount">0 dari ${ITEMS.length}</b><div class="ck-bar"><i id="ckBar"></i></div></div>` +
+    ITEMS.map(([t, d], i) => `<label class="ck" for="ck-${i}"><input type="checkbox" id="ck-${i}"><span><b>${t}</b><small>${d}</small></span></label>`).join("") +
+    `<p class="msg" id="ckMsg" aria-live="polite"></p>`;
+  const boxes = [...cl.querySelectorAll("input")];
+  function updateCk() {
+    const n = boxes.filter((b) => b.checked).length;
+    document.getElementById("ckCount").textContent = `${n} dari ${ITEMS.length}`;
+    document.getElementById("ckBar").style.width = (n / ITEMS.length) * 100 + "%";
+    document.getElementById("ckMsg").innerHTML = n === ITEMS.length ? "<strong>Siap disambung.</strong> Cara menyambung dan menata serat di tray dibahas di Tahap 4." : "";
+  }
+  boxes.forEach((b) => b.addEventListener("change", updateCk));
+  updateCk();
+
+  /* ---------- kuis ---------- */
+  const Q = [
+    { q: "Kapan sleeve pelindung dimasukkan ke serat?", o: ["Setelah dibelah", "Sebelum coating dikupas", "Setelah disambung", "Kapan saja"], a: 1, e: "Setelah coating dikupas dan kaca dibelah, sleeve tidak bisa lagi dimasukkan tanpa merusak ujungnya." },
+    { q: "Panjang belah 16 mm. Sleeve mana yang paling cocok?", o: ["20 mm", "40 mm", "60 mm", "Tidak perlu sleeve"], a: 2, e: "(60 − 2 × 16) ÷ 2 = 14 mm coating masuk ke sleeve di tiap sisi. Dengan 40 mm, kaca malah keluar dari sleeve." },
+    { q: "Cara membersihkan kaca yang benar adalah…", o: ["Diusap bolak-balik beberapa kali", "Diusap sekali ke arah ujung dengan tisu lint-free dan IPA", "Ditiup", "Diusap dengan kain baju"], a: 1, e: "Sekali usap ke arah ujung, dengan bagian tisu yang bersih." },
+    { q: "Kenapa tight buffer 900 µm dikupas bertahap 10–15 mm?", o: ["Supaya lebih cepat", "Buffer keras; tarikan panjang sering mematahkan kaca di dalamnya", "Supaya hemat alkohol", "Karena lubang stripper kecil"], a: 1, e: "Gesekan buffer yang keras pada kaca makin besar kalau ditarik panjang sekaligus." },
+    { q: "Hasil belahan sudutnya besar. Penyebab yang paling mungkin?", o: ["Alkoholnya kurang", "Serat tidak lurus di alur atau bantalan karet kotor", "Sleeve terlalu panjang", "Coating terlalu tebal"], a: 1, e: "Bersihkan bantalan dan alur, letakkan serat lurus, lalu belah ulang." },
+    { q: "Setelah dibelah, ujung kaca tidak sengaja menyentuh meja. Apa yang dilakukan?", o: ["Lap dengan tisu lalu sambung", "Tiup lalu sambung", "Bersihkan, lalu belah ulang", "Langsung sambung saja"], a: 2, e: "Ujung yang tersentuh bisa kotor atau rusak. Bersihkan kaca lalu belah ulang; kupas ulang bila kacanya jadi terlalu pendek." },
+  ];
+  const quizEl = document.getElementById("quiz"), scoreEl = document.getElementById("score");
+  let ans = [];
+  function render() {
+    quizEl.innerHTML = Q.map((it, i) => {
+      const done = ans[i] !== undefined;
+      const opts = it.o.map((o, k) => {
+        let cls = "", m = "";
+        if (done) { if (k === it.a) { cls = "right"; m = "✓"; } else if (k === ans[i]) { cls = "wrong"; m = "✕"; } }
+        return `<button type="button" id="q${i}-${k}" data-q="${i}" data-k="${k}" class="${cls}" ${done ? "disabled" : ""}><span class="l">${"ABCD"[k]}</span><span>${o}</span><span class="m" aria-hidden="true">${m}</span></button>`;
+      }).join("");
+      const exp = done ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
+      return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${opts}</div>${exp}</div>`;
+    }).join("");
+    quizEl.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; render(); });
+    if (ans.filter((v) => v !== undefined).length === Q.length) {
+      const ok = Q.filter((it, i) => ans[i] === it.a).length;
+      const best = Math.max(ok, JC.store.get("t3best", 0)); JC.store.set("t3best", best);
+      scoreEl.hidden = false;
+      scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${Q.length}">${ok}/${Q.length}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === Q.length ? "Sempurna. Siap lanjut ke Tahap 4." : ok >= Q.length - 1 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${Q.length}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
+      document.getElementById("quizAgain").onclick = () => { ans = []; scoreEl.hidden = true; render(); quizEl.scrollIntoView({ block: "start" }); };
+    } else scoreEl.hidden = true;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
