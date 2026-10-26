@@ -1064,7 +1064,7 @@ footer { font-size: 1rem; }
       st.w = Math.max(1, r.width) / k; st.h = Math.max(1, r.height) / k;
       cv.width = Math.round(Math.max(1, r.width) * dpr); cv.height = Math.round(Math.max(1, r.height) * dpr);
       ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
-      if (redraw !== false && st.draw) st.draw(ctx, st.w, st.h);
+      if (redraw !== false && st.draw && r.width >= 2 && r.height >= 2) st.draw(ctx, st.w, st.h);
     };
     st.fit = fit;
     fit(false); // ukur dulu; gambar pertama menunggu pemanggil selesai menyimpan st
@@ -1084,6 +1084,9 @@ footer { font-size: 1rem; }
       else if (!vis) { on = false; cancelAnimationFrame(raf); }
     }).observe(el);
   };
+
+  // jalankan langkah awal sebuah gambar tanpa menghentikan gambar lain bila gagal
+  JC.safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
 
   // grup tombol dengan aria-pressed
   JC.seg = function (buttons, attr, cb) {
@@ -1134,7 +1137,7 @@ footer { font-size: 1rem; }
   ];
   const eye = JC.canvas(eyeCv, () => drawEye(), 460);
   function drawEye() {
-    const { ctx, w, h } = eye, P = JC.pal;
+    const { ctx, w, h } = eye, P = JC.pal; if (w < 40 || h < 40) return; // kanvas belum terlihat (ukuran nol): jangan gambar dulu
     ctx.clearRect(0, 0, w, h);
     const cy = h * 0.5, fx = Math.min(w * 0.42, w - 260);
     ctx.lineWidth = 1.4; ctx.strokeStyle = P.ink; ctx.lineJoin = "round";
@@ -1667,6 +1670,7 @@ footer { font-size: 1rem; }
   function draw() {
     readScroll();
     const { ctx, w, h } = st;
+    if (w < 40 || h < 40) return; // panggung belum terlihat
     ctx.clearRect(0, 0, w, h);
     const v = viewAt(model, t), Ls = lens(w, h);
     const s = render(ctx, w, h, model, v, Ls, { dims: true, balloons: 1 - JC.smooth(0.15, 0.7, t), frame: true });
@@ -1707,6 +1711,7 @@ footer { font-size: 1rem; }
   catBtns.forEach((b) => {
     const m = MODELS.find((x) => x.id === b.dataset.cable);
     const th = JC.canvas(b.querySelector("canvas"), (ctx, w, h) => {
+      if (w < 20 || h < 20) return;
       ctx.clearRect(0, 0, w, h);
       const v = { W: m.W0 / 1.38, c: m.c0, near: m.K[0], alpha: () => 1, ring: () => 0, glow: 0 };
       render(ctx, w, h, m, v, { x: w / 2, y: h / 2, L: Math.min(w, h) / 2 - 2 }, { dims: false, balloons: 0, frame: false });
@@ -1744,7 +1749,7 @@ footer { font-size: 1rem; }
 
   const ms = JC.canvas(modeCv, () => drawMode(1));
   function drawMode(time) {
-    const { ctx, w, h } = ms, P = JC.pal;
+    const { ctx, w, h } = ms, P = JC.pal; if (w < 40 || h < 40) return; // kanvas belum terlihat (ukuran nol): jangan gambar dulu
     ctx.clearRect(0, 0, w, h);
     const top = 30, fh = 120, cy = top + fh / 2;
     const coreH = mode === "sm" ? 10 : 48;
@@ -1811,7 +1816,7 @@ footer { font-size: 1rem; }
   }
   distRange.addEventListener("input", updateMode);
   JC.seg([...document.querySelectorAll("[data-mode]")], "mode", (v) => { mode = v; updateMode(); });
-  updateMode();
+  JC.safe(updateMode);
   JC.loop(modeCv, drawMode);
 
   /* ---------- dB ---------- */
@@ -1828,7 +1833,7 @@ footer { font-size: 1rem; }
   }
   dbRange.addEventListener("input", updateDb);
   document.querySelectorAll("[data-db]").forEach((b) => b.addEventListener("click", () => { dbRange.value = parseFloat(b.dataset.db) * 10; updateDb(); }));
-  updateDb();
+  JC.safe(updateDb);
 
   /* ---------- tekukan ---------- */
   const bendCv = el("bendCanvas"), bendRange = el("bendRange"), bendOut = el("bendOut"), bendMsg = el("bendMsg");
@@ -1838,7 +1843,7 @@ footer { font-size: 1rem; }
   const MINR = { "652": 30, "657": 7.5 };
   const bs = JC.canvas(bendCv, () => drawBend(1));
   function drawBend(time) {
-    const { ctx, w, h } = bs, P = JC.pal;
+    const { ctx, w, h } = bs, P = JC.pal; if (w < 40 || h < 40) return; // kanvas belum terlihat (ukuran nol): jangan gambar dulu
     ctx.clearRect(0, 0, w, h);
     const R = +bendRange.value, loss = bendLoss(R), minR = MINR[fiberType];
     const scale = Math.min((h - 56) / 2 / 40, (w * 0.86) / 2 / 40, 9);
@@ -1900,7 +1905,7 @@ footer { font-size: 1rem; }
   }
   bendRange.addEventListener("input", updateBend);
   JC.seg([...document.querySelectorAll("[data-bend]")], "bend", (v) => { fiberType = v; updateBend(); });
-  updateBend();
+  JC.safe(updateBend);
   JC.loop(bendCv, drawBend);
 
   /* ---------- poles ferrule ---------- */
@@ -1927,7 +1932,7 @@ footer { font-size: 1rem; }
     return off;
   }
   function drawPol(time) {
-    const { ctx, w, h } = ps, P = JC.pal;
+    const { ctx, w, h } = ps, P = JC.pal; if (w < 40 || h < 40) return; // kanvas belum terlihat (ukuran nol): jangan gambar dulu
     ctx.clearRect(0, 0, w, h);
     const cy = h / 2, fh = Math.min(110, h * 0.55), ex = w * 0.5;
     ctx.font = "600 14px 'Public Sans', sans-serif"; ctx.lineCap = "butt";
