@@ -1,0 +1,1945 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalur Cahaya Tahap 1</title>
+<meta name="description" content="Modul belajar interaktif teknisi fiber optik Tahap 1: K3, struktur kabel, single-mode vs multimode, kode warna, redaman dB, dan konektor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Public+Sans:ital,wght@0,400..800;1,400..800&display=swap">
+<style>
+/* dasar */
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: lembar datasheet / gambar teknik. Kertas + tinta, gambar di dalam bingkai berkisi,
+   penanda bab memakai urutan kode warna serat (TIA-598). Merah = cahaya VFL & coretan koreksi. */
+:root {
+  --paper: #fafbfb;
+  --paper-2: #eef1f2;
+  --grid: #e3e8ea;
+  --ink: #16191b;
+  --ink-2: #454e54;
+  --ink-3: #737e85;
+  --rule: #c5cdd1;
+  --red: #cf2a1e;
+  --red-ink: #b0231a;
+  --ok: #1b7a3c;
+  --bad: #c42a1f;
+  --warn: #93600a;
+  --iso: #f5c400;
+  --glass: #dcebf1;
+  --glass-2: #b7d3de;
+  --jacket: #33393d;
+  --hatch: rgba(22, 25, 27, .5);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  /* warna penanda bab = kode warna tabung */
+  --c1: #1f6fe0; --c2: #f47b20; --c3: #22a04b; --c4: #8b5a2b; --c5: #8c969c; --c6: #f3f3ef; --c7: #d92b2b;
+  /* satu keluarga sans-serif untuk semua peran; angka memakai tabular-nums, bukan monospace */
+  --font-display: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  /* Garamond untuk judul, Source Serif untuk teks bacaan; label, data, dan gambar tetap sans */
+  --font-serif: "EB Garamond", Garamond, "Times New Roman", serif;
+  --font-read: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+    --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+    --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+  --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+  --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 650; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.5rem, 6.2vw, 4.3rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.02; }
+h2 { font-size: clamp(1.85rem, 4.2vw, 2.7rem); font-weight: 700; letter-spacing: -.025em; }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.1rem; }
+p { margin: 0; }
+a { color: var(--red-ink); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.small { font-size: .875rem; color: var(--ink-3); }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.col { max-width: 880px; margin-inline: auto; }
+.prose { display: grid; gap: .9rem; max-width: 66ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: .35rem; }
+
+/* ---------- rel bab ---------- */
+.rail { position: fixed; left: max(22px, env(safe-area-inset-left, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: none; }
+.rail::before { content: ""; position: absolute; left: 4px; top: 4px; bottom: 4px; width: 1px; background: var(--rule); }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; position: relative; }
+.rail a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink-3); font-size: 13px; }
+.rail a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; transition: transform .15s; }
+.rail a span { background: var(--paper); padding: 1px 6px; opacity: 0; transition: opacity .15s; white-space: nowrap; border: 1px solid var(--rule); }
+.rail:hover a span, .rail a.on span { opacity: 1; }
+.rail a.on { color: var(--ink); }
+.rail a.on i { transform: scale(1.5); }
+.topbar { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 3px; z-index: 20; }
+.topbar i { display: block; height: 100%; width: 0; background: var(--red); }
+@media (min-width: 1200px) { .rail { display: block; } .topbar { display: none; } }
+
+/* ---------- hero: lembar gambar ---------- */
+.hero { padding-block: clamp(36px, 7vw, 80px) 32px; }
+.hero .col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.kicker { font-size: .9375rem; color: var(--ink-2); }
+.kicker b { color: var(--ink); }
+.hero .lede { font-size: 1.25rem; color: var(--ink-2); max-width: 44ch; line-height: 1.5; }
+.sheet { border: 1.5px solid var(--ink); background: var(--paper); }
+.sheet-draw { background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; padding: 18px; overflow-x: auto; }
+.sheet-draw svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.tblock { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; border-top: 1.5px solid var(--ink); }
+.tblock div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; gap: 1px; min-width: 0; }
+.tblock div:first-child { border-left: 0; }
+.tblock small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.tblock b { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+@media (max-width: 620px) { .tblock { grid-template-columns: 1fr 1fr; } .tblock div:nth-child(3) { border-left: 0; } .tblock div:nth-child(n+3) { border-top: 1px solid var(--ink); } }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+
+/* svg gambar teknik */
+.ln { stroke: var(--ink); stroke-width: 1.4; }
+.ln-thin { fill: none; stroke: var(--ink-2); stroke-width: 1; }
+.txt { fill: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+.txt-2 { fill: var(--ink-2); font-family: var(--font-body); font-size: 12.5px; }
+.txt-m { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
+.balloon circle { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.balloon text { fill: var(--ink); font-family: var(--font-display); font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.f-jacket { fill: var(--jacket); }
+.f-glass { fill: var(--glass); }
+.f-glass2 { fill: var(--glass-2); }
+.f-paper { fill: var(--paper); }
+.f-ink { fill: var(--ink); }
+.f-red { fill: var(--red); }
+.s-red { stroke: var(--red); }
+
+/* daftar tahap */
+.stages { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.stages td { padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+.stages td:first-child { font-family: var(--font-display); font-weight: 600; width: 5.5em; color: var(--ink-3); }
+.stages tr.now td { color: var(--ink); font-weight: 700; }
+.stages tr.now td:first-child { color: var(--red-ink); }
+.stages td:last-child { text-align: right; color: var(--ink-3); font-size: .8125rem; white-space: nowrap; }
+
+/* ---------- bab ---------- */
+.chapter { padding-block: clamp(64px, 10vw, 112px) 16px; }
+.chapter-head { display: grid; gap: 14px; margin-bottom: 32px; border-top: 1.5px solid var(--ink); padding-top: 14px; }
+.chapter-no { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); }
+.chapter-no i { width: 34px; height: 8px; border-radius: 4px; background: var(--c); border: 1px solid var(--ink); }
+.block { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 56px; }
+.chapter-head, .sheet-q, .game, .rx, .fig-ctl, .dive-card { grid-template-columns: minmax(0, 1fr); }
+
+/* tabel umum */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .9375rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl thead th { border-bottom: 1.5px solid var(--ink); font-family: var(--font-display); font-weight: 600; font-size: .9375rem; }
+.tbl tbody th { font-weight: 400; color: var(--ink-3); }
+.tbl .sw { display: inline-block; width: 22px; height: 6px; border-radius: 3px; vertical-align: 3px; margin-right: 6px; border: 1px solid var(--ink); }
+.tbl .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- gambar (figure) ---------- */
+.fig { margin: 0; border: 1.5px solid var(--ink); background: var(--paper); }
+.fig-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 8px 10px; border-bottom: 1px solid var(--ink); }
+.fig-bar .lbl { font-size: .875rem; color: var(--ink-2); }
+.fig-draw { position: relative; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; }
+.fig-draw canvas { display: block; width: 100%; }
+.fig-ctl { padding: 12px 14px; border-top: 1px solid var(--ink); display: grid; gap: 12px; }
+.fig + figcaption, .fig figcaption, .cap { font-size: .875rem; color: var(--ink-2); margin-top: 8px; }
+.cap b { font-family: var(--font-display); font-weight: 600; color: var(--ink); margin-right: 6px; }
+.msg { font-size: .9375rem; color: var(--ink-2); }
+.msg strong { color: var(--ink); }
+
+/* kontrol */
+.tabs { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--ink); }
+.tabs button { border: 0; border-left: 1px solid var(--ink); background: var(--paper); padding: 5px 12px; cursor: pointer; font-size: .875rem; }
+.tabs button:first-child { border-left: 0; }
+.tabs button:hover { background: var(--paper-2); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.range { display: grid; gap: 4px; }
+.range label { display: flex; justify-content: space-between; gap: 12px; font-size: .9375rem; color: var(--ink-2); }
+.range output { font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--red); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 9px 16px; border-radius: 2px; cursor: pointer; font-weight: 700; text-decoration: none; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+
+/* label peringatan laser (bentuk stiker asli) */
+.warnlabel { display: flex; gap: 14px; align-items: center; border: 2px solid #111; background: var(--iso); color: #111; padding: 10px 14px; max-width: 560px; }
+.warnlabel svg { flex: none; width: 46px; height: 41px; }
+.warnlabel p { font-family: var(--font-display); font-weight: 600; font-size: 1rem; line-height: 1.25; }
+.warnlabel small { display: block; font-family: var(--font-body); font-weight: 400; font-size: .8125rem; }
+
+/* ---------- K3 ---------- */
+.eye-view { aspect-ratio: 16 / 6.5; min-height: 210px; max-width: 100%; }
+.eye-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sheet-q { border: 1.5px solid var(--ink); padding: 20px; display: grid; gap: 16px; min-height: 220px; align-content: start; }
+.sheet-q .q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; line-height: 1.25; }
+.ticks { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-size: .8125rem; color: var(--ink-3); }
+.ticks i { width: 18px; height: 18px; border: 1px solid var(--ink); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
+.ticks i.r { color: var(--ok); }
+.ticks i.w { color: var(--bad); }
+.ticks i.c { background: var(--ink); }
+.ticks span { margin-left: 8px; }
+.row-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.row-actions .btn { flex: 1 1 140px; }
+.mark { display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 12px; }
+.mark b { font-family: var(--font-display); font-size: 1.15rem; }
+.mark.good b { color: var(--ok); }
+.mark.bad b { color: var(--bad); }
+
+/* ---------- dive (struktur) ---------- */
+.dive { position: relative; }
+.dive-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.dive-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: auto auto; min-width: 230px; }
+.dive-hud div { padding: 6px 10px; display: grid; gap: 0; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); }
+.dive-hud div:nth-child(-n+2) { border-top: 0; }
+.dive-hud div:nth-child(odd) { border-left: 0; }
+.dive-hud small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.dive-hud .wide { grid-column: 1 / -1; }
+.scalebar { display: flex; align-items: center; gap: 8px; }
+.scalebar i { display: block; height: 7px; border: 1.5px solid var(--ink); border-top: 0; }
+.scalebar span { font-family: var(--font-mono); font-size: 12px; }
+.dive-steps { position: relative; margin-top: -100vh; margin-top: -100svh; }
+.dive-step { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; pointer-events: none; }
+.dive-card { pointer-events: auto; max-width: 380px; background: var(--paper); border: 1.5px solid var(--ink); padding: 18px 20px; display: grid; gap: 10px; }
+.dive-card .chapter-no { font-size: .9375rem; }
+.dive-card p { color: var(--ink-2); font-size: .9375rem; line-height: 1.6; }
+.dive-card ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); }
+.dive-card ol li { display: flex; gap: 8px; align-items: center; }
+.dive-card ol b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+.dive-intro { padding-block: clamp(64px, 10vw, 112px) 40px; }
+@media (min-width: 1200px) { .dive-steps { padding-left: 210px; } }
+@media (max-width: 760px) {
+  .dive-step { align-items: flex-end; padding-bottom: 5vh; }
+  .dive-card { max-width: none; width: 100%; padding: 14px 16px; }
+  .dive-hud { min-width: 0; left: max(16px, env(safe-area-inset-left, 0px)); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dive-hud div { border-top: 0; border-left: 1px solid var(--ink); }
+  .dive-hud div:first-child, .dive-hud .wide { display: none; }
+  .dive-hud div:nth-child(2) { border-left: 0; }
+}
+
+/* ---------- SM vs MM ---------- */
+.bits { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 13px; }
+.bits .bitwrap { display: contents; }
+.bits span { width: 26px; text-align: center; padding: 2px 0; border: 1px solid var(--ink); }
+.bits span.err { background: var(--red); border-color: var(--red); color: #fff; }
+.bits .lab { width: 76px; border: 0; text-align: left; font-family: var(--font-body); color: var(--ink-2); }
+
+/* ---------- kode warna ---------- */
+.fan { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+@media (max-width: 600px) { .fan { grid-template-columns: 1fr; } }
+.fan h4 { font-size: 1rem; padding-bottom: 6px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
+.fiber-btn { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: none; padding: 8px 4px; cursor: pointer; }
+.fiber-btn b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; text-align: right; }
+.fiber-btn i { height: 8px; border-radius: 4px; border: 1px solid var(--ink); }
+.fiber-btn span { font-size: .9375rem; min-width: 5.5em; }
+.fiber-btn:hover { background: var(--paper-2); }
+.fiber-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 -2px 0 var(--ink); }
+.fiber-btn.right { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.fiber-btn.wrong { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.finder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+@media (max-width: 760px) { .finder { grid-template-columns: 1fr; } }
+.finder-form { padding: 16px; display: grid; gap: 12px; align-content: start; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .finder-form { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.field { display: grid; gap: 4px; }
+.field label { font-size: .875rem; color: var(--ink-2); }
+.field input, .field select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 8px 10px; font-family: var(--font-mono); font-size: 16px; width: 100%; }
+.finder-result { display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.finder-result .row { display: flex; align-items: center; gap: 10px; }
+.finder-result .chip { width: 30px; height: 8px; border-radius: 4px; border: 1px solid var(--ink); flex: none; }
+.finder-result .formula { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); line-height: 1.75; }
+.finder .fig-draw { display: grid; place-items: center; padding: 14px; }
+.finder svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.game { display: grid; gap: 14px; border: 1.5px solid var(--ink); padding: 18px; }
+.game-q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.game-q .num { font-size: 2.6rem; line-height: 1; color: var(--red-ink); }
+.game-q .chipbig { width: 64px; height: 12px; border-radius: 6px; border: 1px solid var(--ink); display: inline-block; }
+.game-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 18px; }
+
+/* ---------- redaman ---------- */
+.dbbars { padding: 18px 16px 8px; display: grid; gap: 10px; }
+.dbbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 72px; align-items: center; gap: 10px; font-size: .875rem; color: var(--ink-2); }
+.dbbar .track { height: 16px; border: 1px solid var(--ink); background: var(--paper); position: relative; }
+.dbbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--red); transition: width .15s; }
+.dbbar output { font-family: var(--font-mono); color: var(--ink); text-align: right; }
+.db-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.db-stats div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; }
+.db-stats div:first-child { border-left: 0; }
+.db-stats small { font-size: .8125rem; color: var(--ink-3); }
+.db-stats b { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--ink); background: var(--paper); padding: 4px 10px; cursor: pointer; font-size: .8125rem; }
+.chips button:hover { background: var(--paper-2); }
+.formula-line { font-family: var(--font-mono); font-size: .9375rem; border: 1px solid var(--ink); padding: 10px 14px; width: fit-content; max-width: 100%; color: var(--ink); }
+
+.budget { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.bt td, .bt th { vertical-align: middle; }
+.bt td:last-child, .bt th:last-child { text-align: right; }
+.bt tfoot td { border-top: 1.5px solid var(--ink); border-bottom: 0; font-weight: 700; }
+.bt .key { display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: 0; border: 1px solid var(--ink); }
+.bt small { display: block; font-size: .8125rem; color: var(--ink-3); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); }
+.stepper button { border: 0; background: var(--paper); width: 32px; height: 30px; cursor: pointer; font-weight: 700; }
+.stepper button:hover { background: var(--paper-2); }
+.stepper output { min-width: 72px; text-align: center; font-family: var(--font-mono); font-size: 14px; border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); line-height: 30px; }
+.bt select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 5px 8px; font-family: var(--font-mono); font-size: 14px; }
+.rx { display: grid; gap: 16px; border: 1.5px solid var(--ink); padding: 16px; }
+.rx-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.rx-big small { width: 100%; font-size: .875rem; color: var(--ink-3); }
+.rx-big b { font-family: var(--font-mono); font-size: clamp(34px, 7vw, 50px); font-weight: 500; line-height: 1; }
+.verdict { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.verdict.ok { color: var(--ok); } .verdict.warn { color: var(--warn); } .verdict.bad { color: var(--bad); }
+.stack { display: flex; height: 30px; gap: 2px; position: relative; }
+.stack div { height: 100%; min-width: 0; }
+.stack div:first-child { border-radius: 4px 0 0 4px; }
+.stack .margin { background-image: repeating-linear-gradient(135deg, var(--ink-3) 0 1px, transparent 1px 6px); border: 1px dashed var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8125rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border: 1px solid var(--ink); }
+.legend b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
+.scale { position: relative; height: 46px; margin-top: 4px; }
+.scale .zones { position: absolute; left: 0; right: 0; top: 6px; height: 8px; display: flex; gap: 2px; }
+.scale .zones div { height: 100%; }
+.scale .marker { position: absolute; top: -4px; width: 0; height: 26px; border-left: 2px solid var(--ink); transition: left .2s; }
+.scale .marker::before { content: ""; position: absolute; left: -7px; top: -8px; border: 6px solid transparent; border-top-color: var(--ink); }
+.scale .tk { position: absolute; left: 0; right: 0; top: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.scale .tk span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 13px; padding: 5px 9px; font-family: var(--font-mono); white-space: nowrap; }
+
+/* ---------- konektor ---------- */
+.conn { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .conn { grid-template-columns: 1fr; } }
+.conn .fig-draw { display: grid; place-items: center; padding: 16px; min-height: 240px; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .conn .fig-draw { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.conn .fig-draw svg { width: 100%; max-width: 400px; height: auto; }
+.conn-info { padding: 18px; display: grid; gap: 12px; align-content: start; }
+.conn-info h3 { font-size: 2.4rem; }
+.conn-info p { color: var(--ink-2); font-size: .9375rem; }
+.conn-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; margin: 0; font-size: .9375rem; border-top: 1px solid var(--ink); }
+.conn-info dt, .conn-info dd { padding: 6px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+.conn-info dt { color: var(--ink-3); padding-right: 16px; }
+.polish-view { aspect-ratio: 16 / 6.5; min-height: 220px; max-width: 100%; }
+.polish-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---------- kuis ---------- */
+.quiz { display: grid; gap: 0; border-top: 1.5px solid var(--ink); }
+.qitem { padding: 22px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 12px; }
+.qitem h4 { font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; line-height: 1.4; display: flex; gap: 10px; }
+.qitem h4 span { font-family: var(--font-display); font-weight: 600; color: var(--ink-3); flex: none; }
+.opts { display: grid; gap: 6px; padding-left: 28px; }
+.opts button { display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; gap: 10px; align-items: center; text-align: left; border: 0; background: none; padding: 5px 4px; cursor: pointer; line-height: 1.4; }
+.opts button .l { width: 24px; height: 24px; border: 1px solid var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+.opts button:hover:not(:disabled) .l { background: var(--paper-2); }
+.opts button:disabled { cursor: default; }
+.opts button .m { font-weight: 700; font-size: 18px; }
+.opts button.right .l { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opts button.right .m { color: var(--ok); }
+.opts button.wrong .l { background: var(--bad); border-color: var(--bad); color: #fff; }
+.opts button.wrong .m { color: var(--bad); }
+.qexp { font-size: .9375rem; color: var(--ink-2); padding-left: 28px; }
+.score { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; padding: 22px 0; }
+.grade { width: 96px; height: 96px; border: 3px solid var(--red); border-radius: 50%; display: grid; place-items: center; color: var(--red-ink); font-family: var(--font-display); font-weight: 700; font-size: 2rem; transform: rotate(-8deg); flex: none; }
+.next { margin-top: 56px; border: 1.5px dashed var(--ink-3); padding: 18px 20px; display: grid; gap: 6px; color: var(--ink-2); }
+footer { padding-block: 40px 56px; color: var(--ink-3); font-size: .875rem; }
+footer .col { border-top: 1.5px solid var(--ink); padding-top: 14px; }
+
+/* ---------- ponsel ---------- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, input, select { touch-action: manipulation; }
+.bm, .hero-legend { display: none; }
+.balloon.big circle { stroke-width: 1.6; }
+.balloon.big text { font-size: 24px; }
+@media (max-width: 640px) {
+  .sheet-draw { padding: 8px; overflow: visible; }
+  .sheet-draw svg { min-width: 0; }
+  .bd { display: none; }
+  .bm { display: inline; }
+  .hero-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; list-style: none; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ink); font-size: .9375rem; color: var(--ink-2); }
+  .hero-legend li { display: flex; gap: 8px; align-items: center; }
+  .hero-legend b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+}
+@media (max-width: 760px) {
+  .dive-stage { height: 56vh; height: 56svh; z-index: 2; }
+  .dive-steps { margin-top: 0; z-index: 1; }
+  .dive-step { min-height: 72vh; min-height: 72svh; align-items: center; padding-block: 12px; }
+  .dive-card { padding: 14px 16px; gap: 8px; }
+  .dive-card h3 { font-size: 1.3rem; }
+  .dive-card ol { grid-template-columns: 1fr 1fr; }
+  .dive-hud { top: 10px; }
+  .dive-hud b { font-size: 1rem; }
+}
+@media (max-width: 600px) {
+  .fig-bar { padding: 8px; }
+  .fig-bar .lbl { width: 100%; }
+  .fig-bar .tabs, .dive-card .tabs { display: flex; width: 100%; }
+  .fig-bar .tabs button, .dive-card .tabs button { flex: 1 1 0; padding-inline: 6px; }
+  .fig-ctl { padding: 12px; }
+  .tbl.rs { min-width: 0; }
+  .tbl.rs thead { display: none; }
+  .tbl.rs tr { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .tbl.rs th, .tbl.rs td { display: block; padding: 0; border: 0; }
+  .tbl.rs tbody th { color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .tbl.rs td[data-label]::before { content: attr(data-label); display: block; font-size: .8125rem; color: var(--ink-3); }
+  .bt { min-width: 0; }
+  .bt thead { display: none; }
+  .bt tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .bt td { border: 0; padding: 0; }
+  .bt td:first-child { grid-row: span 2; }
+  .bt td:nth-child(3) { grid-column: 2; text-align: right; font-size: .8125rem; color: var(--ink-3); padding-top: 4px; }
+  .bt tfoot tr { border-bottom: 0; border-top: 1.5px solid var(--ink); }
+  .bt tfoot td { border: 0; }
+  .bt tfoot td:nth-child(2) { display: none; }
+  .bt tfoot td:nth-child(3) { grid-row: 1; color: var(--ink); font-size: 1rem; padding: 0; }
+  .rx { padding: 14px; }
+  .opts, .qexp { padding-left: 0; }
+  .sheet-q, .game { padding: 16px; }
+  .sheet-q .q, .game-q { font-size: 1.3rem; }
+  .conn svg .txt-2 { font-size: 15px; }
+  .db-stats div { padding: 8px; }
+  .db-stats b { font-size: 1.1rem; }
+  .dbbar { grid-template-columns: 52px minmax(0, 1fr) 54px; }
+}
+@media (pointer: coarse) {
+  .tabs button { min-height: 44px; }
+  .stepper button { width: 42px; height: 40px; }
+  .stepper output { line-height: 40px; min-width: 64px; }
+  .chips button { min-height: 40px; padding-inline: 12px; }
+  .btn { min-height: 46px; }
+  .opts button { padding-block: 8px; }
+  input[type="range"] { height: 34px; }
+  .bt select, .field select, .field input { font-size: 16px; min-height: 40px; }
+}
+
+/* angka sejajar kolom tanpa font monospace */
+.range output, .bits, .field input, .finder-result .formula, .db-stats b, .dbbar output, .formula-line, .stepper output,
+.bt select, .rx-big b, .legend b, .scale .tk, .tip, .scalebar span, .dive-hud b, .tblock b, .fiber-btn b, .game-q .num, .grade, .tbl .num { font-variant-numeric: tabular-nums; }
+.rx-big b { font-weight: 650; letter-spacing: -.02em; }
+.db-stats b, .range output, .stepper output { font-weight: 600; }
+.conn-info h3 { font-weight: 750; letter-spacing: -.02em; }
+
+/* ---------- Garamond untuk judul, Source Serif 4 untuk teks bacaan ---------- */
+h1, h2, h3, h4, .sheet-q .q, .game-q, .qitem h4 { font-family: var(--font-serif); font-variant-numeric: lining-nums; }
+.prose, .lede, .dive-card p, .msg, .qexp, .conn-info p, .mark, .next p, footer, .cap {
+  font-family: var(--font-read); font-variant-numeric: lining-nums; font-optical-sizing: auto;
+}
+h1 { font-size: clamp(2.9rem, 7.4vw, 5.2rem); font-weight: 500; letter-spacing: -.015em; line-height: 1; }
+h2 { font-size: clamp(2.1rem, 4.8vw, 3.1rem); font-weight: 500; letter-spacing: -.01em; line-height: 1.05; }
+h3 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; }
+h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
+.conn-info h3 { font-size: 2.6rem; font-weight: 600; letter-spacing: 0; }
+.prose { font-size: 1.125rem; line-height: 1.62; }
+.hero .lede { font-size: 1.3rem; line-height: 1.5; }
+.msg, .dive-card p, .conn-info p, .qexp, .mark { font-size: 1rem; line-height: 1.58; }
+.cap { font-size: .9375rem; font-style: italic; }
+.cap b { font-style: normal; font-weight: 600; }
+.sheet-q .q, .game-q { font-size: 1.6rem; font-weight: 500; line-height: 1.2; }
+.qitem h4 { font-size: 1.3rem; font-weight: 600; line-height: 1.3; }
+.qitem h4 span { font-family: var(--font-serif); }
+.mark b { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; }
+.prose .mono, .msg .mono { font-family: var(--font-mono); font-size: .92em; }
+footer { font-size: 1rem; }
+@media (max-width: 600px) {
+  .prose { font-size: 1.0625rem; }
+  .sheet-q .q, .game-q { font-size: 1.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<nav class="rail" aria-label="Bagian Tahap 1">
+  <ol>
+    <li><a href="#k3" style="--c:var(--c1)"><i></i><span>1.1 K3</span></a></li>
+    <li><a href="#struktur" style="--c:var(--c2)"><i></i><span>1.2 Struktur kabel</span></a></li>
+    <li><a href="#mode" style="--c:var(--c3)"><i></i><span>1.3 Single-mode &amp; multimode</span></a></li>
+    <li><a href="#warna" style="--c:var(--c4)"><i></i><span>1.4 Kode warna</span></a></li>
+    <li><a href="#redaman" style="--c:var(--c5)"><i></i><span>1.5 Redaman</span></a></li>
+    <li><a href="#konektor" style="--c:var(--c6)"><i></i><span>1.6 Konektor</span></a></li>
+    <li><a href="#kuis" style="--c:var(--c7)"><i></i><span>Cek pemahaman</span></a></li>
+  </ol>
+</nav>
+
+<header class="hero wrap">
+  <div class="col">
+    <p class="kicker"><b>Jalur Cahaya</b> · modul pelatihan teknisi fiber optik</p>
+    <h1>K3 &amp; teori dasar</h1>
+    <p class="lede">Sebelum memegang splicer, kenali dulu bahayanya, isi kabelnya, dan cara cahaya berjalan di dalam kaca setipis rambut. Gambar yang punya tombol atau penggeser bisa kamu mainkan.</p>
+
+    <div class="sheet">
+      <div class="sheet-draw">
+        <svg viewBox="0 0 960 250" role="img" aria-label="Kabel loose tube yang dikupas bertahap: jaket luar, benang aramid, tabung, batang FRP, serat berwarna, dan kaca">
+          <defs>
+            <pattern id="yarn" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(32)"><rect width="7" height="7" fill="#d8b562"/><path d="M0 3.5H7" stroke="#a5843a" stroke-width="1.3"/></pattern>
+          </defs>
+          <!-- jaket -->
+          <rect x="20" y="82" width="340" height="76" class="f-jacket"/>
+          <path d="M20 82 H360 M20 158 H360" class="ln"/>
+          <path d="M20 82 C 34 100, 6 120, 20 140 S 30 152, 20 158" class="ln" style="fill:var(--paper)"/>
+          <ellipse cx="360" cy="120" rx="8" ry="38" class="f-jacket ln"/>
+          <text x="70" y="124" style="fill:#e9eef0;opacity:.75;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em">SM G.652D 72C · 2026 · 0347 M</text>
+          <!-- aramid -->
+          <rect x="360" y="89" width="92" height="62" fill="url(#yarn)" class="ln"/>
+          <!-- FRP dan tabung -->
+          <rect x="452" y="113" width="114" height="14" rx="7" fill="#4b5156" class="ln"/>
+          <rect x="452" y="92" width="150" height="18" rx="3" fill="#1f6fe0" class="ln"/>
+          <rect x="452" y="130" width="96" height="18" rx="3" fill="#f47b20" class="ln"/>
+          <!-- serat keluar dari tabung biru -->
+          <g fill="none" stroke-linecap="round">
+            <path d="M600 105 C 640 105, 652 126, 704 128" style="stroke:var(--ink)" stroke-width="6"/><path d="M600 105 C 640 105, 652 126, 704 128" stroke="#8b5a2b" stroke-width="4"/>
+            <path d="M600 103 C 646 103, 664 108, 724 109" style="stroke:var(--ink)" stroke-width="6"/><path d="M600 103 C 646 103, 664 108, 724 109" stroke="#22a04b" stroke-width="4"/>
+            <path d="M600 101 C 648 101, 668 88, 742 88" style="stroke:var(--ink)" stroke-width="6"/><path d="M600 101 C 648 101, 668 88, 742 88" stroke="#f47b20" stroke-width="4"/>
+            <path d="M600 99 C 650 99, 660 70, 720 70 L 800 70" style="stroke:var(--ink)" stroke-width="6.5"/><path d="M600 99 C 650 99, 660 70, 720 70 L 800 70" stroke="#1f6fe0" stroke-width="4.5"/>
+            <path d="M800 70 H880" style="stroke:var(--ink)" stroke-width="3.6"/><path d="M800 70 H880" class="s-glass" style="stroke:var(--glass)" stroke-width="2"/>
+            <path d="M884 70 l18 -7 M884 70 h20 M884 70 l18 7" class="s-red" style="stroke:var(--red)" stroke-width="1.5"/>
+          </g>
+          <circle cx="881" cy="70" r="2.4" class="f-red"/>
+          <!-- balon -->
+          <g class="ln-thin bd"><path d="M170 84 V48"/><path d="M470 92 V48"/><path d="M700 70 L660 48"/><path d="M850 70 L895 46"/><path d="M405 151 V202"/><path d="M520 127 L590 202"/></g>
+          <g class="balloon bd"><circle cx="170" cy="34" r="12"/><text x="170" y="34">1</text><circle cx="470" cy="34" r="12"/><text x="470" y="34">3</text><circle cx="650" cy="34" r="12"/><text x="650" y="34">5</text><circle cx="905" cy="34" r="12"/><text x="905" y="34">6</text><circle cx="405" cy="216" r="12"/><text x="405" y="216">2</text><circle cx="600" cy="216" r="12"/><text x="600" y="216">4</text></g>
+          <g class="txt bd"><text x="188" y="39">Jaket luar</text><text x="488" y="39">Tabung + gel</text><text x="668" y="39">Coating 250 µm</text><text x="887" y="39" text-anchor="end">Kaca 125 µm</text><text x="423" y="221">Benang aramid</text><text x="618" y="221">Batang FRP</text></g>
+          <g class="bm">
+            <g class="ln-thin"><path d="M300 84 L292 62"/><path d="M510 92 L502 62"/><path d="M712 70 L702 62"/><path d="M850 70 L866 62"/><path d="M405 151 V194"/><path d="M530 127 L592 196"/></g>
+            <g class="balloon big"><circle cx="290" cy="40" r="22"/><text x="290" y="41">1</text><circle cx="500" cy="40" r="22"/><text x="500" y="41">3</text><circle cx="700" cy="40" r="22"/><text x="700" y="41">5</text><circle cx="872" cy="40" r="22"/><text x="872" y="41">6</text><circle cx="405" cy="216" r="22"/><text x="405" y="217">2</text><circle cx="600" cy="216" r="22"/><text x="600" y="217">4</text></g>
+          </g>
+        </svg>
+      </div>
+      <ol class="hero-legend" aria-hidden="true"><li><b>1</b>Jaket luar</li><li><b>2</b>Benang aramid</li><li><b>3</b>Tabung + gel</li><li><b>4</b>Batang FRP</li><li><b>5</b>Coating 250 µm</li><li><b>6</b>Kaca 125 µm</li></ol>
+      <div class="tblock">
+        <div><small>Judul</small><b>K3 &amp; teori dasar</b></div>
+        <div><small>Tahap</small><b>1 dari 7</b></div>
+        <div><small>Durasi</small><b>±45 menit</b></div>
+        <div><small>Isi</small><b>6 bagian + kuis</b></div>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:-12px"><b>Gambar 0</b> Kabel loose tube yang dikupas bertahap. Bagian 1.2 membahas tiap lapisan dari luar sampai ke core.</p>
+    <div class="hero-actions"><a class="btn primary" href="#k3">Mulai dari K3</a><span class="small">Cahaya di dalam kaca merambat <span class="mono">±204.000 km/detik</span>.</span></div>
+
+    <table class="stages" aria-label="Tujuh tahap pelatihan">
+      <tr class="now"><td>Tahap 1</td><td>K3 &amp; teori</td><td>sedang dibaca</td></tr>
+      <tr><td>Tahap 2</td><td>Pengenalan alat</td><td>berikutnya</td></tr>
+      <tr><td>Tahap 3</td><td>Praktik persiapan</td><td></td></tr>
+      <tr><td>Tahap 4</td><td>Penyambungan &amp; finishing</td><td></td></tr>
+      <tr><td>Tahap 5</td><td>Pengukuran</td><td></td></tr>
+      <tr><td>Tahap 6</td><td>Troubleshooting &amp; perawatan</td><td></td></tr>
+      <tr><td>Tahap 7</td><td>Aplikasi lapangan</td><td></td></tr>
+    </table>
+  </div>
+</header>
+
+<main>
+<!-- ================= 1.1 K3 ================= -->
+<section class="chapter wrap" id="k3" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c1)"><i></i>1.1 · Keselamatan kerja</p>
+      <h2>Sebelum menyentuh kabel</h2>
+      <div class="prose"><p>Kerja fiber optik kelihatan bersih dan ringan, tapi ada bahaya yang sering diremehkan: <strong>cahaya laser yang tidak terlihat</strong>, <strong>serpihan kaca yang hampir tidak kelihatan</strong>, dan <strong>bahaya tempat kerja</strong> seperti ketinggian, listrik, jalan raya, dan bahan kimia.</p></div>
+      <div class="warnlabel" role="note">
+        <svg viewBox="0 0 46 41" aria-hidden="true"><path d="M23 3 L43.5 38.5 H2.5 Z" fill="#f5c400" stroke="#111" stroke-width="3" stroke-linejoin="round"/><circle cx="17" cy="28" r="3" fill="#111"/><path d="M17 28 H36 M17 21.5 V24 M17 32 V34.5 M10.5 28 H13 M12.4 23.4 l1.8 1.8 M21.6 32.6 l-1.8 -1.8 M12.4 32.6 l1.8 -1.8 M21.6 23.4 l-1.8 1.8" stroke="#111" stroke-width="1.8"/></svg>
+        <p>Radiasi laser. Jangan menatap berkas atau melihat langsung dengan alat optik.<small>Label ini ada di OTDR, VFL, dan port perangkat aktif seperti OLT.</small></p>
+      </div>
+    </div>
+
+    <div class="block" style="margin-top:36px">
+      <h3>Cahaya yang tidak bisa kamu lihat</h3>
+      <div class="prose"><p>Jaringan FTTH memakai panjang gelombang <strong>1310, 1490, dan 1550 nm</strong>. Semuanya inframerah. Mata tidak melihat apa-apa dan refleks berkedip tidak terjadi, padahal retina tetap terkena.</p></div>
+      <div>
+        <figure class="fig">
+          <div class="fig-bar">
+            <span class="lbl">Ujung patchcord dari port OLT</span>
+            <div class="tabs" role="group" aria-label="Cara melihat">
+              <button type="button" id="eye-0" data-eye="0" aria-pressed="true">Mata telanjang</button>
+              <button type="button" id="eye-1" data-eye="1" aria-pressed="false">Yang sebenarnya</button>
+              <button type="button" id="eye-2" data-eye="2" aria-pressed="false">Diukur OPM</button>
+            </div>
+          </div>
+          <div class="fig-draw eye-view"><canvas id="eyeCanvas"></canvas></div>
+          <div class="fig-ctl"><p class="msg" id="eyeMsg" aria-live="polite"></p></div>
+        </figure>
+        <p class="cap"><b>Gambar 1.1</b> Konektor SC/UPC yang tersambung ke OLT, dilihat dari samping.</p>
+      </div>
+      <div class="prose">
+        <p><strong>Aturannya:</strong></p>
+        <ul>
+          <li>Anggap semua serat hidup.</li>
+          <li>Jangan pernah mengintip ujung konektor atau serat. Untuk memastikan ada cahaya, pakai power meter (OPM).</li>
+          <li>Untuk memeriksa kebersihan ujung konektor, pakai inspection scope, sebaiknya tipe video.</li>
+          <li>Arahkan ujung serat menjauh dari wajahmu dan orang lain.</li>
+          <li>VFL (laser merah 650 nm) memang terlihat, tetapi tetap jangan ditatap langsung.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Serpihan kaca: kecil, bening, tajam</h3>
+      <div class="prose">
+        <p>Setiap kali memotong serat (cleaving) ada sisa potongan kaca berdiameter 125 µm sepanjang 1–2 cm. Potongan ini bening, sangat tajam, gampang menusuk kulit, dan susah dicabut karena hampir tidak terlihat. Kalau tertelan atau kena mata, bahayanya jauh lebih besar.</p>
+        <p>Coba tebak: aman atau bahaya?</p>
+      </div>
+      <div id="sortGame"></div>
+    </div>
+
+    <div class="block">
+      <h3>APD sesuai tempat kerja</h3>
+      <div class="prose"><p>Di meja splicing fokusnya mata dan serpihan. Di lapangan, bahaya terbesar justru jatuh, tersengat listrik, dan tertabrak kendaraan.</p></div>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Tempat kerja</th><th>APD &amp; kebiasaan</th><th>Alasannya</th></tr></thead>
+          <tbody>
+            <tr><th>Meja splicing</th><td>Kacamata safety, alas kerja gelap, wadah serpihan bertutup, selotip</td><td>Serpihan bening jadi kelihatan di alas gelap dan tidak tercecer.</td></tr>
+            <tr><th>Meja splicing</th><td>Alkohol IPA dalam botol tertutup</td><td>Mudah terbakar dan cepat menguap. Jauhkan dari api, pastikan ada ventilasi.</td></tr>
+            <tr><th>Tiang &amp; ketinggian</th><td>Helm, full body harness, tangga yang berdiri stabil</td><td>Dipasang sebelum naik, walau cuma sebentar.</td></tr>
+            <tr><th>Dekat jaringan listrik</th><td>Jaga jarak dari kabel PLN</td><td>Kabel fiber sering satu tiang dengan kabel listrik. Jangan sentuh kabel yang bukan milikmu.</td></tr>
+            <tr><th>Pinggir jalan</th><td>Rompi reflektif, kerucut lalu lintas</td><td>Pengendara harus melihatmu dari jauh. Pasang rambu sebelum mulai.</td></tr>
+            <tr><th>Lapangan</th><td>Sepatu safety, sarung tangan</td><td>Untuk menarik kabel dan membuka closure. Lepas sarung tangan tebal saat memegang serat.</td></tr>
+            <tr><th>Manhole / bak kontrol</th><td>Buka penutup, tunggu udara bersirkulasi</td><td>Ruang tertutup bisa berisi gas. Jangan masuk sendirian.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1.2 STRUKTUR ================= -->
+<section class="dive" id="struktur" data-chapter>
+  <div class="dive-intro wrap">
+    <div class="col chapter-head" style="margin-bottom:0">
+      <p class="chapter-no" style="--c:var(--c2)"><i></i>1.2 · Struktur kabel &amp; core</p>
+      <h2>Masuk ke dalam kabel</h2>
+      <div class="prose"><p>Kita potong melintang sebuah kabel duct 72 core, lalu masuk lapis demi lapis sampai ke tempat cahaya berjalan. Semua lapisan digambar dengan perbandingan ukuran yang sebenarnya. Perhatikan <strong>skala</strong> dan <strong>lebar pandang</strong> di kotak kanan atas: dari milimeter turun ke mikrometer (1 mm = 1.000 µm).</p></div>
+    </div>
+  </div>
+  <div class="dive-scroll">
+    <div class="dive-stage">
+      <canvas id="diveCanvas" aria-label="Penampang kabel fiber optik yang diperbesar sesuai posisi gulir" role="img"></canvas>
+      <div class="dive-hud" aria-live="polite">
+        <div><small>Tampilan</small><b id="diveView">Potongan A–A</b></div>
+        <div><small>Skala</small><b id="diveScale" class="mono">13:1</b></div>
+        <div><small>Lebar pandang</small><b id="diveW">12,5 mm</b></div>
+        <div><small>Lapisan</small><b id="diveLayer">Kabel utuh</b></div>
+        <div class="wide"><div class="scalebar"><i id="scaleBar" style="width:60px"></i><span id="scaleLabel">2 mm</span></div></div>
+      </div>
+    </div>
+    <div class="dive-steps wrap">
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Ø 10 mm · kabel utuh</p><h3>Penampang kabel</h3><p>Kabel loose tube untuk duct. Ada 6 tabung, tiap tabung berisi 12 serat, jadi totalnya 72 core.</p><ol><li><b>1</b>Jaket luar</li><li><b>2</b>Benang aramid</li><li><b>3</b>Tabung berisi gel</li><li><b>4</b>Serat</li><li><b>5</b>Batang FRP</li></ol><p>Gulir untuk masuk.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 1</p><h3>Jaket luar (sheath)</h3><p>Plastik PE hitam setebal ±1,2 mm. Pelindung pertama dari air, sinar UV matahari, dan gesekan waktu kabel ditarik di dalam pipa. Pada gambar, bagian yang terpotong diberi arsir.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 2</p><h3>Penguat (strength member)</h3><p>Batang FRP di tengah dan benang aramid (kevlar) di bawah jaket. Bagian inilah yang menahan tarikan, bukan kacanya. Waktu menarik atau menggantung kabel, beban harus jatuh ke penguat.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 3</p><h3>Tabung (loose tube)</h3><p>Diameter ±2,2 mm, berisi gel anti-air. Seratnya dibiarkan longgar supaya tidak tertekan saat kabel memuai atau menyusut. Warna tabung ikut kode warna: tabung pertama biru.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 4</p><h3>Coating 250 µm</h3><p>Lapisan plastik akrilat berwarna yang membungkus kaca. Di sinilah kode warna core berada. Coating dikupas sebelum serat disambung. Kabel indoor sering diberi lapisan tambahan (tight buffer) sampai 900 µm.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 5</p><h3>Cladding 125 µm</h3><p>Ini sudah kaca. Indeks biasnya sedikit lebih rendah dari core, sehingga cahaya yang menyentuh batasnya dipantulkan kembali ke core. Ukurannya sama untuk single-mode dan multimode, kira-kira setebal 1–2 helai rambut.</p></div></div>
+      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Pusat</p><h3>Core, jalan cahaya</h3><p>Seluruh data berjalan di lingkaran kecil ini. Warna merah menandai cahaya. Bandingkan ukurannya:</p>
+        <div class="tabs" role="group" aria-label="Jenis core">
+          <button type="button" id="core-sm" data-core="9" aria-pressed="true">SM 9 µm</button>
+          <button type="button" id="core-mm50" data-core="50" aria-pressed="false">MM 50 µm</button>
+          <button type="button" id="core-mm62" data-core="62.5" aria-pressed="false">MM 62,5 µm</button>
+        </div>
+        <p id="coreNote" aria-live="polite">Single-mode: core ±9 µm. Hanya satu jalur cahaya. Dipakai di FTTH.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1.3 SM vs MM ================= -->
+<section class="chapter wrap" id="mode" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c3)"><i></i>1.3 · Single-mode &amp; multimode</p>
+      <h2>Satu jalur atau banyak jalur</h2>
+      <div class="prose">
+        <p>Bedanya ada di ukuran core. Core <strong>single-mode (SM)</strong> sangat kecil, sehingga cahaya hanya punya satu jalur. Core <strong>multimode (MM)</strong> lebih besar, sehingga cahaya bisa masuk dengan banyak sudut: ada yang lurus, ada yang memantul zig-zag.</p>
+        <p>Jalur zig-zag lebih panjang, jadi cahayanya tiba lebih lambat. Pulsa yang tadinya tajam jadi melebar. Kalau jaraknya terlalu jauh, pulsa saling menimpa dan data salah terbaca. Geser jaraknya dan lihat sendiri.</p>
+      </div>
+    </div>
+    <figure class="fig">
+      <div class="fig-bar">
+        <span class="lbl">Tampak samping serat, data 10 Gbps</span>
+        <div class="tabs" role="group" aria-label="Jenis serat">
+          <button type="button" id="mode-sm" data-mode="sm" aria-pressed="true">Single-mode</button>
+          <button type="button" id="mode-mm" data-mode="mm" aria-pressed="false">Multimode</button>
+        </div>
+      </div>
+      <div class="fig-draw"><canvas id="modeCanvas" style="height:330px" aria-label="Animasi cahaya di dalam core dan sinyal yang diterima" role="img"></canvas></div>
+      <div class="fig-ctl">
+        <div class="range"><label for="distRange">Jarak kabel <output id="distOut">500 m</output></label><input type="range" id="distRange" min="0" max="1000" value="520"></div>
+        <div class="bits"><span class="lab">Dikirim</span><span id="bitsIn" class="bitwrap"></span></div>
+        <div class="bits"><span class="lab">Diterima</span><span id="bitsOut" class="bitwrap"></span></div>
+        <p class="msg" id="modeMsg" aria-live="polite"></p>
+      </div>
+    </figure>
+    <p class="cap"><b>Gambar 1.3</b> Disederhanakan. Kabel multimode modern (OM3/OM4) memakai core graded-index sehingga jalurnya melengkung, bukan zig-zag, tetapi prinsipnya sama.</p>
+
+    <div class="block">
+      <h3>Perbandingan cepat</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th></th><th>Single-mode</th><th>Multimode</th></tr></thead>
+          <tbody>
+            <tr><th>Diameter core</th><td class="num">±9 µm</td><td class="num">50 atau 62,5 µm</td></tr>
+            <tr><th>Diameter cladding</th><td class="num">125 µm</td><td class="num">125 µm</td></tr>
+            <tr><th>Panjang gelombang</th><td class="num">1310 · 1490 · 1550 nm</td><td class="num">850 · 1300 nm</td></tr>
+            <tr><th>Sumber cahaya</th><td>Laser</td><td>VCSEL / LED</td></tr>
+            <tr><th>Jangkauan</th><td>Puluhan km (GPON sampai 20 km)</td><td>Ratusan meter (±300–400 m di 10 Gbps, OM3/OM4)</td></tr>
+            <tr><th>Warna jaket patchcord</th><td><span class="sw" style="background:#f2c500"></span>Kuning</td><td><span class="sw" style="background:#f07a1a"></span>Oranye (OM1/OM2)<br><span class="sw" style="background:#2fc6c6"></span>Aqua (OM3/OM4)<br><span class="sw" style="background:#8e5bd1"></span>Ungu (OM4, sebagian pabrikan)<br><span class="sw" style="background:#9bd13a"></span>Hijau limau (OM5)</td></tr>
+            <tr><th>Standar</th><td class="num">G.652D, G.657A1/A2</td><td class="num">OM1 – OM5</td></tr>
+            <tr><th>Dipakai di</th><td>FTTH, backbone, antar-STO</td><td>LAN gedung, data center</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose"><p><strong>Untuk FTTH hampir selalu single-mode.</strong> Jangan menyambung SM dengan MM: core-nya beda ukuran, jadi sebagian besar cahaya hilang.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1.4 KODE WARNA ================= -->
+<section class="chapter wrap" id="warna" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c4)"><i></i>1.4 · Kode warna</p>
+      <h2>12 warna yang wajib hafal</h2>
+      <div class="prose">
+        <p>Core dan tabung dibedakan dengan warna, bukan label. Urutannya mengikuti standar <strong>TIA-598</strong> dan berlaku sama untuk core maupun tabung. Salah urutan berarti salah sambung, dan pelanggan yang salah jadi mati.</p>
+        <p>Penanda bab di halaman ini memakai urutan yang sama: 1.1 biru, 1.2 oranye, 1.3 hijau, 1.4 cokelat, dan seterusnya. Hafalkan per enam, lalu klik salah satu warna.</p>
+      </div>
+    </div>
+    <div class="fan" id="fan"></div>
+    <p class="msg" id="swNote" style="margin-top:14px" aria-live="polite">Pilih salah satu warna.</p>
+    <p class="small" style="margin-top:8px">Kalau satu tabung berisi lebih dari 12 core, warna diulang dengan tambahan garis atau cincin hitam (core hitam diberi garis kuning). Beberapa pabrikan memakai urutan lain, jadi selalu cek datasheet kabel.</p>
+
+    <div class="block">
+      <h3>Core nomor sekian ada di mana?</h3>
+      <div class="prose"><p>Nomor core dihitung berurutan mulai dari tabung pertama. Isi jumlah tabung, isi tiap tabung, dan nomor core yang dicari.</p></div>
+      <div>
+        <figure class="fig finder">
+          <div class="finder-form">
+            <div class="field"><label for="fTubes">Jumlah tabung</label><select id="fTubes"></select></div>
+            <div class="field"><label for="fPer">Core per tabung</label><select id="fPer"><option>4</option><option>6</option><option>8</option><option selected>12</option></select></div>
+            <div class="field"><label for="fNum">Nomor core</label><input id="fNum" type="number" inputmode="numeric" min="1" value="30"></div>
+            <div class="finder-result" id="fResult" aria-live="polite"></div>
+          </div>
+          <div class="fig-draw"><svg id="fSvg" viewBox="-120 -120 240 240" role="img" aria-label="Penampang kabel dengan tabung dan core yang dicari ditandai"></svg></div>
+        </figure>
+        <p class="cap"><b>Gambar 1.4</b> Potongan kabel. Tabung dan core yang dicari diberi tanda merah.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Latihan cepat</h3>
+      <div class="game" id="colorGame"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1.5 REDAMAN ================= -->
+<section class="chapter wrap" id="redaman" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c5)"><i></i>1.5 · Redaman</p>
+      <h2>Berapa banyak cahaya yang hilang</h2>
+      <div class="prose"><p>Cahaya selalu melemah sepanjang perjalanan. Kehilangan ini disebut <strong>redaman</strong> (loss) dan diukur dalam <strong>desibel (dB)</strong>. Tugas teknisi adalah menjaga redaman serendah mungkin supaya cahaya yang sampai ke ONT pelanggan masih cukup kuat.</p></div>
+    </div>
+
+    <div class="block" style="margin-top:0">
+      <h3>dB itu skala, bukan persen</h3>
+      <div>
+        <figure class="fig">
+          <div class="fig-draw">
+            <div class="dbbars">
+              <div class="dbbar"><span>Masuk</span><div class="track"><div class="fill" style="width:100%"></div></div><output>100%</output></div>
+              <div class="dbbar"><span>Keluar</span><div class="track"><div class="fill" id="dbFill" style="width:50%"></div></div><output id="dbPct">50%</output></div>
+            </div>
+          </div>
+          <div class="db-stats">
+            <div><small>Redaman</small><b id="dbOut">3,0 dB</b></div>
+            <div><small>Kira-kira tersisa</small><b id="dbFrac">½</b></div>
+            <div><small>Yang hilang</small><b id="dbLost">50%</b></div>
+          </div>
+          <div class="fig-ctl">
+            <div class="range"><label for="dbRange">Geser redamannya <output id="dbOut2">3,0 dB</output></label><input type="range" id="dbRange" min="0" max="300" value="30"></div>
+            <div class="chips" aria-label="Contoh cepat"><button type="button" data-db="3">3 dB ≈ separuh</button><button type="button" data-db="10">10 dB = 1/10</button><button type="button" data-db="20">20 dB = 1/100</button><button type="button" data-db="0.1">0,1 dB = sambungan bagus</button></div>
+          </div>
+        </figure>
+        <p class="cap"><b>Gambar 1.5a</b> Panjang batang sebanding dengan daya cahaya.</p>
+      </div>
+      <div class="prose"><p>Kenapa repot pakai dB? Karena redaman tiap komponen <strong>tinggal dijumlahkan</strong>. Kabel 2,1 dB + sambungan 0,3 dB + splitter 10,5 dB = 12,9 dB. Kalau pakai persen, kamu harus mengalikan satu per satu.</p></div>
+    </div>
+
+    <div class="block">
+      <h3>dBm: ukuran kekuatan cahaya</h3>
+      <div class="prose"><p><strong>dB</strong> menyatakan selisih. <strong>dBm</strong> menyatakan daya, dibandingkan dengan 1 miliwatt. Angka dBm yang dibaca OPM di rumah pelanggan biasanya negatif, karena dayanya jauh di bawah 1 mW.</p></div>
+      <div class="tbl-wrap">
+        <table class="tbl" style="min-width:0">
+          <thead><tr><th>dBm</th><th>Daya</th><th>Contoh</th></tr></thead>
+          <tbody>
+            <tr><td class="num">+3</td><td class="num">2 mW</td><td>Keluaran port OLT GPON</td></tr>
+            <tr><td class="num">0</td><td class="num">1 mW</td><td>Titik acuan</td></tr>
+            <tr><td class="num">−3</td><td class="num">0,5 mW</td><td>Setengah dari 0 dBm</td></tr>
+            <tr><td class="num">−10</td><td class="num">0,1 mW</td><td></td></tr>
+            <tr><td class="num">−20</td><td class="num">0,01 mW</td><td>Kisaran yang sehat di ONT</td></tr>
+            <tr><td class="num">−27</td><td class="num">0,002 mW</td><td>Batas baca ONT GPON kelas B+</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="formula-line">Daya terima (dBm) = Daya kirim (dBm) − Total redaman (dB)</p>
+      <div class="prose"><p>Contoh: OLT mengirim +3 dBm, total redaman jalur 23 dB, maka ONT menerima −20 dBm.</p></div>
+    </div>
+
+    <div class="block">
+      <h3>Dari mana redaman datang</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Sumber</th><th>Patokan</th><th>Catatan</th></tr></thead>
+          <tbody>
+            <tr><th>Panjang kabel</th><td class="num">0,35 dB/km (1310 nm)<br>0,22 dB/km (1550 nm)</td><td>Kaca menyerap dan menghamburkan sedikit cahaya di setiap meter.</td></tr>
+            <tr><th>Sambungan fusion</th><td class="num">≤ 0,1 dB</td><td>Sambungan yang bagus biasanya jauh di bawah itu.</td></tr>
+            <tr><th>Konektor</th><td class="num">0,3–0,5 dB / pasang</td><td>Debu di ujung ferrule bisa menambah lebih dari 1 dB.</td></tr>
+            <tr><th>Splitter</th><td class="num">1:8 ≈ 10,5 dB<br>1:16 ≈ 13,8 dB</td><td>Penyumbang terbesar di FTTH, karena cahaya memang dibagi.</td></tr>
+            <tr><th>Tekukan</th><td>Tergantung radius</td><td>Coba di gambar berikut.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <figure class="fig">
+          <div class="fig-bar">
+            <span class="lbl">Satu lilitan serat, 1550 nm</span>
+            <div class="tabs" role="group" aria-label="Jenis serat">
+              <button type="button" id="bend-652" data-bend="652" aria-pressed="true">G.652D</button>
+              <button type="button" id="bend-657" data-bend="657" aria-pressed="false">G.657A2 (drop)</button>
+            </div>
+          </div>
+          <div class="fig-draw"><canvas id="bendCanvas" style="height:300px" aria-label="Serat yang ditekuk dengan cahaya yang bocor" role="img"></canvas></div>
+          <div class="fig-ctl">
+            <div class="range"><label for="bendRange">Radius tekukan <output id="bendOut">20 mm</output></label><input type="range" id="bendRange" min="5" max="40" step="0.5" value="20"></div>
+            <p class="msg" id="bendMsg" aria-live="polite"></p>
+          </div>
+        </figure>
+        <p class="cap"><b>Gambar 1.5b</b> Angka perkiraan, disusun mengikuti batas ITU-T G.652 dan G.657 pada 1550 nm. Nilai sebenarnya ada di datasheet kabel.</p>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Hitung anggaran redaman FTTH</h3>
+      <div class="prose"><p>Jalur contoh: OLT di STO → kabel feeder → ODC (splitter tahap 1) → kabel distribusi → ODP (splitter tahap 2) → drop cable → ONT. Ubah jumlah komponennya dan lihat daya yang sampai ke ONT. Batasnya mengikuti GPON kelas B+: ONT masih bisa membaca sampai <span class="mono">−27 dBm</span> dan kelebihan daya di atas <span class="mono">−8 dBm</span>.</p></div>
+      <div class="budget">
+        <div class="tbl-wrap">
+          <table class="tbl bt">
+            <thead><tr><th>Komponen</th><th>Jumlah</th><th>Redaman</th></tr></thead>
+            <tbody id="btBody"></tbody>
+            <tfoot><tr><td>Total redaman</td><td></td><td class="num" id="btTotal"></td></tr></tfoot>
+          </table>
+        </div>
+        <div class="rx">
+          <div class="rx-big"><small>Daya yang sampai ke ONT</small><b id="rxVal">−20,0 dBm</b><span class="verdict ok" id="rxPill">✓ Aman</span></div>
+          <p class="msg" id="rxMsg" aria-live="polite"></p>
+          <div>
+            <p class="small" style="margin-bottom:8px">Anggaran <span class="mono" id="budgetTotal">30 dB</span> (daya kirim − batas terima), terpakai oleh:</p>
+            <div class="stack" id="stack"></div>
+            <div class="legend" id="legend" style="margin-top:10px"></div>
+          </div>
+          <div>
+            <p class="small" style="margin-bottom:10px">Posisi daya terima (dBm)</p>
+            <div class="scale" id="scale"></div>
+          </div>
+        </div>
+        <p class="small">Nilai komponen adalah patokan umum. Banyak operator memakai batas kerja lebih ketat dari −27 dBm, misalnya −25 dBm. Ikuti standar tempatmu bekerja.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1.6 KONEKTOR ================= -->
+<section class="chapter wrap" id="konektor" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c6)"><i></i>1.6 · Jenis konektor</p>
+      <h2>Kenali konektornya</h2>
+      <div class="prose"><p>Nama konektor punya dua bagian: <strong>bentuk badan</strong>, lalu <strong>jenis poles ujungnya</strong>. SC/APC berarti badan SC dengan poles APC. Di tengah setiap konektor ada <strong>ferrule</strong>, tabung keramik yang memegang serat tepat di tengah.</p></div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar">
+          <span class="lbl">Bentuk badan, tampak samping</span>
+          <div class="tabs" role="group" aria-label="Jenis konektor">
+            <button type="button" id="conn-sc" data-conn="SC" aria-pressed="true">SC</button>
+            <button type="button" id="conn-lc" data-conn="LC" aria-pressed="false">LC</button>
+            <button type="button" id="conn-fc" data-conn="FC" aria-pressed="false">FC</button>
+            <button type="button" id="conn-st" data-conn="ST" aria-pressed="false">ST</button>
+          </div>
+        </div>
+        <div class="conn">
+          <div class="fig-draw" id="connArt"></div>
+          <div class="conn-info" id="connInfo" aria-live="polite"></div>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 1.6a</b> Empat bentuk badan konektor yang paling sering ditemui.</p>
+    </div>
+
+    <div class="block">
+      <h3>Poles ujung: UPC atau APC</h3>
+      <div class="prose"><p>Saat cahaya sampai di ujung konektor, sebagian kecil terpantul balik. Pantulan ini bisa mengganggu pemancar laser dan sinyal video. Bentuk poles ujung ferrule menentukan ke mana pantulan itu pergi.</p></div>
+      <div>
+        <figure class="fig">
+          <div class="fig-bar">
+            <span class="lbl">Potongan ujung ferrule</span>
+            <div class="tabs" role="group" aria-label="Jenis poles">
+              <button type="button" id="pol-upc" data-pol="upc" aria-pressed="true">UPC</button>
+              <button type="button" id="pol-apc" data-pol="apc" aria-pressed="false">APC</button>
+              <button type="button" id="pol-mix" data-pol="mix" aria-pressed="false">APC ketemu UPC</button>
+            </div>
+          </div>
+          <div class="fig-draw polish-view"><canvas id="polishCanvas" aria-label="Ujung ferrule dan arah pantulan cahaya" role="img"></canvas></div>
+          <div class="fig-ctl"><p class="msg" id="polishMsg" aria-live="polite"></p></div>
+        </figure>
+        <p class="cap"><b>Gambar 1.6b</b> Garis merah putus-putus adalah pantulan.</p>
+      </div>
+      <div class="prose"><p><strong>Return loss</strong> menyatakan seberapa kecil pantulannya. Makin besar angkanya, makin sedikit cahaya yang memantul balik. Warna badan konektor memberi tahu jenisnya:</p></div>
+      <div class="tbl-wrap">
+        <table class="tbl" style="min-width:0">
+          <thead><tr><th>Warna badan</th><th>Artinya</th></tr></thead>
+          <tbody>
+            <tr><td><span class="sw" style="background:#2563c9"></span>Biru</td><td>Single-mode, poles UPC (ujung datar)</td></tr>
+            <tr><td><span class="sw" style="background:#2f9e48"></span>Hijau</td><td>Single-mode, poles APC (ujung miring 8°)</td></tr>
+            <tr><td><span class="sw" style="background:#d8cfb8"></span>Krem / abu-abu</td><td>Multimode OM1–OM2</td></tr>
+            <tr><td><span class="sw" style="background:#2fc6c6"></span>Aqua</td><td>Multimode OM3/OM4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KUIS ================= -->
+<section class="chapter wrap" id="kuis" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c7)"><i></i>Cek pemahaman</p>
+      <h2>Sembilan pertanyaan</h2>
+      <div class="prose"><p>Jawab semuanya, lalu lihat nilaimu. Penjelasan muncul setelah kamu memilih jawaban.</p></div>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <div class="score" id="score" hidden></div>
+    <div class="next">
+      <p class="small">Berikutnya · Tahap 2</p>
+      <h3>Pengenalan alat</h3>
+      <p>Splicer, cleaver, stripper, bahan habis pakai (sleeve, alkohol), dan alat ukur VFL, OPM, OTDR.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap"><div class="col">Jalur Cahaya · Tahap 1: K3 &amp; teori dasar. Angka di halaman ini adalah patokan umum untuk belajar. Di lapangan, ikuti datasheet perangkat dan standar operator tempatmu bekerja.</div></footer>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+/* app.js */
+/* Jalur Cahaya · Tahap 1 — utilitas bersama, rel bab, K3, kode warna */
+(function () {
+  const JC = (window.JC = {});
+  JC.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  JC.COLORS = [
+    { n: 1, name: "Biru", hex: "#1f6fe0" },
+    { n: 2, name: "Oranye", hex: "#f47b20" },
+    { n: 3, name: "Hijau", hex: "#22a04b" },
+    { n: 4, name: "Cokelat", hex: "#8b5a2b" },
+    { n: 5, name: "Abu-abu", hex: "#8c969c" },
+    { n: 6, name: "Putih", hex: "#f3f3ef" },
+    { n: 7, name: "Merah", hex: "#d92b2b" },
+    { n: 8, name: "Hitam", hex: "#1b1b1b" },
+    { n: 9, name: "Kuning", hex: "#f5d000" },
+    { n: 10, name: "Ungu", hex: "#7d3cc0" },
+    { n: 11, name: "Merah muda", hex: "#f28cb5" },
+    { n: 12, name: "Toska", hex: "#22c7c0" },
+  ];
+
+  // angka gaya Indonesia: koma desimal, tanda minus asli
+  JC.fmt = function (v, d = 1) {
+    const s = Math.abs(v).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (v < 0 && Number(s.replace(/\./g, "").replace(",", ".")) !== 0 ? "−" : "") + s;
+  };
+  JC.clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  JC.lerp = (a, b, t) => a + (b - a) * t;
+  JC.smooth = (e0, e1, x) => { const t = JC.clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+
+  // warna tinta & kertas diambil dari token tema, disegarkan saat tema berganti
+  const TOK = ["paper", "paper-2", "grid", "ink", "ink-2", "ink-3", "rule", "red", "red-ink", "ok", "bad", "glass", "glass-2", "jacket", "hatch"];
+  JC.pal = {};
+  const readPal = () => { const cs = getComputedStyle(document.documentElement); TOK.forEach((k) => (JC.pal[k] = cs.getPropertyValue("--" + k).trim())); };
+  readPal();
+  const canvases = [];
+  const onTheme = () => { readPal(); canvases.forEach((st) => st.draw && st.draw(st.ctx, st.w, st.h)); };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme);
+  if (document.fonts) document.fonts.ready.then(onTheme); // gambar ulang setelah font web selesai dimuat
+  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+
+  // pola arsir potongan (gambar teknik), jarak garis tetap di layar
+  JC.hatch = function (ctx, color, gap = 7, cross = false) {
+    const c = document.createElement("canvas"); c.width = c.height = gap;
+    const x = c.getContext("2d"); x.strokeStyle = color; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(0, gap); x.lineTo(gap, 0); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(gap - 1, gap + 1); x.lineTo(gap + 1, gap - 1);
+    if (cross) { x.moveTo(0, 0); x.lineTo(gap, gap); }
+    x.stroke();
+    return ctx.createPattern(c, "repeat");
+  };
+
+  // kanvas tajam di layar retina; draw(ctx, w, h) dipanggil saat ukuran atau tema berubah
+  // minW: lebar gambar minimum; di layar lebih sempit gambar diperkecil utuh, bukan ditumpuk
+  JC.canvas = function (cv, draw, minW = 0) {
+    const ctx = cv.getContext("2d");
+    const st = { ctx, w: 0, h: 0, draw };
+    const fit = (redraw) => {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const k = minW && r.width < minW ? Math.max(r.width, 1) / minW : 1;
+      st.w = Math.max(1, r.width) / k; st.h = Math.max(1, r.height) / k;
+      cv.width = Math.round(Math.max(1, r.width) * dpr); cv.height = Math.round(Math.max(1, r.height) * dpr);
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
+      if (redraw !== false && st.draw) st.draw(ctx, st.w, st.h);
+    };
+    st.fit = fit;
+    fit(false); // ukur dulu; gambar pertama menunggu pemanggil selesai menyimpan st
+    new ResizeObserver(() => fit()).observe(cv);
+    canvases.push(st);
+    return st;
+  };
+
+  // jalankan loop animasi hanya saat elemen terlihat
+  JC.loop = function (el, frame) {
+    let on = false, raf = 0; const t0 = performance.now();
+    const tick = (t) => { frame((t - t0) / 1000); if (on) raf = requestAnimationFrame(tick); };
+    new IntersectionObserver((es) => {
+      const vis = es[0].isIntersecting;
+      if (JC.reduced) { if (vis) frame(1.3); return; }
+      if (vis && !on) { on = true; raf = requestAnimationFrame(tick); }
+      else if (!vis) { on = false; cancelAnimationFrame(raf); }
+    }).observe(el);
+  };
+
+  // grup tombol dengan aria-pressed
+  JC.seg = function (buttons, attr, cb) {
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      cb(b.dataset[attr], b);
+    }));
+  };
+
+  JC.store = {
+    get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+  };
+
+  /* ---------- rel bab ---------- */
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const railLinks = [...document.querySelectorAll(".rail a")];
+  const topFill = document.getElementById("topFill");
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    topFill.style.width = (max > 0 ? JC.clamp(scrollY / max, 0, 1) : 0) * 100 + "%";
+    let cur = -1;
+    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < innerHeight * 0.45) cur = i; });
+    railLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- ponsel: gambar pembuka dipotong, tabel diberi label ---------- */
+  const heroSvg = document.querySelector(".sheet-draw svg");
+  const narrow = window.matchMedia("(max-width: 640px)");
+  const setVB = () => heroSvg.setAttribute("viewBox", narrow.matches ? "240 6 720 244" : "0 0 960 250");
+  narrow.addEventListener("change", setVB); setVB();
+  document.querySelectorAll(".tbl.rs").forEach((tb) => {
+    const heads = [...tb.querySelectorAll("thead th")].map((th) => th.textContent.trim());
+    tb.querySelectorAll("tbody tr").forEach((tr) => [...tr.children].forEach((cell, j) => { if (cell.tagName === "TD" && heads[j]) cell.dataset.label = heads[j]; }));
+  });
+
+  /* ---------- K3: cahaya tak terlihat ---------- */
+  const eyeCv = document.getElementById("eyeCanvas");
+  const eyeMsg = document.getElementById("eyeMsg");
+  let eyeMode = 0;
+  const EYE_MSG = [
+    "Kelihatan mati, kan? Tidak ada cahaya, tidak ada panas, tidak ada tanda apa pun.",
+    "Sebenarnya cahaya inframerah keluar terus dari ujung ferrule dan menyebar. Mata yang mengintip dari dekat menerimanya langsung ke retina, tanpa terasa. <strong>Arsir merah di gambar hanya penanda; aslinya tidak terlihat sama sekali.</strong>",
+    "OPM membaca <strong>+3,0 dBm</strong> pada 1490 nm, kira-kira 2 mW. Inilah cara aman untuk tahu serat itu hidup: diukur, bukan diintip.",
+  ];
+  const eye = JC.canvas(eyeCv, () => drawEye(), 460);
+  function drawEye() {
+    const { ctx, w, h } = eye, P = JC.pal;
+    ctx.clearRect(0, 0, w, h);
+    const cy = h * 0.5, fx = Math.min(w * 0.42, w - 260);
+    ctx.lineWidth = 1.4; ctx.strokeStyle = P.ink; ctx.lineJoin = "round";
+    const box = (x, y, bw, bh, fill) => { ctx.fillStyle = fill; ctx.fillRect(x, y, bw, bh); ctx.strokeRect(x + 0.5, y + 0.5, bw, bh); };
+    box(-2, cy - 7, fx - 128, 14, "#e9b800");
+    ctx.fillStyle = "#59636a"; ctx.beginPath(); ctx.moveTo(fx - 130, cy - 9); ctx.lineTo(fx - 92, cy - 15); ctx.lineTo(fx - 92, cy + 15); ctx.lineTo(fx - 130, cy + 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    box(fx - 92, cy - 24, 70, 48, "#2563c9");
+    box(fx - 22, cy - 6, 22, 12, "#ecebe4");
+    // keterangan
+    ctx.strokeStyle = P["ink-2"]; ctx.lineWidth = 1; ctx.fillStyle = P["ink-2"];
+    ctx.font = "600 14px 'Public Sans', sans-serif";
+    ctx.beginPath(); ctx.moveTo(fx - 11, cy + 6); ctx.lineTo(fx - 11, cy + 46); ctx.lineTo(fx + 20, cy + 46); ctx.stroke();
+    ctx.fillText("ferrule", fx + 24, cy + 50);
+    ctx.fillText("SC/UPC", fx - 82, cy - 32);
+    // mata (garis)
+    const ex = w - 56;
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(ex - 34, cy); ctx.quadraticCurveTo(ex, cy - 30, ex + 34, cy); ctx.quadraticCurveTo(ex, cy + 30, ex - 34, cy); ctx.stroke();
+    ctx.beginPath(); ctx.arc(ex - 6, cy, 10, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = eyeMode === 1 ? P.red : P.ink; ctx.beginPath(); ctx.arc(ex - 6, cy, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = P["ink-2"]; ctx.textAlign = "center"; ctx.fillText("mata", ex, cy + 44); ctx.textAlign = "left";
+    if (eyeMode === 1) {
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(fx + 1, cy - 3); ctx.lineTo(ex - 30, cy - 46); ctx.lineTo(ex - 30, cy + 46); ctx.lineTo(fx + 1, cy + 3); ctx.closePath();
+      ctx.fillStyle = JC.hatch(ctx, P.red, 7); ctx.fill();
+      ctx.strokeStyle = P.red; ctx.setLineDash([5, 4]); ctx.stroke(); ctx.restore();
+      ctx.fillStyle = P["red-ink"]; ctx.fillText("inframerah 1490 nm, tak terlihat", fx + 18, cy - 54);
+    }
+    if (eyeMode === 2) {
+      const ox = fx + 40;
+      ctx.strokeStyle = P.ink; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(fx, cy); ctx.lineTo(ox, cy); ctx.stroke(); ctx.setLineDash([]);
+      box(ox, cy - 58, 118, 80, P.paper);
+      ctx.fillStyle = P["ink-2"]; ctx.fillText("OPM", ox + 10, cy - 38);
+      ctx.font = "13px 'Public Sans', sans-serif"; ctx.fillText("1490 nm", ox + 10, cy - 20);
+      ctx.fillStyle = P.ink; ctx.font = "650 20px 'Public Sans', sans-serif"; ctx.fillText("+3,0 dBm", ox + 10, cy + 10);
+    }
+  }
+  JC.seg([...document.querySelectorAll("[data-eye]")], "eye", (v) => { eyeMode = Number(v); eyeMsg.innerHTML = EYE_MSG[eyeMode]; drawEye(); });
+  eyeMsg.innerHTML = EYE_MSG[0];
+
+  /* ---------- K3: aman atau bahaya ---------- */
+  const SORT = [
+    { q: "Mengintip ujung konektor untuk memastikan ada cahaya.", safe: false, why: "Cahaya 1310/1490/1550 nm tidak terlihat. Pakai OPM untuk memastikan serat hidup." },
+    { q: "Membuang potongan serat ke wadah khusus yang bertutup.", safe: true, why: "Serpihan di wadah tertutup tidak akan menusuk orang lain atau tercecer." },
+    { q: "Makan gorengan sambil menyambung kabel di meja kerja.", safe: false, why: "Serpihan kaca bisa menempel di jari atau makanan lalu tertelan. Makan dan minum jauh dari area kerja." },
+    { q: "Mengambil serpihan serat di meja menggunakan selotip.", safe: true, why: "Cara yang benar. Jangan disapu dengan tangan atau ditiup." },
+    { q: "Membersihkan elektroda splicer saat mesinnya masih menyala.", safe: false, why: "Elektroda mengeluarkan busur listrik tegangan tinggi. Matikan splicer dulu." },
+    { q: "Menyimpan alkohol IPA dalam botol tertutup, jauh dari api.", safe: true, why: "IPA mudah terbakar dan cepat menguap." },
+    { q: "Naik tiang tanpa full body harness karena cuma sebentar.", safe: false, why: "Jatuh dari ketinggian tidak menunggu lama. Pasang harness setiap kali naik." },
+    { q: "Mengucek mata setelah memotong serat, belum cuci tangan.", safe: false, why: "Serpihan di jari bisa masuk ke mata. Cuci tangan dulu setelah bekerja." },
+    { q: "Memakai kacamata safety saat stripping dan cleaving.", safe: true, why: "Serpihan bisa terpental ke arah wajah." },
+  ];
+  const sortEl = document.getElementById("sortGame");
+  let sIdx = 0, sRes = [];
+  function renderSort(answer) {
+    const ticks = SORT.map((_, i) => i < sRes.length ? `<i class="${sRes[i] ? "r" : "w"}">${sRes[i] ? "✓" : "✕"}</i>` : `<i class="${i === sIdx ? "c" : ""}"></i>`).join("");
+    if (sIdx >= SORT.length) {
+      const ok = sRes.filter(Boolean).length;
+      sortEl.innerHTML = `<div class="sheet-q"><div class="ticks">${ticks}</div>
+        <p class="q">${ok} dari ${SORT.length} benar.</p>
+        <p class="msg">${ok === SORT.length ? "Sempurna. Kebiasaan ini yang menjaga tangan dan matamu tetap utuh." : "Ulangi sampai semuanya benar. Di lapangan, satu kesalahan saja sudah cukup untuk celaka."}</p>
+        <div class="row-actions"><button type="button" class="btn" id="sortAgain">Ulangi</button></div></div>`;
+      document.getElementById("sortAgain").onclick = () => { sIdx = 0; sRes = []; renderSort(); };
+      return;
+    }
+    const it = SORT[sIdx];
+    let body;
+    if (answer === undefined) {
+      body = `<div class="row-actions"><button type="button" class="btn" data-a="1">Aman</button><button type="button" class="btn" data-a="0">Bahaya</button></div>`;
+    } else {
+      const right = answer === it.safe;
+      body = `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Benar" : "✕ Kurang tepat"}: ${it.safe ? "aman" : "bahaya"}.</b>${it.why}</div>
+        <div class="row-actions"><button type="button" class="btn primary" id="sortNext">${sIdx === SORT.length - 1 ? "Lihat hasil" : "Kartu berikutnya"}</button></div>`;
+    }
+    sortEl.innerHTML = `<div class="sheet-q"><div class="ticks" aria-label="Kartu ${sIdx + 1} dari ${SORT.length}">${ticks}<span>${sIdx + 1} / ${SORT.length}</span></div><p class="q">${it.q}</p>${body}</div>`;
+    sortEl.querySelectorAll("[data-a]").forEach((b) => b.onclick = () => {
+      const a = b.dataset.a === "1"; sRes.push(a === it.safe); renderSort(a);
+      document.getElementById("sortNext").focus();
+    });
+    const nx = document.getElementById("sortNext");
+    if (nx) nx.onclick = () => { sIdx++; renderSort(); const f = sortEl.querySelector("button"); f && f.focus(); };
+  }
+  renderSort();
+
+  /* ---------- kode warna: 12 serat ---------- */
+  const fan = document.getElementById("fan"), swNote = document.getElementById("swNote");
+  const fiberBtn = (c, id, extra = "") => `<button type="button" class="fiber-btn ${extra}" id="${id}" data-n="${c.n}" aria-pressed="false"><b>${c.n}</b><i style="background:${c.hex}"></i><span>${c.name}</span></button>`;
+  fan.innerHTML = [0, 1].map((g) => `<div><h4>Kelompok ${g + 1} · core ${g * 6 + 1}–${g * 6 + 6}</h4>${JC.COLORS.slice(g * 6, g * 6 + 6).map((c) => fiberBtn(c, "sw-" + c.n)).join("")}</div>`).join("");
+  JC.seg([...fan.querySelectorAll(".fiber-btn")], "n", (v) => {
+    const c = JC.COLORS[v - 1];
+    swNote.innerHTML = `<strong>${c.n} · ${c.name}.</strong> Core ke-${c.n} di dalam tabung, dan tabung ke-${c.n} di dalam kabel, berwarna ${c.name.toLowerCase()}.`;
+  });
+
+  /* ---------- kode warna: pencari core ---------- */
+  const fTubes = document.getElementById("fTubes"), fPer = document.getElementById("fPer"), fNum = document.getElementById("fNum");
+  const fRes = document.getElementById("fResult"), fSvg = document.getElementById("fSvg");
+  fTubes.innerHTML = Array.from({ length: 12 }, (_, i) => `<option ${i === 5 ? "selected" : ""}>${i + 1}</option>`).join("");
+  function fiberSlots(per) {
+    if (per <= 8) return Array.from({ length: per }, (_, i) => [0.5, (i / per) * Math.PI * 2 - Math.PI / 2]);
+    return [...Array.from({ length: 4 }, (_, i) => [0.24, (i / 4) * Math.PI * 2 - Math.PI / 2]),
+      ...Array.from({ length: per - 4 }, (_, i) => [0.62, (i / (per - 4)) * Math.PI * 2 - Math.PI / 2])];
+  }
+  function renderFinder() {
+    const T = +fTubes.value, P = +fPer.value, total = T * P;
+    fNum.max = total;
+    const N = Math.round(+fNum.value || 0);
+    const valid = N >= 1 && N <= total;
+    const tube = valid ? Math.ceil(N / P) : 0, idx = valid ? N - (tube - 1) * P : 0;
+    if (valid) {
+      const tc = JC.COLORS[(tube - 1) % 12], cc = JC.COLORS[(idx - 1) % 12];
+      fRes.innerHTML = `<div class="row"><span class="chip" style="background:${tc.hex}"></span><span>Tabung <b>${tube}</b> · ${tc.name}</span></div>
+        <div class="row"><span class="chip" style="background:${cc.hex}"></span><span>Core <b>${idx}</b> di dalam tabung · ${cc.name}</span></div>
+        <p class="formula">Kabel ${total} core (${T} × ${P})<br>Tabung = ⌈${N} ÷ ${P}⌉ = ${tube}<br>Urutan = ${N} − (${tube - 1} × ${P}) = ${idx}</p>`;
+    } else {
+      fRes.innerHTML = `<p class="formula" style="color:var(--bad)">Nomor core harus antara 1 dan ${total} untuk kabel ${T} × ${P}.</p>`;
+    }
+    let s = `<defs><pattern id="fh" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" style="stroke:var(--ink-2)" stroke-width="1"/></pattern>
+      <pattern id="fx" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V5M0 0H5" style="stroke:var(--ink-2)" stroke-width=".9"/></pattern></defs>
+      <circle r="104" style="fill:url(#fh);stroke:var(--ink)" stroke-width="1.4"/><circle r="93" style="fill:var(--paper);stroke:var(--ink)" stroke-width="1.2"/>`;
+    const ringR = T === 1 ? 0 : T <= 2 ? 44 : T <= 6 ? 56 : 66;
+    const tr = T === 1 ? 62 : Math.min(36, ringR * Math.sin(Math.PI / T) * 0.94);
+    if (T > 2) s += `<circle r="${Math.max(8, ringR - tr - 4).toFixed(1)}" style="fill:url(#fx);stroke:var(--ink)" stroke-width="1.2"/>`;
+    let label = "";
+    for (let t = 1; t <= T; t++) {
+      const a = ((t - 1) / T) * Math.PI * 2 - Math.PI / 2;
+      const cx = Math.cos(a) * ringR, cy = Math.sin(a) * ringR;
+      const tc = JC.COLORS[(t - 1) % 12], on = t === tube;
+      s += `<g opacity="${!valid || on ? 1 : 0.45}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${tr.toFixed(1)}" fill="${tc.hex}" style="stroke:var(--ink)" stroke-width="1"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(tr * 0.84).toFixed(1)}" style="fill:var(--paper);stroke:var(--ink)" stroke-width=".8"/>`;
+      const fr = tr * (P <= 4 ? 0.2 : P <= 8 ? 0.16 : 0.14);
+      fiberSlots(P).forEach(([rr, fa], k) => {
+        const fx = cx + Math.cos(fa) * rr * tr * 0.84, fy = cy + Math.sin(fa) * rr * tr * 0.84;
+        s += `<circle cx="${fx.toFixed(2)}" cy="${fy.toFixed(2)}" r="${fr.toFixed(2)}" fill="${JC.COLORS[k % 12].hex}" style="stroke:var(--ink)" stroke-width=".6"/>`;
+        if (on && k + 1 === idx) {
+          const lx = 78, ly = -104;
+          label = `<circle cx="${fx.toFixed(2)}" cy="${fy.toFixed(2)}" r="${(fr + 3.5).toFixed(2)}" fill="none" style="stroke:var(--red)" stroke-width="1.8"/>
+            <path d="M${fx.toFixed(1)} ${(fy - fr - 3.5).toFixed(1)} L${lx} ${ly} H${lx + 34}" fill="none" style="stroke:var(--red)" stroke-width="1"/>
+            <text x="${lx + 2}" y="${ly - 5}" style="fill:var(--red-ink);font-family:var(--font-display);font-weight:600" font-size="13">No. ${N}</text>`;
+        }
+      });
+      if (on) s += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(tr + 3).toFixed(1)}" fill="none" style="stroke:var(--red)" stroke-width="1.6" stroke-dasharray="4 3"/>`;
+      s += `</g>`;
+    }
+    fSvg.innerHTML = s + label;
+  }
+  [fTubes, fPer, fNum].forEach((el) => el.addEventListener("input", renderFinder));
+  renderFinder();
+
+  /* ---------- kode warna: latihan ---------- */
+  const gEl = document.getElementById("colorGame");
+  let gScore = 0, gCount = 0, gStreak = 0, gQ = null;
+  function newQ() {
+    let n; do { n = 1 + Math.floor(Math.random() * 12); } while (gQ && n === gQ.n);
+    gQ = { n, type: gCount % 2 === 0 ? "color" : "number" };
+    renderGame();
+  }
+  function renderGame(picked) {
+    const c = JC.COLORS[gQ.n - 1];
+    const head = gQ.type === "color"
+      ? `<div class="game-q">Core nomor <span class="num">${gQ.n}</span> warnanya apa?</div>`
+      : `<div class="game-q">Core berwarna <i class="chipbig" style="background:${c.hex}"></i> nomor berapa?</div>`;
+    const opts = JC.COLORS.map((o) => {
+      let cls = "";
+      if (picked !== undefined) { if (o.n === gQ.n) cls = "right"; else if (o.n === picked) cls = "wrong"; }
+      const inner = gQ.type === "color" ? `<b></b><i style="background:${o.hex}"></i><span>${o.name}</span>` : `<b>${o.n}</b><i style="background:transparent;border-color:transparent"></i><span></span>`;
+      return `<button type="button" class="fiber-btn ${cls}" id="g-${o.n}" data-g="${o.n}" ${picked !== undefined ? "disabled" : ""}>${inner}</button>`;
+    }).join("");
+    let fb = "";
+    if (picked !== undefined) {
+      fb = picked === gQ.n
+        ? `<div class="mark good"><b>✓ Benar.</b>Core ${c.n} = ${c.name}.</div>`
+        : `<div class="mark bad"><b>✕ Belum tepat.</b>Core ${c.n} = ${c.name}. ${c.n <= 6 ? "Kelompok 1: Biru, Oranye, Hijau, Cokelat, Abu-abu, Putih." : "Kelompok 2: Merah, Hitam, Kuning, Ungu, Merah muda, Toska."}</div>`;
+      fb += `<div><button type="button" class="btn primary" id="gNext">Soal berikutnya</button></div>`;
+    }
+    gEl.innerHTML = `${head}<div class="game-opts">${opts}</div>${fb}<p class="small">Benar ${gScore} dari ${gCount} · beruntun ${gStreak}</p>`;
+    gEl.querySelectorAll("[data-g]").forEach((b) => b.onclick = () => {
+      const p = +b.dataset.g; gCount++;
+      if (p === gQ.n) { gScore++; gStreak++; } else gStreak = 0;
+      renderGame(p); document.getElementById("gNext").focus();
+    });
+    const nx = document.getElementById("gNext");
+    if (nx) nx.onclick = newQ;
+  }
+  newQ();
+})();
+</script>
+<script>
+/* dive.js */
+/* Jalur Cahaya · Tahap 1 — menyelam ke penampang kabel, digambar seperti gambar teknik.
+   Semua ukuran dalam mm dengan perbandingan sebenarnya. */
+(function () {
+  const JC = window.JC;
+  const cv = document.getElementById("diveCanvas");
+  const scroller = document.querySelector(".dive-scroll");
+  const hud = { view: document.getElementById("diveView"), scale: document.getElementById("diveScale"), w: document.getElementById("diveW"), layer: document.getElementById("diveLayer") };
+  const scaleBar = document.getElementById("scaleBar"), scaleLabel = document.getElementById("scaleLabel");
+
+  const CABLE = { r: 5, jacketIn: 3.9, aramidIn: 3.62, frp: 0.95, frpCoat: 1.15 };
+  const TUBE = { ring: 2.35, r: 1.1, inner: 0.88 };
+  const FIBER = { coat: 0.125, clad: 0.0625 };
+  const ARAMID = "#d8b562", ARAMID_2 = "#a5843a";
+  let coreUm = 9;
+  const tubes = Array.from({ length: 6 }, (_, i) => {
+    const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+    return { x: Math.cos(a) * TUBE.ring, y: Math.sin(a) * TUBE.ring, color: JC.COLORS[i].hex };
+  });
+  const slots = [...Array.from({ length: 4 }, (_, i) => [0.22, (i / 4) * Math.PI * 2 - Math.PI / 2]),
+    ...Array.from({ length: 8 }, (_, i) => [0.58, (i / 8) * Math.PI * 2 - Math.PI / 2 + 0.2])];
+  const fibers = [];
+  tubes.forEach((t, ti) => slots.forEach(([r, a], k) => fibers.push({ x: t.x + Math.cos(a) * r, y: t.y + Math.sin(a) * r, color: JC.COLORS[k].hex, k, ti })));
+  const target = fibers[0]; // tabung biru, core biru
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const strands = Array.from({ length: 420 }, () => ({ a: rnd() * Math.PI * 2, r: CABLE.aramidIn + 0.03 + rnd() * (CABLE.jacketIn - CABLE.aramidIn - 0.06), d: (rnd() - 0.5) * 0.6 }));
+
+  const K = [
+    { W: 15, c: [0, 0], focus: null, label: "Kabel utuh", view: "Potongan A–A", glow: 0 },
+    { W: 15, c: [0, 0], focus: "jacket", label: "Jaket luar", view: "Potongan A–A", glow: 0 },
+    { W: 15, c: [0, 0], focus: "strength", label: "Penguat", view: "Potongan A–A", glow: 0 },
+    { W: 2.7, c: [tubes[0].x, tubes[0].y], focus: "tube", label: "Tabung", view: "Detail B", glow: 0 },
+    { W: 0.34, c: [target.x, target.y], focus: "coating", label: "Coating", view: "Detail C", glow: 0.4 },
+    { W: 0.17, c: [target.x, target.y], focus: "cladding", label: "Cladding", view: "Detail D", glow: 0.6 },
+    { W: 0.17, c: [target.x, target.y], focus: "core", label: "Core", view: "Detail D", glow: 1 },
+  ];
+  // balon keterangan di potongan utuh: [nomor, titik yang ditunjuk, sudut balon]
+  const BALLOONS = [
+    [1, [Math.cos(-1.05) * 4.45, Math.sin(-1.05) * 4.45], -1.05],
+    [2, [Math.cos(3.75) * 3.76, Math.sin(3.75) * 3.76], 3.75],
+    [3, [tubes[1].x, tubes[1].y], -0.2],
+    [4, [fibers[2 * 12 + 6].x, fibers[2 * 12 + 6].y], 0.95],
+    [5, [0, 0], 2.55],
+  ];
+
+  // posisi gulir -> t: kartu ke-i tepat di garis baca berarti t = i.
+  // Desktop: kartu menimpa gambar, garis baca di tengah layar. Ponsel: kartu di bawah gambar.
+  const steps = [...document.querySelectorAll(".dive-step")];
+  let t = 0;
+  function readScroll() {
+    const stageH = cv.getBoundingClientRect().height || innerHeight;
+    const line = innerWidth <= 760 ? stageH + (innerHeight - stageH) / 2 : innerHeight / 2;
+    const ys = steps.map((s) => { const r = s.getBoundingClientRect(); return r.top + r.height / 2; });
+    if (line <= ys[0]) t = 0;
+    else if (line >= ys[ys.length - 1]) t = K.length - 1;
+    else for (let i = 0; i < ys.length - 1; i++) if (line < ys[i + 1]) { t = i + (line - ys[i]) / (ys[i + 1] - ys[i]); break; }
+  }
+  function view() {
+    const i = Math.min(Math.floor(t), K.length - 2), g = JC.smooth(0.2, 0.8, t - i);
+    const a = K[i], b = K[i + 1];
+    const W = Math.exp(JC.lerp(Math.log(a.W), Math.log(b.W), g));
+    const k = Math.abs(a.W - b.W) > 1e-9 ? (a.W - W) / (a.W - b.W) : g;
+    const c = [a.c[0] + (b.c[0] - a.c[0]) * k, a.c[1] + (b.c[1] - a.c[1]) * k];
+    const alpha = (name) => JC.lerp(a.focus == null || a.focus === name ? 1 : 0.28, b.focus == null || b.focus === name ? 1 : 0.28, g);
+    const ring = (name) => JC.lerp(a.focus === name ? 1 : 0, b.focus === name ? 1 : 0, g);
+    return { W, c, near: g < 0.5 ? a : b, alpha, ring, glow: JC.lerp(a.glow, b.glow, g) };
+  }
+
+  const st = JC.canvas(cv, () => draw());
+  function lens(w, h) {
+    const wide = w > 760;
+    const L = wide ? Math.min(w * 0.28, h * 0.38) : Math.min(w * 0.42, h * 0.37);
+    return { x: wide ? w * 0.66 : w / 2, y: wide ? h * 0.54 : h * 0.57, L };
+  }
+  function niceLen(mm) {
+    const p = Math.pow(10, Math.floor(Math.log10(mm)));
+    return [10, 5, 2, 1].map((m) => m * p).find((v) => v <= mm) || p;
+  }
+  const fmtLen = (mm) => (mm >= 1 ? JC.fmt(mm, Math.abs(mm - Math.round(mm)) < 0.05 ? 0 : 1) + " mm" : Math.round(mm * 1000).toLocaleString("id-ID") + " µm");
+  const fmtScale = (r) => (r >= 100 ? (Math.round(r / 10) * 10).toLocaleString("id-ID") : r >= 10 ? Math.round(r) : JC.fmt(r, 1)) + ":1";
+
+  function draw() {
+    readScroll();
+    const { ctx, w, h } = st, P = JC.pal;
+    const v = view(), Ls = lens(w, h), s = (2 * Ls.L) / v.W;
+    const X = (x) => Ls.x + (x - v.c[0]) * s, Y = (y) => Ls.y + (y - v.c[1]) * s;
+    const vis = (x, y, r) => Math.hypot(X(x) - Ls.x, Y(y) - Ls.y) < Ls.L + r * s + 2;
+    const big = (r) => r * s < 60000;
+    const circ = (x, y, r) => { ctx.beginPath(); ctx.arc(X(x), Y(y), Math.max(r * s, 0.3), 0, Math.PI * 2); };
+    const outlineC = (x, y, r, lw = 1.2) => { circ(x, y, r); ctx.strokeStyle = P.ink; ctx.lineWidth = lw; ctx.stroke(); };
+    const hatchLine = JC.hatch(ctx, P.hatch, 7), hatchCross = JC.hatch(ctx, P.hatch, 6, true);
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(Ls.x, Ls.y, Ls.L, 0, Math.PI * 2); ctx.fillStyle = P.paper; ctx.fill(); ctx.clip();
+
+    // jaket: arsir potongan
+    ctx.globalAlpha = v.alpha("jacket");
+    if (big(CABLE.r)) {
+      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.r * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.jacketIn * s, 0, Math.PI * 2, true);
+      ctx.fillStyle = hatchLine; ctx.fill();
+      outlineC(0, 0, CABLE.r, 1.5);
+    }
+    // aramid
+    ctx.globalAlpha = v.alpha("strength");
+    if (big(CABLE.jacketIn)) {
+      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.jacketIn * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.aramidIn * s, 0, Math.PI * 2, true);
+      ctx.fillStyle = ARAMID; ctx.fill();
+    }
+    ctx.strokeStyle = ARAMID_2; ctx.lineWidth = Math.max(0.8, 0.018 * s);
+    strands.forEach((q) => {
+      const x = Math.cos(q.a) * q.r, y = Math.sin(q.a) * q.r;
+      if (!vis(x, y, 0.2)) return;
+      const ta = q.a + Math.PI / 2 + q.d, L = 0.12;
+      ctx.beginPath(); ctx.moveTo(X(x - Math.cos(ta) * L), Y(y - Math.sin(ta) * L)); ctx.lineTo(X(x + Math.cos(ta) * L), Y(y + Math.sin(ta) * L)); ctx.stroke();
+    });
+    if (big(CABLE.jacketIn)) { outlineC(0, 0, CABLE.jacketIn); outlineC(0, 0, CABLE.aramidIn, 0.8); }
+    // FRP: arsir silang, lapisan PE di luarnya
+    if (vis(0, 0, CABLE.frpCoat)) {
+      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.frpCoat * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.frp * s, 0, Math.PI * 2, true);
+      ctx.fillStyle = hatchLine; ctx.fill();
+      circ(0, 0, CABLE.frp); ctx.fillStyle = hatchCross; ctx.fill();
+      outlineC(0, 0, CABLE.frpCoat); outlineC(0, 0, CABLE.frp);
+    }
+    // tabung
+    tubes.forEach((tb, ti) => {
+      if (!vis(tb.x, tb.y, TUBE.r)) return;
+      ctx.globalAlpha = v.alpha("tube") * (v.near.focus === "tube" && ti !== 0 ? 0.5 : 1);
+      ctx.beginPath(); ctx.arc(X(tb.x), Y(tb.y), TUBE.r * s, 0, Math.PI * 2); ctx.arc(X(tb.x), Y(tb.y), TUBE.inner * s, 0, Math.PI * 2, true);
+      ctx.fillStyle = tb.color; ctx.fill();
+      circ(tb.x, tb.y, TUBE.inner); ctx.fillStyle = P.glass; ctx.globalAlpha *= 0.45; ctx.fill(); ctx.globalAlpha /= 0.45;
+      outlineC(tb.x, tb.y, TUBE.r); outlineC(tb.x, tb.y, TUBE.inner, 0.9);
+    });
+    // serat
+    const coreR = coreUm / 2000;
+    fibers.forEach((f) => {
+      if (!vis(f.x, f.y, FIBER.coat)) return;
+      const isT = f === target, other = v.near.W < 1 && !isT;
+      ctx.globalAlpha = isT ? v.alpha("coating") : other ? 0.35 : v.alpha("tube");
+      circ(f.x, f.y, FIBER.coat); ctx.fillStyle = f.color; ctx.fill();
+      ctx.strokeStyle = P.ink; ctx.lineWidth = FIBER.coat * s > 6 ? 1.2 : 0.6; ctx.stroke();
+      if (FIBER.clad * s > 1.5) {
+        ctx.globalAlpha = isT ? v.alpha("cladding") : 0.35;
+        circ(f.x, f.y, FIBER.clad); ctx.fillStyle = P.glass; ctx.fill(); ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2; ctx.stroke();
+      }
+      const cr = isT ? coreR : 0.0045;
+      if (cr * s > 0.8) {
+        ctx.globalAlpha = isT ? v.alpha("core") : 0.35;
+        circ(f.x, f.y, cr); ctx.fillStyle = P["glass-2"]; ctx.fill();
+        if (isT && v.glow > 0.01) { ctx.globalAlpha = v.glow; ctx.fillStyle = P.red; ctx.fill(); ctx.globalAlpha = isT ? v.alpha("core") : 0.35; }
+        ctx.strokeStyle = P.ink; ctx.lineWidth = 1; ctx.stroke();
+      }
+    });
+    ctx.globalAlpha = 1;
+
+    // garis ukur diameter untuk lapisan yang sedang dibahas
+    ctx.font = "600 13px 'Public Sans', sans-serif";
+    const arrow = (x, y, dir) => { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dir * 9, y - 3.5); ctx.lineTo(x - dir * 9, y + 3.5); ctx.closePath(); ctx.fill(); };
+    const dim = (name, x, y, r, txt, dy = 0) => {
+      const a = v.ring(name); if (a < 0.02) return;
+      ctx.globalAlpha = a; ctx.strokeStyle = P.red; ctx.fillStyle = P.red; ctx.lineWidth = 1.2;
+      const R = r * s, cx = X(x), cy = Y(y) + dy;
+      if (R > 40) {
+        const x0 = Math.max(cx - R, Ls.x - Ls.L + 4), x1 = Math.min(cx + R, Ls.x + Ls.L - 4);
+        ctx.beginPath(); ctx.moveTo(x0, cy); ctx.lineTo(x1, cy); ctx.stroke();
+        if (cx - R >= x0 - 0.5) arrow(cx - R, cy, -1);
+        if (cx + R <= x1 + 0.5) arrow(cx + R, cy, 1);
+        const tw = ctx.measureText(txt).width + 10;
+        ctx.fillStyle = P.paper; ctx.fillRect(cx - tw / 2, cy - 22, tw, 18);
+        ctx.fillStyle = P["red-ink"]; ctx.textAlign = "center"; ctx.fillText(txt, cx, cy - 8);
+      } else {
+        const lx = cx + Math.max(R, 4) + 54, ly = cy - 40;
+        ctx.beginPath(); ctx.moveTo(lx - 4, ly + 4); ctx.lineTo(cx + R * 0.72 + 3, cy - R * 0.72 - 3); ctx.stroke();
+        ctx.save(); ctx.translate(cx + R * 0.72, cy - R * 0.72); ctx.rotate(Math.atan2(cy - R * 0.72 - ly, cx + R * 0.72 - lx)); arrow(0, 0, 1); ctx.restore();
+        const tw = ctx.measureText(txt).width + 10;
+        ctx.fillStyle = P.paper; ctx.fillRect(lx - 2, ly - 14, tw, 18);
+        ctx.fillStyle = P["red-ink"]; ctx.textAlign = "left"; ctx.fillText(txt, lx + 3, ly);
+      }
+      ctx.textAlign = "left"; ctx.globalAlpha = 1;
+    };
+    dim("jacket", 0, 0, CABLE.r, "Ø 10 mm", -CABLE.r * s - 14);
+    dim("strength", 0, 0, CABLE.frpCoat, "FRP Ø 2,3 mm");
+    dim("tube", tubes[0].x, tubes[0].y, TUBE.r, "Ø 2,2 mm");
+    dim("coating", target.x, target.y, FIBER.coat, "Ø 250 µm", -FIBER.coat * s * 0.62);
+    dim("cladding", target.x, target.y, FIBER.clad, "Ø 125 µm", -FIBER.clad * s * 0.55);
+    dim("core", target.x, target.y, coreR, "Ø " + JC.fmt(coreUm, coreUm % 1 ? 1 : 0) + " µm");
+
+    // balon keterangan (hanya di potongan utuh)
+    const ba = 1 - JC.smooth(0.15, 0.7, t);
+    if (ba > 0.02) {
+      ctx.globalAlpha = ba; ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      BALLOONS.forEach(([n, p, ang]) => {
+        const bx = X(Math.cos(ang) * 6.6), by = Y(Math.sin(ang) * 6.6);
+        ctx.strokeStyle = P.ink; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(X(p[0]), Y(p[1])); ctx.lineTo(bx - Math.cos(ang) * 12, by - Math.sin(ang) * 12); ctx.stroke();
+        ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = P.paper; ctx.beginPath(); ctx.arc(bx, by, 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = P.ink; ctx.fillText(String(n), bx, by + 1);
+      });
+      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic"; ctx.globalAlpha = 1;
+    }
+    ctx.restore();
+
+    // bingkai detail + garis sumbu (titik-strip)
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(Ls.x, Ls.y, Ls.L, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = P["ink-3"]; ctx.lineWidth = 0.8; ctx.setLineDash([16, 4, 2, 4]);
+    ctx.beginPath(); ctx.moveTo(Ls.x - Ls.L - 18, Ls.y); ctx.lineTo(Ls.x + Ls.L + 18, Ls.y); ctx.moveTo(Ls.x, Ls.y - Ls.L - 18); ctx.lineTo(Ls.x, Ls.y + Ls.L + 18); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // kotak keterangan
+    hud.view.textContent = v.near.view;
+    hud.scale.textContent = fmtScale(s * 0.26458);
+    hud.w.textContent = fmtLen(v.W);
+    hud.layer.textContent = v.near.label;
+    const len = niceLen(v.W * 0.22);
+    scaleBar.style.width = Math.round(len * s) + "px";
+    scaleLabel.textContent = fmtLen(len);
+  }
+
+  let queued = false;
+  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } }, { passive: true });
+
+  const coreNote = document.getElementById("coreNote");
+  const NOTES = {
+    "9": "Single-mode: core ±9 µm. Hanya satu jalur cahaya. Dipakai di FTTH.",
+    "50": "Multimode 50 µm (OM2–OM5): core 5–6 kali lebih lebar, cladding tetap 125 µm.",
+    "62.5": "Multimode 62,5 µm (OM1): jenis lama, core paling besar.",
+  };
+  JC.seg([...document.querySelectorAll("[data-core]")], "core", (val) => { coreUm = parseFloat(val); coreNote.textContent = NOTES[val]; draw(); });
+})();
+</script>
+<script>
+/* light.js */
+/* Jalur Cahaya · Tahap 1 — gambar cahaya: SM vs MM, dB, tekukan, poles ferrule */
+(function () {
+  const JC = window.JC;
+  const FONT = "600 12.5px 'Public Sans', sans-serif", MONO = "12px 'Public Sans', sans-serif";
+
+  /* ---------- SM vs MM ---------- */
+  const modeCv = document.getElementById("modeCanvas");
+  const distRange = document.getElementById("distRange"), distOut = document.getElementById("distOut");
+  const bitsIn = document.getElementById("bitsIn"), bitsOut = document.getElementById("bitsOut"), modeMsg = document.getElementById("modeMsg");
+  const BITS = [1, 0, 1, 1, 0, 0, 1, 0];
+  let mode = "sm";
+  const distKm = () => 0.05 * Math.pow(800, distRange.value / 1000); // 50 m – 40 km, skala log
+  const sigma = (d) => (mode === "sm" ? 0.12 + 0.008 * d : 0.12 + 1.1 * d);
+  const g = (x, s) => Math.exp(-(x * x) / (2 * s * s));
+  const received = (x, s) => BITS.reduce((a, b, k) => a + b * g(x - k, s), 0);
+
+  const ms = JC.canvas(modeCv, () => drawMode(1));
+  function drawMode(time) {
+    const { ctx, w, h } = ms, P = JC.pal;
+    ctx.clearRect(0, 0, w, h);
+    const top = 30, fh = 120, cy = top + fh / 2;
+    const coreH = mode === "sm" ? 10 : 48;
+    ctx.fillStyle = P.glass; ctx.fillRect(0, top, w, fh);
+    ctx.fillStyle = P["glass-2"]; ctx.fillRect(0, cy - coreH / 2, w, coreH);
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(0, top); ctx.lineTo(w, top); ctx.moveTo(0, top + fh); ctx.lineTo(w, top + fh); ctx.stroke();
+    ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, cy - coreH / 2); ctx.lineTo(w, cy - coreH / 2); ctx.moveTo(0, cy + coreH / 2); ctx.lineTo(w, cy + coreH / 2); ctx.stroke();
+    ctx.font = FONT; ctx.fillStyle = P["ink-2"];
+    ctx.fillText("cladding 125 µm", 10, top + 18);
+    const ly = cy + coreH / 2 + 26;
+    ctx.fillText(mode === "sm" ? "core 9 µm" : "core 50 µm", 10, ly);
+    ctx.strokeStyle = P["ink-2"]; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(30, ly - 13); ctx.lineTo(30, cy + coreH / 2); ctx.stroke();
+    const angles = mode === "sm" ? [0] : [0, 0.18, 0.32, 0.46];
+    const half = coreH / 2 - 2;
+    const pathY = (x, a) => {
+      if (a === 0) return cy;
+      const L = (2 * half) / Math.tan(a);
+      const u = (((x % L) + L) % L) / L;
+      return cy - half + (u < 0.5 ? u * 2 : 2 - u * 2) * 2 * half;
+    };
+    angles.forEach((a, i) => {
+      ctx.strokeStyle = P.red; ctx.globalAlpha = a === 0 ? 0.9 : 0.5; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 2) { const y = pathY(x + i * 7, a); x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.globalAlpha = 1;
+      const speed = 120 * Math.cos(a * (mode === "mm" ? 2.2 : 1));
+      const x = ((time * speed) % (w + 60)) - 30;
+      ctx.fillStyle = P.red; ctx.beginPath(); ctx.arc(x, pathY(x + i * 7, a), 4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = P.paper; ctx.lineWidth = 1.2; ctx.stroke();
+    });
+    // grafik sinyal diterima
+    const gy0 = top + fh + 34, gh = h - gy0 - 16;
+    const s = sigma(distKm());
+    const x0 = 62, x1 = w - 12, bw = (x1 - x0) / BITS.length;
+    const yv = (val) => gy0 + gh - (Math.min(val, 1.6) / 1.6) * gh;
+    ctx.fillStyle = P["ink-2"]; ctx.font = FONT; ctx.fillText("Sinyal yang diterima", 10, gy0 - 12);
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, gy0); ctx.lineTo(x0, yv(0)); ctx.lineTo(x1, yv(0)); ctx.stroke();
+    ctx.strokeStyle = P["ink-3"]; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(x0, yv(0.5)); ctx.lineTo(x1, yv(0.5)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = P["ink-3"]; ctx.font = MONO; ctx.textAlign = "right"; ctx.fillText("ambang", x0 - 4, yv(0.5) + 4); ctx.textAlign = "left";
+    ctx.beginPath();
+    for (let px = x0; px <= x1; px += 1) { const y = yv(received((px - x0) / bw - 0.5, s)); px === x0 ? ctx.moveTo(px, y) : ctx.lineTo(px, y); }
+    ctx.strokeStyle = P["red-ink"]; ctx.lineWidth = 2; ctx.stroke();
+    ctx.lineTo(x1, yv(0)); ctx.lineTo(x0, yv(0)); ctx.closePath();
+    ctx.globalAlpha = 0.12; ctx.fillStyle = P.red; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = P.rule; ctx.lineWidth = 1;
+    for (let k = 1; k < BITS.length; k++) { ctx.beginPath(); ctx.moveTo(x0 + k * bw, yv(0)); ctx.lineTo(x0 + k * bw, yv(0) + 5); ctx.stroke(); }
+  }
+  function updateMode() {
+    const d = distKm(), s = sigma(d);
+    distOut.textContent = d < 1 ? Math.round((d * 1000) / 10) * 10 + " m" : JC.fmt(d, d < 10 ? 1 : 0) + " km";
+    const out = BITS.map((_, k) => (received(k, s) > 0.5 ? 1 : 0));
+    const errs = out.filter((b, k) => b !== BITS[k]).length;
+    bitsIn.innerHTML = BITS.map((b) => `<span>${b}</span>`).join("");
+    bitsOut.innerHTML = out.map((b, k) => `<span class="${b !== BITS[k] ? "err" : ""}">${b}</span>`).join("");
+    modeMsg.innerHTML = errs
+      ? `<strong>${errs} bit salah.</strong> Pulsa sudah terlalu melebar dan saling menimpa.${mode === "mm" ? " Multimode hanya cocok untuk jarak pendek." : ""}`
+      : mode === "sm"
+        ? "<strong>Data utuh.</strong> Dengan satu jalur, pulsa tetap tajam sampai puluhan kilometer."
+        : d > 0.25 ? "<strong>Data masih utuh, tapi pulsa mulai melebar.</strong> Coba tambah jaraknya." : "<strong>Data utuh.</strong> Di jarak pendek, multimode bekerja dengan baik.";
+    drawMode(performance.now() / 1000);
+  }
+  distRange.addEventListener("input", updateMode);
+  JC.seg([...document.querySelectorAll("[data-mode]")], "mode", (v) => { mode = v; updateMode(); });
+  updateMode();
+  JC.loop(modeCv, drawMode);
+
+  /* ---------- dB ---------- */
+  const dbRange = document.getElementById("dbRange");
+  const el = (id) => document.getElementById(id);
+  const fmtPct = (p) => (p >= 10 ? JC.fmt(p, 0) : p >= 1 ? JC.fmt(p, 1) : JC.fmt(p, 2)) + "%";
+  function updateDb() {
+    const d = dbRange.value / 10, frac = Math.pow(10, -d / 10), inv = 1 / frac;
+    el("dbOut").textContent = el("dbOut2").textContent = JC.fmt(d, 1) + " dB";
+    el("dbPct").textContent = fmtPct(frac * 100);
+    el("dbFill").style.width = frac * 100 + "%";
+    el("dbLost").textContent = fmtPct(100 - frac * 100);
+    el("dbFrac").textContent = d === 0 ? "utuh" : Math.abs(d - 3) < 0.05 ? "½" : inv < 1.15 ? "hampir utuh" : "1/" + (inv < 10 ? JC.fmt(inv, 1) : Math.round(inv).toLocaleString("id-ID"));
+  }
+  dbRange.addEventListener("input", updateDb);
+  document.querySelectorAll("[data-db]").forEach((b) => b.addEventListener("click", () => { dbRange.value = parseFloat(b.dataset.db) * 10; updateDb(); }));
+  updateDb();
+
+  /* ---------- tekukan ---------- */
+  const bendCv = el("bendCanvas"), bendRange = el("bendRange"), bendOut = el("bendOut"), bendMsg = el("bendMsg");
+  let fiberType = "652";
+  // perkiraan rugi per lilitan @1550 nm, dicocokkan ke batas ITU-T
+  const bendLoss = (R) => (fiberType === "652" ? 1000 * Math.exp(-0.46 * R) : 62.5 * Math.exp(-0.644 * R));
+  const MINR = { "652": 30, "657": 7.5 };
+  const bs = JC.canvas(bendCv, () => drawBend(1));
+  function drawBend(time) {
+    const { ctx, w, h } = bs, P = JC.pal;
+    ctx.clearRect(0, 0, w, h);
+    const R = +bendRange.value, loss = bendLoss(R), minR = MINR[fiberType];
+    const scale = Math.min((h - 56) / 2 / 40, (w * 0.86) / 2 / 40, 9);
+    const r = R * scale, cy = h / 2 - 6;
+    const cx = JC.clamp(w * 0.56, 40 * scale + 12, w - 40 * scale - 12);
+    ctx.font = FONT;
+    // radius minimum
+    ctx.strokeStyle = P["ink-3"]; ctx.lineWidth = 1; ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.arc(cx, cy, minR * scale, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = P["ink-3"]; ctx.textAlign = "center";
+    const ly = cy - minR * scale - 6;
+    ctx.fillText("radius minimum " + JC.fmt(minR, minR % 1 ? 1 : 0) + " mm", cx, ly < 14 ? cy + minR * scale + 16 : ly);
+    // serat: masuk kiri, satu lilitan, keluar kanan
+    const path = () => { ctx.beginPath(); ctx.moveTo(0, cy + r); ctx.lineTo(cx, cy + r); ctx.arc(cx, cy, r, Math.PI / 2, Math.PI / 2 + Math.PI * 2 - 0.001, true); ctx.lineTo(w, cy + r); };
+    ctx.lineCap = "round"; path(); ctx.strokeStyle = P.ink; ctx.lineWidth = 7; ctx.stroke();
+    path(); ctx.strokeStyle = P.glass; ctx.lineWidth = 4.6; ctx.stroke();
+    // cahaya bocor
+    const leak = JC.clamp(Math.log10(loss * 100 + 1) / 3, 0, 1);
+    const n = Math.round(leak * 24);
+    ctx.strokeStyle = P.red; ctx.lineWidth = 1.4;
+    for (let i = 0; i < n; i++) {
+      const a = Math.PI / 2 - (i / Math.max(n, 1)) * Math.PI * 2 + 0.3 * Math.sin(i * 7.1);
+      const len = 10 + 34 * leak * (0.5 + 0.5 * Math.sin(i * 3.3 + (JC.reduced ? 0 : time * 4)));
+      const x0 = cx + Math.cos(a) * (r + 4), y0 = cy + Math.sin(a) * (r + 4);
+      const dx = Math.cos(a) * 0.6 + Math.sin(a), dy = Math.sin(a) * 0.6 - Math.cos(a);
+      const m = Math.hypot(dx, dy);
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + (dx / m) * len, y0 + (dy / m) * len); ctx.stroke();
+    }
+    // pulsa cahaya
+    const remain = Math.pow(10, -Math.min(loss, 30) / 10);
+    const total = cx + Math.PI * 2 * r + (w - cx);
+    const dd = (JC.reduced ? 0.3 : (time * 0.35) % 1) * total;
+    let px, py;
+    if (dd < cx) { px = dd; py = cy + r; }
+    else if (dd < cx + Math.PI * 2 * r) { const a = Math.PI / 2 + (dd - cx) / r; px = cx + Math.cos(a) * r; py = cy + Math.sin(a) * r; }
+    else { px = cx + (dd - cx - Math.PI * 2 * r); py = cy + r; }
+    ctx.globalAlpha = dd > cx + Math.PI * 2 * r ? Math.max(remain, 0.1) : 1;
+    ctx.fillStyle = P.red; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+    // ukuran radius
+    const ax = cx + r * Math.cos(-0.7), ay = cy + r * Math.sin(-0.7);
+    ctx.strokeStyle = P["red-ink"]; ctx.fillStyle = P["red-ink"]; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ax, ay); ctx.stroke();
+    ctx.save(); ctx.translate(ax, ay); ctx.rotate(-0.7); ctx.beginPath(); ctx.moveTo(-4, 0); ctx.lineTo(-12, -3.5); ctx.lineTo(-12, 3.5); ctx.closePath(); ctx.fill(); ctx.restore();
+    ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.textAlign = "left"; ctx.fillText("R " + JC.fmt(R, R % 1 ? 1 : 0) + " mm", cx + 8, cy + 16);
+  }
+  function updateBend() {
+    const R = +bendRange.value, loss = bendLoss(R), min = MINR[fiberType];
+    bendOut.textContent = JC.fmt(R, R % 1 ? 1 : 0) + " mm";
+    const lossTxt = loss < 0.01 ? "< 0,01 dB" : loss > 30 ? "> 30 dB" : "±" + JC.fmt(loss, loss < 1 ? 2 : 1) + " dB";
+    const verdict = R >= min ? "<strong>Aman.</strong> Radius di atas batas minimum." : loss < 0.5 ? "<strong>Mulai riskan.</strong> Di bawah radius minimum, redaman naik cepat." : "<strong>Cahaya bocor.</strong> Tekukan setajam ini bisa membuat pelanggan putus, dan seratnya bisa retak.";
+    bendMsg.innerHTML = `Rugi tekukan ${lossTxt} per lilitan. ${verdict}`;
+    drawBend(performance.now() / 1000);
+  }
+  bendRange.addEventListener("input", updateBend);
+  JC.seg([...document.querySelectorAll("[data-bend]")], "bend", (v) => { fiberType = v; updateBend(); });
+  updateBend();
+  JC.loop(bendCv, drawBend);
+
+  /* ---------- poles ferrule ---------- */
+  const polCv = el("polishCanvas"), polMsg = el("polishMsg");
+  let pol = "upc";
+  const POL_MSG = {
+    upc: "<strong>UPC (Ultra Physical Contact)</strong>: ujung dipoles datar sedikit cembung. Pantulan kecil kembali lurus ke core, menuju pemancar. Return loss ≥ 50 dB. Badan konektor <strong>biru</strong>.",
+    apc: "<strong>APC (Angled Physical Contact)</strong>: ujung dipoles miring 8°. Pantulan dibelokkan keluar dari core sehingga tidak kembali ke pemancar. Return loss ≥ 60 dB. Badan konektor <strong>hijau</strong>. Wajib untuk layanan video RF overlay.",
+    mix: "<strong>Salah pasang.</strong> Ujung miring bertemu ujung datar: ada celah udara, cahaya banyak hilang, dan kedua ujung ferrule bisa tergores. Jangan pernah mencampur APC dengan UPC.",
+  };
+  const ps = JC.canvas(polCv, () => drawPol(1), 460);
+  // ferrule terpotong: arsir keramik, serat di tengah. dir=1 ujung di kanan
+  function ferrule(ctx, x0, x1, cy, fh, angleDeg, dir) {
+    const P = JC.pal, off = (Math.tan((angleDeg * Math.PI) / 180) * fh) / 2;
+    const shape = () => { ctx.beginPath(); ctx.moveTo(x0, cy - fh / 2); ctx.lineTo(x1 + dir * off, cy - fh / 2); ctx.lineTo(x1 - dir * off, cy + fh / 2); ctx.lineTo(x0, cy + fh / 2); ctx.closePath(); };
+    shape(); ctx.fillStyle = P.paper; ctx.fill(); ctx.fillStyle = JC.hatch(ctx, P.hatch, 7); ctx.fill();
+    ctx.save(); shape(); ctx.clip();
+    ctx.fillStyle = P.glass; ctx.fillRect(Math.min(x0, x1) - 20, cy - 9, Math.abs(x1 - x0) + 40, 18);
+    ctx.fillStyle = P["glass-2"]; ctx.fillRect(Math.min(x0, x1) - 20, cy - 3, Math.abs(x1 - x0) + 40, 6);
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.moveTo(Math.min(x0, x1) - 20, cy - 9); ctx.lineTo(Math.max(x0, x1) + 20, cy - 9); ctx.moveTo(Math.min(x0, x1) - 20, cy + 9); ctx.lineTo(Math.max(x0, x1) + 20, cy + 9); ctx.stroke();
+    ctx.restore();
+    shape(); ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5; ctx.stroke();
+    return off;
+  }
+  function drawPol(time) {
+    const { ctx, w, h } = ps, P = JC.pal;
+    ctx.clearRect(0, 0, w, h);
+    const cy = h / 2, fh = Math.min(110, h * 0.55), ex = w * 0.5;
+    ctx.font = "600 14px 'Public Sans', sans-serif"; ctx.lineCap = "butt";
+    const flow = JC.reduced ? 0.5 : (time * 0.6) % 1;
+    const beam = (xa, xb, alpha = 1) => { ctx.globalAlpha = alpha; ctx.strokeStyle = P.red; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(xa, cy); ctx.lineTo(xb, cy); ctx.stroke(); ctx.globalAlpha = 1; };
+    if (pol === "mix") {
+      const off = ferrule(ctx, 16, ex - 6, cy, fh, 8, 1);
+      ferrule(ctx, w - 16, ex + 12, cy, fh, 0, -1);
+      ctx.save(); ctx.beginPath(); ctx.moveTo(ex - 6 + off, cy - fh / 2); ctx.lineTo(ex + 12, cy - fh / 2); ctx.lineTo(ex + 12, cy + fh / 2); ctx.lineTo(ex - 6 - off, cy + fh / 2); ctx.closePath();
+      ctx.fillStyle = JC.hatch(ctx, P.red, 5); ctx.fill(); ctx.restore();
+      beam(16, ex - 6); beam(ex + 12, w - 16, 0.3);
+      ctx.strokeStyle = P.red; ctx.lineWidth = 1.4;
+      [-1, 1].forEach((sg) => { ctx.beginPath(); ctx.moveTo(ex + 2, cy); ctx.lineTo(ex + 26, cy + sg * 32); ctx.stroke(); });
+      ctx.fillStyle = P["red-ink"]; ctx.textAlign = "center"; ctx.fillText("celah udara", ex + 3, cy - fh / 2 - 10);
+      ctx.fillStyle = P["ink-2"]; ctx.fillText("APC", ex * 0.5, cy + fh / 2 + 20); ctx.fillText("UPC", ex + (w - ex) * 0.5, cy + fh / 2 + 20);
+      ctx.textAlign = "left"; return;
+    }
+    const ang = pol === "apc" ? 8 : 0;
+    const off = ferrule(ctx, 16, ex, cy, fh, ang, 1);
+    beam(16, ex); beam(ex + 4, w - 16, 0.85);
+    ctx.fillStyle = P["ink-2"]; ctx.textAlign = "left";
+    ctx.fillText("ferrule keramik (dipotong)", 20, cy - fh / 2 - 10);
+    ctx.fillText("cahaya diteruskan →", ex + 18, cy + 24);
+    if (ang) {
+      // ukuran sudut 8°
+      ctx.strokeStyle = P["ink-3"]; ctx.setLineDash([4, 3]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(ex, cy - fh / 2 - 26); ctx.lineTo(ex, cy + fh / 2 + 6); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = P["red-ink"]; ctx.beginPath(); ctx.arc(ex, cy, fh / 2 + 18, -Math.PI / 2, -Math.PI / 2 + (8 * Math.PI) / 180); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ex - off * 1.1, cy + fh / 2 + 4); ctx.lineTo(ex + off * 1.55, cy - fh / 2 - 22); ctx.stroke();
+      ctx.fillStyle = P["red-ink"]; ctx.fillText("8°", ex + 12, cy - fh / 2 - 22);
+    } else {
+      ctx.fillStyle = P["ink-2"]; ctx.textAlign = "left"; ctx.fillText("ujung datar", ex + 8, cy - fh / 2 - 10);
+    }
+    // pantulan
+    ctx.strokeStyle = P.red; ctx.lineWidth = 1.6; ctx.setLineDash([6, 5]); ctx.lineDashOffset = flow * 22;
+    ctx.beginPath();
+    let tx, ty;
+    if (pol === "upc") { ctx.moveTo(ex - 2, cy - 6); tx = 70; ty = cy - 6; ctx.lineTo(tx, ty); }
+    else { const a = (16 * Math.PI) / 180, L = Math.min(ex - 70, (fh / 2 + 30) / Math.sin(a)); ctx.moveTo(ex - 2, cy); tx = ex - 2 - Math.cos(a) * L; ty = cy + Math.sin(a) * L; ctx.lineTo(tx, ty); }
+    ctx.stroke(); ctx.setLineDash([]);
+    const lbl = pol === "upc" ? "← pantulan balik ke core" : "← pantulan keluar dari core";
+    const lx = pol === "upc" ? 36 : Math.max(20, tx - 20), lyy = pol === "upc" ? cy - 16 : Math.min(ty + 18, h - 8);
+    ctx.fillStyle = P.paper; ctx.fillRect(lx - 4, lyy - 13, ctx.measureText(lbl).width + 8, 18);
+    ctx.fillStyle = P["red-ink"];
+    ctx.fillText(lbl, lx, lyy);
+  }
+  JC.seg([...document.querySelectorAll("[data-pol]")], "pol", (v) => { pol = v; polMsg.innerHTML = POL_MSG[v]; drawPol(performance.now() / 1000); });
+  polMsg.innerHTML = POL_MSG.upc;
+  JC.loop(polCv, drawPol);
+})();
+</script>
+<script>
+/* tools.js */
+/* Jalur Cahaya · Tahap 1 — anggaran redaman FTTH & konektor */
+(function () {
+  const JC = window.JC;
+  const tip = document.getElementById("tip");
+
+  /* ---------- anggaran redaman ---------- */
+  const SPLIT = { "0": 0, "2": 3.7, "4": 7.3, "8": 10.5, "16": 13.8 };
+  const SENS = -27, OVER = -8;
+  const st = { tx: 3, km: 7.5, splice: 6, conn: 4, odc: "4", odp: "8" };
+  const ITEMS = [
+    { key: "km", name: "Kabel", color: "--s1", loss: () => st.km * 0.35, detail: () => `${JC.fmt(st.km, 1)} km × 0,35 dB/km` },
+    { key: "splice", name: "Sambungan fusion", color: "--s2", loss: () => st.splice * 0.1, detail: () => `${st.splice} × 0,1 dB` },
+    { key: "conn", name: "Konektor", color: "--s3", loss: () => st.conn * 0.5, detail: () => `${st.conn} pasang × 0,5 dB` },
+    { key: "odc", name: "Splitter ODC", color: "--s4", loss: () => SPLIT[st.odc], detail: () => (st.odc === "0" ? "tanpa splitter" : `1:${st.odc}`) },
+    { key: "odp", name: "Splitter ODP", color: "--s5", loss: () => SPLIT[st.odp], detail: () => (st.odp === "0" ? "tanpa splitter" : `1:${st.odp}`) },
+  ];
+  const body = document.getElementById("btBody");
+  const stepper = (id, label) => `<div class="stepper"><button type="button" data-step="${id}" data-d="-1" aria-label="Kurangi ${label}">−</button><output id="${id}"></output><button type="button" data-step="${id}" data-d="1" aria-label="Tambah ${label}">+</button></div>`;
+  const select = (id, opts) => `<select id="${id}" aria-label="Rasio splitter">${opts.map((o) => `<option value="${o}" ${st[id.slice(2)] === o ? "selected" : ""}>${o === "0" ? "Tanpa" : "1:" + o}</option>`).join("")}</select>`;
+  const row = (key, color, label, sub, ctl) => `<tr><td>${color ? `<i class="key" style="background:var(${color})"></i>` : ""}${label}<small>${sub}</small></td><td>${ctl}</td><td class="num" id="v-${key}"></td></tr>`;
+  body.innerHTML =
+    row("tx", null, "Daya kirim OLT", "GPON B+: +1,5 s.d. +5 dBm", stepper("b-tx", "daya kirim")) +
+    row("km", "--s1", "Kabel", "0,35 dB per km", stepper("b-km", "panjang kabel")) +
+    row("splice", "--s2", "Sambungan fusion", "0,1 dB per sambungan", stepper("b-splice", "sambungan")) +
+    row("conn", "--s3", "Pasang konektor", "0,5 dB per pasang", stepper("b-conn", "konektor")) +
+    row("odc", "--s4", "Splitter di ODC", "tahap 1", select("b-odc", ["0", "2", "4", "8"])) +
+    row("odp", "--s5", "Splitter di ODP", "tahap 2", select("b-odp", ["0", "2", "4", "8", "16"]));
+  const LIMIT = { tx: [1.5, 5, 0.5], km: [0, 20, 0.5], splice: [0, 30, 1], conn: [0, 12, 1] };
+  body.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
+    const k = b.dataset.step.slice(2), [lo, hi, step] = LIMIT[k];
+    st[k] = JC.clamp(Math.round((st[k] + step * +b.dataset.d) * 10) / 10, lo, hi);
+    renderBudget();
+  }));
+  ["odc", "odp"].forEach((k) => document.getElementById("b-" + k).addEventListener("change", (e) => { st[k] = e.target.value; renderBudget(); }));
+
+  const stack = document.getElementById("stack"), legend = document.getElementById("legend"), scale = document.getElementById("scale");
+  const rxVal = document.getElementById("rxVal"), rxPill = document.getElementById("rxPill"), rxMsg = document.getElementById("rxMsg");
+  const budgetTotal = document.getElementById("budgetTotal");
+  const sgn = (v, d = 1) => (v > 0 ? "+" : "") + JC.fmt(v, d);
+
+  // skala daya terima
+  const S0 = -35, S1 = 5, pos = (v) => ((JC.clamp(v, S0, S1) - S0) / (S1 - S0)) * 100;
+  const zones = [[S0, SENS, "var(--bad)"], [SENS, -24, "var(--warn)"], [-24, OVER, "var(--ok)"], [OVER, S1, "var(--warn)"]];
+  const ticks = [-35, -27, -20, -8, 0, 5];
+  scale.innerHTML = `<div class="zones">${zones.map(([a, b, c]) => `<div style="width:${pos(b) - pos(a)}%;background:${c}"></div>`).join("")}</div>
+    <div class="marker" id="rxMarker"></div>
+    <div class="tk">${ticks.map((t, i) => `<span style="left:${pos(t)}%;${i === 0 ? "transform:none" : i === ticks.length - 1 ? "transform:translateX(-100%)" : ""}">${sgn(t, 0)}</span>`).join("")}</div>`;
+  const rxMarker = document.getElementById("rxMarker");
+
+  function renderBudget() {
+    document.getElementById("b-tx").textContent = sgn(st.tx) + " dBm";
+    document.getElementById("b-km").textContent = JC.fmt(st.km, 1) + " km";
+    document.getElementById("b-splice").textContent = st.splice;
+    document.getElementById("b-conn").textContent = st.conn;
+    const parts = ITEMS.map((it) => ({ ...it, v: it.loss() }));
+    const loss = parts.reduce((a, p) => a + p.v, 0);
+    document.getElementById("v-tx").textContent = sgn(st.tx) + " dBm";
+    parts.forEach((p) => (document.getElementById("v-" + p.key).textContent = JC.fmt(p.v, 2) + " dB"));
+    document.getElementById("btTotal").textContent = JC.fmt(loss, 2) + " dB";
+    const budget = st.tx - SENS, rx = st.tx - loss, margin = budget - loss;
+    const max = Math.max(budget, loss);
+    budgetTotal.textContent = JC.fmt(budget, 1) + " dB";
+    stack.style.position = "relative";
+    stack.innerHTML = parts.filter((p) => p.v > 0).map((p) => `<div data-tip="${p.name}: ${JC.fmt(p.v, 2)} dB (${p.detail()})" style="width:${(p.v / max) * 100}%;background:var(${p.color})"></div>`).join("") +
+      (margin > 0 ? `<div class="margin" data-tip="Cadangan: ${JC.fmt(margin, 1)} dB" style="width:${(margin / max) * 100}%"></div>` : "") +
+      (margin < 0 ? `<span style="position:absolute;left:${(budget / max) * 100}%;top:-6px;bottom:-6px;width:2px;background:var(--bad)"></span>` : "");
+    legend.innerHTML = parts.map((p) => `<span><i style="background:var(${p.color})"></i>${p.name} <b>${JC.fmt(p.v, 1)}</b></span>`).join("") +
+      `<span><i style="background:var(--bg-3);border:1px dashed var(--fg-3)"></i>${margin >= 0 ? "Cadangan" : "Kekurangan"} <b>${JC.fmt(Math.abs(margin), 1)}</b></span>` +
+      `<span>Total redaman <b>${JC.fmt(loss, 1)} dB</b></span>`;
+    rxVal.textContent = sgn(rx) + " dBm";
+    rxMarker.style.left = pos(rx) + "%";
+    let cls, label, msg;
+    if (rx > OVER) { cls = "warn"; label = "Terlalu kuat"; msg = "Di atas −8 dBm, penerima ONT bisa jenuh. Biasanya terjadi pada jarak sangat dekat tanpa splitter. Solusinya pasang attenuator."; }
+    else if (rx >= -24) { cls = "ok"; label = "Aman"; msg = `Masih ada cadangan ${JC.fmt(margin, 1)} dB sebelum batas −27 dBm.`; }
+    else if (rx >= SENS) { cls = "warn"; label = "Mepet"; msg = `Cadangan tinggal ${JC.fmt(margin, 1)} dB. Sedikit debu di konektor atau satu tekukan tajam bisa membuat layanan putus.`; }
+    else { cls = "bad"; label = "Tidak cukup"; msg = `Kurang ${JC.fmt(-margin, 1)} dB. Kurangi sambungan dan konektor, perpendek jalur, atau pakai splitter dengan rasio lebih kecil.`; }
+    rxPill.className = "verdict " + cls; rxPill.textContent = (cls === "ok" ? "✓ " : cls === "bad" ? "✕ " : "! ") + label;
+    rxMsg.textContent = msg;
+  }
+  let tipTimer = 0;
+  stack.addEventListener("pointerdown", (e) => { clearTimeout(tipTimer); showTip(e); tipTimer = setTimeout(() => (tip.hidden = true), 2200); });
+  stack.addEventListener("pointermove", showTip);
+  function showTip(e) {
+    const d = e.target.closest("[data-tip]");
+    if (!d) { tip.hidden = true; return; }
+    tip.textContent = d.dataset.tip; tip.hidden = false;
+    const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8);
+    tip.style.left = Math.max(8, x) + "px"; tip.style.top = e.clientY - 38 + "px";
+  }
+  stack.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") tip.hidden = true; });
+  renderBudget();
+
+  /* ---------- konektor ---------- */
+  const art = document.getElementById("connArt"), info = document.getElementById("connInfo");
+  const CABLE = `<rect x="0" y="94" width="78" height="12" fill="#e9b800" class="ln"/><path d="M78 92 L132 85 L132 115 L78 108 Z" fill="#59636a" class="ln"/>`;
+  const lbl = (x1, y1, x2, y2, t, anchor = "start") => `<path d="M${x1} ${y1} L${x2} ${y2}" class="ln-thin"/><circle cx="${x1}" cy="${y1}" r="1.8" class="f-ink"/><text x="${x2 + (anchor === "end" ? -4 : 4)}" y="${y2 + 4}" class="txt-2" text-anchor="${anchor}">${t}</text>`;
+  const FER = (x, w, hh = 14) => `<rect x="${x}" y="${100 - hh / 2}" width="${w}" height="${hh}" fill="#ecebe4" class="ln"/><path d="M${x + w} ${100 - hh / 2 - 6} V${100 + hh / 2 + 6}" class="ln-thin" stroke-dasharray="3 2"/>`;
+  const CONN = {
+    SC: {
+      svg: `${CABLE}<rect x="132" y="70" width="118" height="60" rx="2" fill="#2563c9" class="ln"/><path d="M140 80 H242 M140 120 H242" class="ln-thin"/>${FER(250, 44)}` +
+        lbl(282, 93, 300, 52, "ferrule Ø 2,5 mm") + lbl(200, 130, 220, 166, "badan kotak, push-pull"),
+      desc: "Badan kotak. Cukup didorong sampai klik, ditarik untuk dilepas. Paling sering ditemui di jaringan FTTH.",
+      dl: [["Ferrule", "Ø 2,5 mm"], ["Kunci", "Push-pull"], ["Dipakai di", "ODP, ODC, OTB, ONT pelanggan"]],
+    },
+    LC: {
+      svg: `${CABLE}<rect x="132" y="82" width="86" height="36" rx="2" fill="#2563c9" class="ln"/><path d="M150 82 L208 62 L213 66 L162 84" fill="#1d4fa3" class="ln"/>${FER(218, 32, 8)}` +
+        lbl(236, 96, 262, 60, "ferrule Ø 1,25 mm") + lbl(190, 70, 170, 34, "pengait (latch)") + lbl(176, 118, 196, 160, "setengah ukuran SC"),
+      desc: "Ukurannya separuh SC, dengan pengait seperti colokan LAN (RJ45). Hemat tempat, jadi banyak port muat di satu panel.",
+      dl: [["Ferrule", "Ø 1,25 mm"], ["Kunci", "Pengait (latch)"], ["Dipakai di", "Modul SFP di OLT & switch, data center, patch panel padat"]],
+    },
+    FC: {
+      svg: `${CABLE}<rect x="132" y="82" width="22" height="36" fill="#6b757c" class="ln"/><rect x="154" y="66" width="80" height="68" rx="3" fill="#a9b2b8" class="ln"/>` +
+        Array.from({ length: 9 }, (_, i) => `<path d="M${162 + i * 8} 67 L${158 + i * 8} 133" class="ln-thin"/>`).join("") +
+        FER(234, 40) + lbl(264, 93, 284, 52, "ferrule Ø 2,5 mm") + lbl(194, 134, 214, 168, "mur ulir logam"),
+      desc: "Badan logam dengan mur ulir yang diputar sampai kencang. Kuat terhadap getaran, tetapi lebih lama dipasang.",
+      dl: [["Ferrule", "Ø 2,5 mm"], ["Kunci", "Ulir (diputar)"], ["Dipakai di", "Alat ukur (OTDR, OPM), perangkat transmisi lama"]],
+    },
+    ST: {
+      svg: `${CABLE}<rect x="132" y="72" width="100" height="56" rx="10" fill="#b4bcc1" class="ln"/><path d="M200 72 V92 H220" fill="none" class="ln" stroke-width="5"/>${FER(232, 40)}` +
+        lbl(262, 93, 282, 52, "ferrule Ø 2,5 mm") + lbl(214, 92, 236, 36, "alur bayonet") + lbl(180, 128, 200, 166, "dorong lalu putar ¼"),
+      desc: "Badan bulat dengan kunci bayonet: dorong, lalu putar seperempat putaran sampai terkunci.",
+      dl: [["Ferrule", "Ø 2,5 mm"], ["Kunci", "Bayonet"], ["Dipakai di", "Jaringan lama, multimode di kampus dan gedung"]],
+    },
+  };
+  function renderConn(k) {
+    const c = CONN[k];
+    art.innerHTML = `<svg viewBox="0 0 430 190" role="img" aria-label="Gambar konektor ${k} tampak samping">${c.svg}</svg>`;
+    info.innerHTML = `<h3>${k}</h3><p>${c.desc}</p><dl>${c.dl.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>`;
+  }
+  JC.seg([...document.querySelectorAll("[data-conn]")], "conn", renderConn);
+  renderConn("SC");
+})();
+</script>
+<script>
+/* quiz.js */
+/* Jalur Cahaya · Tahap 1 — kuis akhir */
+(function () {
+  const JC = window.JC;
+  const Q = [
+    { q: "Kenapa kamu tidak boleh mengintip ujung konektor yang tersambung ke OLT?", o: ["Cahayanya terlalu terang dan menyilaukan", "Cahaya 1310–1550 nm tidak terlihat, tapi tetap bisa merusak retina", "Napas bisa membuat ujung konektor kotor", "Boleh, asal hanya sebentar"], a: 1, e: "Inframerah tidak terlihat dan tidak memicu refleks berkedip. Pastikan serat hidup dengan OPM." },
+    { q: "Ke mana sisa potongan serat setelah cleaving dibuang?", o: ["Tempat sampah biasa", "Ke lantai, nanti disapu", "Wadah khusus bertutup", "Dikantongi dulu"], a: 2, e: "Serpihan bening dan tajam. Simpan di wadah bertutup supaya tidak menusuk siapa pun." },
+    { q: "Diameter cladding serat optik standar adalah…", o: ["9 µm", "50 µm", "125 µm", "250 µm"], a: 2, e: "125 µm, sama untuk single-mode dan multimode. 9 µm adalah core SM, 250 µm adalah coating." },
+    { q: "Patchcord dengan jaket kuning biasanya adalah…", o: ["Multimode OM3", "Single-mode", "Multimode OM1", "Kabel daya"], a: 1, e: "Kuning = single-mode. Aqua untuk OM3/OM4, oranye untuk OM1/OM2." },
+    { q: "Core nomor 10 dalam satu tabung berwarna…", o: ["Hitam", "Ungu", "Toska", "Kuning"], a: 1, e: "Kelompok kedua: Merah (7), Hitam (8), Kuning (9), Ungu (10), Merah muda (11), Toska (12)." },
+    { q: "Kabel 6 tabung × 12 core. Core nomor 30 ada di…", o: ["Tabung 2 (oranye), core 6 (putih)", "Tabung 3 (hijau), core 6 (putih)", "Tabung 3 (hijau), core 3 (hijau)", "Tabung 5 (abu-abu), core 6 (putih)"], a: 1, e: "Tabung = ⌈30 ÷ 12⌉ = 3 (hijau). Urutan = 30 − 24 = 6 (putih)." },
+    { q: "Redaman 10 dB berarti cahaya yang tersisa…", o: ["90%", "50%", "10%", "1%"], a: 2, e: "10 dB = sepersepuluh. 3 dB ≈ separuh, 20 dB = seperseratus." },
+    { q: "OLT mengirim +3 dBm, total redaman jalur 25 dB. Berapa daya yang diterima ONT?", o: ["−22 dBm", "−28 dBm", "+28 dBm", "−25 dBm"], a: 0, e: "Daya terima = daya kirim − redaman = +3 − 25 = −22 dBm." },
+    { q: "Konektor dengan badan berwarna hijau artinya…", o: ["Poles UPC", "Poles APC (miring 8°)", "Multimode", "Konektor rusak"], a: 1, e: "Hijau = APC, biru = UPC. Keduanya tidak boleh disambungkan satu sama lain." },
+  ];
+  const el = document.getElementById("quiz"), scoreEl = document.getElementById("score");
+  let ans = [];
+  function render() {
+    el.innerHTML = Q.map((it, i) => {
+      const done = ans[i] !== undefined;
+      const opts = it.o.map((o, k) => {
+        let cls = "", m = "";
+        if (done) { if (k === it.a) { cls = "right"; m = "✓"; } else if (k === ans[i]) { cls = "wrong"; m = "✕"; } }
+        return `<button type="button" id="q${i}-${k}" data-q="${i}" data-k="${k}" class="${cls}" ${done ? "disabled" : ""}><span class="l">${"ABCD"[k]}</span><span>${o}</span><span class="m" aria-hidden="true">${m}</span></button>`;
+      }).join("");
+      const exp = done ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
+      return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${opts}</div>${exp}</div>`;
+    }).join("");
+    el.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; render(); });
+    const n = ans.filter((v) => v !== undefined).length;
+    if (n === Q.length) {
+      const ok = Q.filter((it, i) => ans[i] === it.a).length;
+      const best = Math.max(ok, JC.store.get("best", 0));
+      JC.store.set("best", best);
+      scoreEl.hidden = false;
+      scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${Q.length}">${ok}/${Q.length}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === Q.length ? "Lulus sempurna. Siap lanjut ke Tahap 2." : ok >= 7 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${Q.length}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
+      document.getElementById("quizAgain").onclick = () => { ans = []; scoreEl.hidden = true; render(); el.scrollIntoView({ block: "start" }); };
+    } else scoreEl.hidden = true;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
