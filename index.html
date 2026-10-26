@@ -217,10 +217,12 @@ input[type="range"] { width: 100%; accent-color: var(--red); }
 .dive { position: relative; }
 .dive-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
 .dive-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: auto auto; min-width: 230px; }
-.dive-hud div { padding: 6px 10px; display: grid; gap: 0; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); }
-.dive-hud div:nth-child(-n+2) { border-top: 0; }
-.dive-hud div:nth-child(odd) { border-left: 0; }
+.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: 1fr 1fr; min-width: 250px; z-index: 3; }
+.dive-hud > div { padding: 6px 10px; display: grid; gap: 0; border-top: 1px solid var(--ink); min-width: 0; }
+.dive-hud > div:first-child { border-top: 0; }
+.dive-hud .h-scale, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+.dive-hud label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud select { font: inherit; font-weight: 650; font-size: 1rem; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); padding: 4px 6px; width: 100%; margin-top: 2px; }
 .dive-hud small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .dive-hud b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
 .dive-hud .wide { grid-column: 1 / -1; }
@@ -241,10 +243,26 @@ input[type="range"] { width: 100%; accent-color: var(--red); }
   .dive-step { align-items: flex-end; padding-bottom: 5vh; }
   .dive-card { max-width: none; width: 100%; padding: 14px 16px; }
   .dive-hud { min-width: 0; left: max(16px, env(safe-area-inset-left, 0px)); grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .dive-hud div { border-top: 0; border-left: 1px solid var(--ink); }
-  .dive-hud div:first-child, .dive-hud .wide { display: none; }
-  .dive-hud div:nth-child(2) { border-left: 0; }
+  .dive-hud .h-view, .dive-hud .h-bar { display: none; }
+  .dive-hud .h-sel { display: flex; align-items: center; gap: 10px; padding-block: 5px; }
+  .dive-hud .h-sel label { flex: none; }
+  .dive-hud .h-sel select { margin-top: 0; }
+  .dive-hud .h-scale { border-left: 0; }
+  .dive-hud .h-w, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
 }
+
+/* katalog jenis kabel */
+.cable-cat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 900px) { .cable-cat { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.cable-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 8px 8px 10px; display: grid; gap: 2px; text-align: left; cursor: pointer; align-content: start; }
+.cable-btn canvas { width: 100%; height: auto; aspect-ratio: 1 / 1; display: block; margin-bottom: 6px; }
+.cable-btn b { font-weight: 650; font-size: .9375rem; line-height: 1.25; }
+.cable-btn span { font-size: .8125rem; color: var(--ink-3); line-height: 1.3; }
+.cable-btn:hover { background: var(--paper-2); }
+.cable-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--ink); }
+.dive-intro .col { display: grid; gap: 14px; }
+.dive-after .block { margin-top: 0; padding-block: 56px 0; }
+@media (max-width: 600px) { .cable-cat { grid-template-columns: 1fr 1fr; } }
 
 /* ---------- SM vs MM ---------- */
 .bits { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 13px; }
@@ -638,25 +656,28 @@ footer { font-size: 1rem; }
     <div class="col chapter-head" style="margin-bottom:0">
       <p class="chapter-no" style="--c:var(--c2)"><i></i>1.2 · Struktur kabel &amp; core</p>
       <h2>Masuk ke dalam kabel</h2>
-      <div class="prose"><p>Kita potong melintang sebuah kabel duct 72 core, lalu masuk lapis demi lapis sampai ke tempat cahaya berjalan. Semua lapisan digambar dengan perbandingan ukuran yang sebenarnya. Perhatikan <strong>skala</strong> dan <strong>lebar pandang</strong> di kotak kanan atas: dari milimeter turun ke mikrometer (1 mm = 1.000 µm).</p></div>
+      <div class="prose"><p>Setiap jenis kabel punya susunan lapisan yang berbeda, sesuai tempat pemasangannya: di dalam pipa, di tiang, di dalam tanah, sampai ke rumah pelanggan. Pilih satu jenis, lalu gulir untuk masuk lapis demi lapis sampai ke tempat cahaya berjalan.</p><p>Semua digambar dengan perbandingan ukuran yang sebenarnya. Perhatikan <strong>skala</strong> dan <strong>lebar pandang</strong> di kotak kanan atas: dari milimeter turun ke mikrometer (1 mm = 1.000 µm).</p></div>
+      <div class="cable-cat" id="cableCat" role="group" aria-label="Jenis kabel"></div>
+      <p class="small">Ukuran mengikuti contoh kabel yang umum dipakai; tiap pabrikan sedikit berbeda.</p>
     </div>
   </div>
   <div class="dive-scroll">
     <div class="dive-stage">
       <canvas id="diveCanvas" aria-label="Penampang kabel fiber optik yang diperbesar sesuai posisi gulir" role="img"></canvas>
-      <div class="dive-hud" aria-live="polite">
-        <div><small>Tampilan</small><b id="diveView">Potongan A–A</b></div>
-        <div><small>Skala</small><b id="diveScale" class="mono">13:1</b></div>
-        <div><small>Lebar pandang</small><b id="diveW">12,5 mm</b></div>
-        <div><small>Lapisan</small><b id="diveLayer">Kabel utuh</b></div>
-        <div class="wide"><div class="scalebar"><i id="scaleBar" style="width:60px"></i><span id="scaleLabel">2 mm</span></div></div>
+      <div class="dive-hud">
+        <div class="h-sel wide"><label for="cableSel">Jenis kabel</label><select id="cableSel"></select></div>
+        <div class="h-view"><small>Tampilan</small><b id="diveView">Potongan A–A</b></div>
+        <div class="h-scale"><small>Skala</small><b id="diveScale" class="mono">13:1</b></div>
+        <div class="h-w"><small>Lebar pandang</small><b id="diveW">15 mm</b></div>
+        <div class="h-layer"><small>Lapisan</small><b id="diveLayer" aria-live="polite">Kabel utuh</b></div>
+        <div class="h-bar wide"><div class="scalebar"><i id="scaleBar" style="width:60px"></i><span id="scaleLabel">2 mm</span></div></div>
       </div>
     </div>
     <div class="dive-steps wrap">
-      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Ø 10 mm · kabel utuh</p><h3>Penampang kabel</h3><p>Kabel loose tube untuk duct. Ada 6 tabung, tiap tabung berisi 12 serat, jadi totalnya 72 core.</p><ol><li><b>1</b>Jaket luar</li><li><b>2</b>Benang aramid</li><li><b>3</b>Tabung berisi gel</li><li><b>4</b>Serat</li><li><b>5</b>Batang FRP</li></ol><p>Gulir untuk masuk.</p></div></div>
-      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 1</p><h3>Jaket luar (sheath)</h3><p>Plastik PE hitam setebal ±1,2 mm. Pelindung pertama dari air, sinar UV matahari, dan gesekan waktu kabel ditarik di dalam pipa. Pada gambar, bagian yang terpotong diberi arsir.</p></div></div>
-      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 2</p><h3>Penguat (strength member)</h3><p>Batang FRP di tengah dan benang aramid (kevlar) di bawah jaket. Bagian inilah yang menahan tarikan, bukan kacanya. Waktu menarik atau menggantung kabel, beban harus jatuh ke penguat.</p></div></div>
-      <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 3</p><h3>Tabung (loose tube)</h3><p>Diameter ±2,2 mm, berisi gel anti-air. Seratnya dibiarkan longgar supaya tidak tertekan saat kabel memuai atau menyusut. Warna tabung ikut kode warna: tabung pertama biru.</p></div></div>
+      <div class="dive-step"><div class="dive-card" data-card="0"><p class="chapter-no" style="--c:var(--c2)"><i></i>Ø 10 mm · 72 core</p><h3>Kabel duct</h3><p>Kabel loose tube yang ditarik di dalam pipa HDPE di bawah tanah, biasanya untuk jalur feeder dari STO ke ODC. Contoh ini punya 6 tabung × 12 serat.</p><ol><li><b>1</b>Jaket luar</li><li><b>2</b>Benang aramid</li><li><b>3</b>Tabung berisi gel</li><li><b>4</b>Serat</li><li><b>5</b>Batang FRP</li></ol><p>Gulir untuk masuk.</p></div></div>
+      <div class="dive-step"><div class="dive-card" data-card="1"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 1</p><h3>Jaket luar (sheath)</h3><p>Plastik PE hitam setebal ±1,2 mm. Pelindung pertama dari air, sinar UV matahari, dan gesekan waktu kabel ditarik di dalam pipa. Pada gambar, bagian yang terpotong diberi arsir.</p></div></div>
+      <div class="dive-step"><div class="dive-card" data-card="2"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 2</p><h3>Penguat (strength member)</h3><p>Batang FRP di tengah dan benang aramid (kevlar) di bawah jaket. Bagian inilah yang menahan tarikan, bukan kacanya. Waktu menarik atau menggantung kabel, beban harus jatuh ke penguat.</p></div></div>
+      <div class="dive-step"><div class="dive-card" data-card="3"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 3</p><h3>Tabung (loose tube)</h3><p>Diameter ±2,2 mm, berisi gel anti-air. Seratnya dibiarkan longgar supaya tidak tertekan saat kabel memuai atau menyusut. Warna tabung ikut kode warna: tabung pertama biru.</p></div></div>
       <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 4</p><h3>Coating 250 µm</h3><p>Lapisan plastik akrilat berwarna yang membungkus kaca. Di sinilah kode warna core berada. Coating dikupas sebelum serat disambung. Kabel indoor sering diberi lapisan tambahan (tight buffer) sampai 900 µm.</p></div></div>
       <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Lapisan 5</p><h3>Cladding 125 µm</h3><p>Ini sudah kaca. Indeks biasnya sedikit lebih rendah dari core, sehingga cahaya yang menyentuh batasnya dipantulkan kembali ke core. Ukurannya sama untuk single-mode dan multimode, kira-kira setebal 1–2 helai rambut.</p></div></div>
       <div class="dive-step"><div class="dive-card"><p class="chapter-no" style="--c:var(--c2)"><i></i>Pusat</p><h3>Core, jalan cahaya</h3><p>Seluruh data berjalan di lingkaran kecil ini. Warna merah menandai cahaya. Bandingkan ukurannya:</p>
@@ -666,6 +687,25 @@ footer { font-size: 1rem; }
           <button type="button" id="core-mm62" data-core="62.5" aria-pressed="false">MM 62,5 µm</button>
         </div>
         <p id="coreNote" aria-live="polite">Single-mode: core ±9 µm. Hanya satu jalur cahaya. Dipakai di FTTH.</p></div></div>
+    </div>
+  </div>
+  <div class="wrap dive-after">
+    <div class="col block">
+      <h3>Ringkasan: kabel mana dipasang di mana</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Jenis kabel</th><th>Dipasang di</th><th>Kapasitas umum</th><th>Ciri khas</th></tr></thead>
+          <tbody>
+            <tr><th>Duct</th><td>Pipa HDPE bawah tanah, jalur feeder STO → ODC</td><td class="num">12–288 core</td><td>Loose tube berisi gel, FRP di tengah</td></tr>
+            <tr><th>Udara figure-8</th><td>Tiang, jalur distribusi ODC → ODP</td><td class="num">12–96 core</td><td>Kawat baja penggantung menyatu dengan jaket</td></tr>
+            <tr><th>ADSS</th><td>Tiang yang juga membawa kabel listrik, bentang panjang</td><td class="num">12–144 core</td><td>Tanpa logam, penahan beban dari aramid tebal</td></tr>
+            <tr><th>Tanam langsung</th><td>Ditanam di tanah tanpa pipa</td><td class="num">12–288 core</td><td>Pita baja bergelombang, wajib di-grounding</td></tr>
+            <tr><th>Drop FTTH</th><td>ODP di tiang → rumah pelanggan</td><td class="num">1–2 core</td><td>Pipih, takik sobek, serat G.657 tahan tekuk</td></tr>
+            <tr><th>Indoor / patchcord</th><td>Dalam ruangan: ODF, OTB, ONT</td><td class="num">1–2 core</td><td>Tight buffer 900 µm dan benang aramid</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small">Masih ada jenis lain, misalnya kabel ribbon untuk kapasitas sangat besar dan kabel mikro yang ditiup ke dalam pipa kecil. Prinsip lapisannya sama: pelindung di luar, penguat, lalu serat 250 µm dengan core di tengahnya.</p>
     </div>
   </div>
 </section>
@@ -1283,51 +1323,167 @@ footer { font-size: 1rem; }
 <script>
 /* dive.js */
 /* Jalur Cahaya · Tahap 1 — menyelam ke penampang kabel, digambar seperti gambar teknik.
-   Semua ukuran dalam mm dengan perbandingan sebenarnya. */
+   Beberapa jenis kabel; semua ukuran dalam mm dengan perbandingan sebenarnya (contoh kabel umum). */
 (function () {
   const JC = window.JC;
   const cv = document.getElementById("diveCanvas");
   const scroller = document.querySelector(".dive-scroll");
+  const hudEl = document.querySelector(".dive-hud");
   const hud = { view: document.getElementById("diveView"), scale: document.getElementById("diveScale"), w: document.getElementById("diveW"), layer: document.getElementById("diveLayer") };
   const scaleBar = document.getElementById("scaleBar"), scaleLabel = document.getElementById("scaleLabel");
+  const sel = document.getElementById("cableSel"), cat = document.getElementById("cableCat");
 
-  const CABLE = { r: 5, jacketIn: 3.9, aramidIn: 3.62, frp: 0.95, frpCoat: 1.15 };
-  const TUBE = { ring: 2.35, r: 1.1, inner: 0.88 };
+  const COL = JC.COLORS.map((c) => c.hex);
+  const ARAMID = "#d8b562", ARAMID_2 = "#a5843a", STEEL = "#aab3b9", STEEL_2 = "#5f696f", FRP = "#4b5156", FILLER = "#cfc9bb", YELLOW = "#f2c500";
   const FIBER = { coat: 0.125, clad: 0.0625 };
-  const ARAMID = "#d8b562", ARAMID_2 = "#a5843a";
-  let coreUm = 9;
-  const tubes = Array.from({ length: 6 }, (_, i) => {
-    const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
-    return { x: Math.cos(a) * TUBE.ring, y: Math.sin(a) * TUBE.ring, color: JC.COLORS[i].hex };
-  });
-  const slots = [...Array.from({ length: 4 }, (_, i) => [0.22, (i / 4) * Math.PI * 2 - Math.PI / 2]),
-    ...Array.from({ length: 8 }, (_, i) => [0.58, (i / 8) * Math.PI * 2 - Math.PI / 2 + 0.2])];
-  const fibers = [];
-  tubes.forEach((t, ti) => slots.forEach(([r, a], k) => fibers.push({ x: t.x + Math.cos(a) * r, y: t.y + Math.sin(a) * r, color: JC.COLORS[k].hex, k, ti })));
-  const target = fibers[0]; // tabung biru, core biru
   let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  const strands = Array.from({ length: 420 }, () => ({ a: rnd() * Math.PI * 2, r: CABLE.aramidIn + 0.03 + rnd() * (CABLE.jacketIn - CABLE.aramidIn - 0.06), d: (rnd() - 0.5) * 0.6 }));
 
-  const K = [
-    { W: 15, c: [0, 0], focus: null, label: "Kabel utuh", view: "Potongan A–A", glow: 0 },
-    { W: 15, c: [0, 0], focus: "jacket", label: "Jaket luar", view: "Potongan A–A", glow: 0 },
-    { W: 15, c: [0, 0], focus: "strength", label: "Penguat", view: "Potongan A–A", glow: 0 },
-    { W: 2.7, c: [tubes[0].x, tubes[0].y], focus: "tube", label: "Tabung", view: "Detail B", glow: 0 },
-    { W: 0.34, c: [target.x, target.y], focus: "coating", label: "Coating", view: "Detail C", glow: 0.4 },
-    { W: 0.17, c: [target.x, target.y], focus: "cladding", label: "Cladding", view: "Detail D", glow: 0.6 },
-    { W: 0.17, c: [target.x, target.y], focus: "core", label: "Core", view: "Detail D", glow: 1 },
-  ];
-  // balon keterangan di potongan utuh: [nomor, titik yang ditunjuk, sudut balon]
-  const BALLOONS = [
-    [1, [Math.cos(-1.05) * 4.45, Math.sin(-1.05) * 4.45], -1.05],
-    [2, [Math.cos(3.75) * 3.76, Math.sin(3.75) * 3.76], 3.75],
-    [3, [tubes[1].x, tubes[1].y], -0.2],
-    [4, [fibers[2 * 12 + 6].x, fibers[2 * 12 + 6].y], 0.95],
-    [5, [0, 0], 2.55],
-  ];
+  /* ---------- bahan penyusun ---------- */
+  const ring = (x, y, r0, r1, fill, tag, extra = {}) => ({ t: "ring", x, y, r0, r1, fill, tag, ...extra });
+  const disc = (x, y, r, fill, tag, extra = {}) => ({ t: "disc", x, y, r, fill, tag, ...extra });
+  const strands = (x, y, r0, r1, n) => Array.from({ length: n }, () => ({ a: rnd() * Math.PI * 2, r: r1 + 0.03 + rnd() * (r0 - r1 - 0.06), d: (rnd() - 0.5) * 0.6, x, y }));
+  const frp = (x, y, coat, core) => [ring(x, y, coat, core, "hatch", "strength"), disc(x, y, core, "cross", "strength", { outline: 1.2 })];
+  // posisi serat di dalam tabung: 4 di lingkar dalam, sisanya di lingkar luar
+  const slots = (inner, n = 12) => n <= 8
+    ? Array.from({ length: n }, (_, i) => [0.55 * inner, (i / n) * Math.PI * 2 - Math.PI / 2])
+    : [...Array.from({ length: 4 }, (_, i) => [0.25 * inner, (i / 4) * Math.PI * 2 - Math.PI / 2]),
+      ...Array.from({ length: n - 4 }, (_, i) => [0.66 * inner, (i / (n - 4)) * Math.PI * 2 - Math.PI / 2 + 0.2])];
+  // tabung loose tube yang dipilin di sekeliling FRP; posisi kosong diisi batang pengisi
+  function tubeRing(cx, cy, R, positions, real, tubeR, tubeIn) {
+    const prims = [], fibers = [], centers = [];
+    for (let i = 0; i < positions; i++) {
+      const a = (i / positions) * Math.PI * 2 - Math.PI / 2, x = cx + Math.cos(a) * R, y = cy + Math.sin(a) * R;
+      centers.push([x, y]);
+      if (i < real) {
+        prims.push({ t: "tube", x, y, r0: tubeR, r1: tubeIn, color: COL[i], tag: "tube", main: i === 0 });
+        slots(tubeIn).forEach(([r, fa], k) => fibers.push({ x: x + Math.cos(fa) * r, y: y + Math.sin(fa) * r, color: COL[k], tag: "tube" }));
+      } else prims.push(disc(x, y, tubeR * 0.92, FILLER, "tube", { outline: 1 }));
+    }
+    return { prims, fibers, centers };
+  }
+  const pol = (r, a, c = [0, 0]) => [c[0] + Math.cos(a) * r, c[1] + Math.sin(a) * r];
 
-  // posisi gulir -> t: kartu ke-i tepat di garis baca berarti t = i.
-  // Desktop: kartu menimpa gambar, garis baca di tengah layar. Ponsel: kartu di bawah gambar.
+  /* ---------- jenis kabel ---------- */
+  const MODELS = [];
+  { // duct
+    const core = tubeRing(0, 0, 2.35, 6, 6, 1.1, 0.88);
+    MODELS.push({
+      id: "duct", name: "Duct", where: "Pipa bawah tanah", c0: [0, 0], W0: 15,
+      prims: [ring(0, 0, 5, 3.9, "hatch", "jacket"), ring(0, 0, 3.9, 3.62, "aramid", "strength", { strands: strands(0, 0, 3.9, 3.62, 420) }), disc(0, 0, 3.62, "paper", null, { outline: 0.8 }), ...frp(0, 0, 1.15, 0.95), ...core.prims],
+      fibers: core.fibers, tube0: core.centers[0], tubeW: 2.7,
+      dims: [{ focus: "jacket", x: 0, y: 0, r: 5, text: "Ø 10 mm", yOff: -5, px: -14 }, { focus: "strength", x: 0, y: 0, r: 1.15, text: "FRP Ø 2,3 mm" }, { focus: "tube", at: "tube0", r: 1.1, text: "Ø 2,2 mm", yOff: -1.1, px: -14 }],
+      balloons: [[1, "Jaket luar", pol(4.45, -1.05), -1.05], [2, "Benang aramid", pol(3.76, 3.75), 3.75], [3, "Tabung berisi gel", core.centers[1], -0.2], [4, "Serat", core.fibers[2 * 12 + 6], 0.95], [5, "Batang FRP", [0, 0], 2.55]],
+      cards: [
+        ["Ø 10 mm · 72 core", "Kabel duct", "Kabel loose tube yang ditarik di dalam pipa HDPE di bawah tanah, biasanya untuk jalur feeder dari STO ke ODC. Contoh ini punya 6 tabung × 12 serat."],
+        ["Lapisan 1", "Jaket luar (sheath)", "Plastik PE hitam setebal ±1,2 mm. Pelindung pertama dari air, sinar UV, dan gesekan waktu kabel ditarik di dalam pipa. Pada gambar, bagian yang terpotong diberi arsir."],
+        ["Lapisan 2", "Penguat (strength member)", "Batang FRP di tengah menahan tarikan dan menjaga kabel tidak tertekuk tajam. Di bawah jaket ada benang aramid atau pita penahan air. Waktu menarik kabel, beban harus jatuh ke penguat, bukan ke serat."],
+        ["Lapisan 3", "Tabung (loose tube)", "Diameter ±2,2 mm, berisi gel anti-air. Seratnya dibiarkan longgar supaya tidak tertekan saat kabel memuai atau menyusut. Warna tabung ikut kode warna: tabung pertama biru."],
+      ],
+    });
+  }
+  { // udara figure-8
+    const by = 2, core = tubeRing(0, by, 2.2, 6, 4, 1.0, 0.78);
+    const wires = [[0, -6.5], ...Array.from({ length: 6 }, (_, i) => pol(1.0, (i / 6) * Math.PI * 2, [0, -6.5]))];
+    MODELS.push({
+      id: "fig8", name: "Udara figure-8", where: "Tiang, ODC → ODP", c0: [0, -1.25], W0: 23,
+      prims: [{ t: "fig8", mx: 0, my: -6.5, rm: 2.5, bx: 0, by, rb: 4.5, ww: 0.9, fill: "hatch", tag: "jacket" },
+        ...wires.map(([x, y]) => disc(x, y, 0.5, "steel", "messenger", { outline: 1 })),
+        disc(0, by, 3.4, "paper", null, { outline: 1 }), ...frp(0, by, 1.05, 0.88), ...core.prims],
+      fibers: core.fibers, tube0: core.centers[0], tubeW: 2.5,
+      dims: [{ focus: "messenger", x: 0, y: -6.5, r: 1.5, text: "kawat Ø 3 mm", leader: true }, { focus: "jacket", x: 0, y: by, r: 4.5, text: "badan Ø 9 mm", yOff: 4.5, px: 22 }, { focus: "tube", at: "tube0", r: 1.0, text: "Ø 2,0 mm", yOff: -1.0, px: -14 }],
+      balloons: [[1, "Kawat baja penggantung", [0.6, -7.2], -1.15], [2, "Leher (web)", [0.9, -3.25], -0.4], [3, "Jaket", pol(4.0, 0.25, [0, by]), 0.3], [4, "Tabung berisi gel", core.centers[2], 0.95], [5, "Batang FRP", [0, by], 2.2], [6, "Batang pengisi", core.centers[4], 2.75]],
+      cards: [
+        ["± 9 × 15 mm · 48 core", "Kabel udara figure-8", "Penampangnya mirip angka 8: kawat penggantung di atas, badan kabel di bawah. Dipasang di tiang, misalnya untuk jalur distribusi dari ODC ke ODP. Contoh ini punya 4 tabung × 12 serat."],
+        ["Lapisan 1", "Kawat penggantung", "Kawat baja pilin di bagian atas menahan seluruh berat kabel di antara dua tiang. Kawat inilah yang dijepit klem di tiang, bukan badan kabelnya. Karena ada baja, kawat ini perlu di-grounding."],
+        ["Lapisan 2", "Jaket dan leher", "Satu jaket PE membungkus kawat dan badan kabel sekaligus, disambung leher tipis. Saat masuk ke closure, leher disobek supaya badan kabel bisa dipisahkan dari kawat."],
+        ["Lapisan 3", "Tabung (loose tube)", "Empat tabung berisi gel dipilin mengelilingi FRP. Dua posisi sisanya diisi batang pengisi supaya bentuknya tetap bulat. Warna tabung ikut kode warna: biru, oranye, hijau, cokelat."],
+      ],
+    });
+  }
+  { // ADSS
+    const core = tubeRing(0, 0, 2.35, 6, 6, 1.1, 0.88);
+    MODELS.push({
+      id: "adss", name: "ADSS", where: "Tiang listrik, bentang panjang", c0: [0, 0], W0: 19.5,
+      prims: [ring(0, 0, 6.5, 5.5, "hatch", "jacket"), ring(0, 0, 5.5, 4.5, "aramid", "strength", { strands: strands(0, 0, 5.5, 4.5, 900) }), ring(0, 0, 4.5, 3.9, "hatch", "jacket"), disc(0, 0, 3.9, "paper", null, { outline: 0.8 }), ...frp(0, 0, 1.15, 0.95), ...core.prims],
+      fibers: core.fibers, tube0: core.centers[0], tubeW: 2.7,
+      dims: [{ focus: "jacket", x: 0, y: 0, r: 6.5, text: "Ø 13 mm", yOff: -6.5, px: -14 }, { focus: "strength", x: pol(5, -0.5)[0], y: pol(5, -0.5)[1], r: 0, text: "aramid tebal", leader: true }, { focus: "tube", at: "tube0", r: 1.1, text: "Ø 2,2 mm", yOff: -1.1, px: -14 }],
+      balloons: [[1, "Jaket luar", pol(6.0, -1.05), -1.05], [2, "Aramid tebal", pol(5.0, 3.75), 3.75], [3, "Jaket dalam", pol(4.2, 2.6), 2.6], [4, "Tabung berisi gel", core.centers[1], -0.2], [5, "Batang FRP", [0, 0], 0.95]],
+      cards: [
+        ["Ø 13 mm · 72 core", "Kabel ADSS", "All-Dielectric Self-Supporting: seluruhnya bukan logam dan menggantung sendiri di antara tiang. Dipakai di tiang yang juga membawa kabel listrik, termasuk bentang panjang."],
+        ["Lapisan 1", "Jaket dua lapis", "Dua jaket PE mengapit lapisan aramid. Untuk tiang tegangan tinggi, jaket luarnya dibuat tahan jejak listrik (anti-tracking) supaya tidak rusak oleh medan listrik di sekitarnya."],
+        ["Lapisan 2", "Aramid tebal", "Benang aramid inilah yang menahan berat kabel di sepanjang bentang, tanpa kawat baja. Karena tidak ada logam, kabel tidak menghantarkan listrik. Makin banyak aramid, makin panjang bentang yang sanggup ditahan."],
+        ["Lapisan 3", "Tabung (loose tube)", "Bagian dalamnya sama dengan kabel duct: tabung berisi gel dipilin di sekeliling FRP, serat longgar di dalamnya, warna tabung ikut kode warna."],
+      ],
+    });
+  }
+  { // tanam langsung, berlapis baja
+    const core = tubeRing(0, 0, 2.9, 6, 6, 1.25, 1.0);
+    MODELS.push({
+      id: "armor", name: "Tanam langsung", where: "Ditanam tanpa pipa", c0: [0, 0], W0: 21,
+      prims: [ring(0, 0, 7, 6, "hatch", "jacket"), ring(0, 0, 6, 5.75, "steel", "armor", { corr: true }), ring(0, 0, 5.75, 4.9, "hatch", "armor"), disc(0, 0, 4.9, "paper", null, { outline: 0.8 }), ...frp(0, 0, 1.45, 1.2), ...core.prims],
+      fibers: core.fibers, tube0: core.centers[0], tubeW: 3.1,
+      dims: [{ focus: "jacket", x: 0, y: 0, r: 7, text: "Ø 14 mm", yOff: -7, px: -14 }, { focus: "armor", x: pol(5.875, -0.5)[0], y: pol(5.875, -0.5)[1], r: 0, text: "pita baja gelombang", leader: true }, { focus: "tube", at: "tube0", r: 1.25, text: "Ø 2,5 mm", yOff: -1.25, px: -14 }],
+      balloons: [[1, "Jaket luar", pol(6.5, -1.05), -1.05], [2, "Pita baja gelombang", pol(5.875, 3.75), 3.75], [3, "Jaket dalam", pol(5.3, 2.6), 2.6], [4, "Tabung berisi gel", core.centers[1], -0.2], [5, "Batang FRP", [0, 0], 0.95]],
+      cards: [
+        ["Ø 14 mm · 72 core", "Kabel tanam langsung", "Kabel berlapis baja yang boleh ditanam langsung di tanah tanpa pipa. Lapisan bajanya melindungi dari tekanan tanah, ujung cangkul, dan gigitan tikus."],
+        ["Lapisan 1", "Jaket luar", "Plastik PE tebal yang menahan air tanah dan gesekan batu. Saat dikupas, hati-hati: tepat di bawahnya ada lapisan baja yang tajam."],
+        ["Lapisan 2", "Pita baja gelombang", "Pita baja yang dibentuk bergelombang supaya kabel tetap bisa ditekuk, lalu ada jaket dalam di bawahnya. Karena ada logam, lapisan ini wajib di-grounding di closure atau ODF."],
+        ["Lapisan 3", "Tabung (loose tube)", "Di dalam lapisan pelindung, susunannya sama dengan kabel duct: tabung berisi gel di sekeliling FRP, warna tabung ikut kode warna."],
+      ],
+    });
+  }
+  { // drop FTTH pipih
+    MODELS.push({
+      id: "drop", name: "Drop FTTH", where: "ODP → rumah pelanggan", c0: [0, 0], W0: 4.6,
+      prims: [{ t: "flat", x: 0, y: 0, w: 3.0, h: 2.0, rad: 0.35, nd: 0.32, nw: 0.5, fill: "hatch", tag: "jacket" }, disc(-0.95, 0, 0.25, "cross", "strength", { outline: 1.2 }), disc(0.95, 0, 0.25, "cross", "strength", { outline: 1.2 })],
+      fibers: [{ x: 0, y: 0, color: COL[0], tag: "fiber" }], step3: { W: 1.0, c: [0, 0], focus: "fiber", label: "Serat", view: "Detail B" },
+      dims: [{ focus: "jacket", x: 0, y: 0, r: 1.5, text: "3,0 × 2,0 mm", yOff: -1.0, px: -14 }, { focus: "strength", x: 0.95, y: 0, r: 0.25, text: "FRP Ø 0,5 mm", leader: true }, { focus: "fiber", x: 0, y: 0, r: 0.125, text: "Ø 250 µm", yOff: -0.125, px: -12 }],
+      balloons: [[1, "Jaket LSZH", [-1.3, 0.62], 2.45], [2, "Takik sobek", [0, -0.75], -1.25], [3, "Penguat FRP", [0.95, 0], 0.35], [4, "Serat 250 µm", [0, 0], 1.95]],
+      cards: [
+        ["2,0 × 3,0 mm · 1 core", "Kabel drop FTTH", "Kabel pipih kecil yang menghubungkan ODP di tiang ke rumah pelanggan. Isinya hanya 1 atau 2 serat, tanpa tabung dan tanpa gel."],
+        ["Lapisan 1", "Jaket dan takik sobek", "Jaket LSZH, plastik yang tidak mengeluarkan asap beracun saat terbakar. Takik V di atas dan bawah membuat jaket mudah dibelah dengan stripper drop cable tanpa melukai serat."],
+        ["Lapisan 2", "Dua penguat", "Dua batang FRP atau kawat baja Ø ±0,5 mm di kiri-kanan serat menahan tarikan. Untuk bentang dari tiang ke rumah ada versi self-supporting dengan kawat penggantung tambahan."],
+        ["Lapisan 3", "Serat tertanam", "Serat 250 µm tertanam langsung di tengah jaket. Jenisnya G.657A1/A2 yang tahan tekuk, karena drop cable sering dibelokkan di dinding dan sudut rumah."],
+      ],
+    });
+  }
+  { // indoor simplex / patchcord
+    MODELS.push({
+      id: "indoor", name: "Indoor / patchcord", where: "ODF, OTB, ONT", c0: [0, 0], W0: 4.6,
+      prims: [ring(0, 0, 1.5, 1.0, "yellow", "jacket"), ring(0, 0, 1.0, 0.45, "aramid", "strength", { strands: strands(0, 0, 1.0, 0.45, 170), light: true }), disc(0, 0, 0.45, "#f3f3ef", "buffer", { outline: 1.2 })],
+      fibers: [{ x: 0, y: 0, color: "#d9d3bf", tag: "buffer" }], step3: { W: 1.3, c: [0, 0], focus: "buffer", label: "Tight buffer", view: "Detail B" },
+      dims: [{ focus: "jacket", x: 0, y: 0, r: 1.5, text: "Ø 3,0 mm", yOff: -1.5, px: -14 }, { focus: "strength", x: pol(0.72, -0.7)[0], y: pol(0.72, -0.7)[1], r: 0, text: "benang aramid", leader: true }, { focus: "buffer", x: 0, y: 0, r: 0.45, text: "Ø 900 µm", yOff: -0.45, px: -12 }],
+      balloons: [[1, "Jaket kuning", pol(1.25, -1.05), -1.05], [2, "Benang aramid", pol(0.72, 3.75), 3.75], [3, "Tight buffer", pol(0.35, 2.4), 2.4], [4, "Serat 250 µm", [0, 0], 0.5]],
+      cards: [
+        ["Ø 3,0 mm · 1 core", "Kabel indoor (patchcord)", "Kabel lentur untuk di dalam ruangan: patchcord di ODF, OTB, dan ONT. Biasanya sudah terpasang konektor di ujungnya."],
+        ["Lapisan 1", "Jaket kuning", "PVC atau LSZH. Warna kuning menandakan single-mode. Jaket ini tipis dan tidak tahan sinar matahari, jadi bukan untuk luar ruangan."],
+        ["Lapisan 2", "Benang aramid", "Benang aramid longgar sebagai penahan tarik. Saat memasang konektor, aramid dijepit di badan konektor supaya tarikan tidak sampai ke serat."],
+        ["Lapisan 3", "Tight buffer 900 µm", "Plastik keras yang menempel ketat pada coating, membuat serat lebih tebal dan kuat untuk dipasang langsung ke konektor. Dikupas dengan lubang 900 µm pada stripper."],
+      ],
+    });
+  }
+
+  /* ---------- keyframe tiap jenis kabel ---------- */
+  MODELS.forEach((m) => {
+    m.target = m.fibers[0];
+    const t = [m.target.x, m.target.y];
+    const s3 = m.step3 || { W: m.tubeW, c: m.tube0, focus: "tube", label: "Tabung", view: "Detail B" };
+    const focus1 = m.id === "fig8" ? "messenger" : "jacket", focus2 = m.id === "fig8" ? "jacket" : m.id === "armor" ? "armor" : "strength";
+    m.K = [
+      { W: m.W0, c: m.c0, focus: null, label: "Kabel utuh", view: "Potongan A–A", glow: 0 },
+      { W: m.W0, c: m.c0, focus: focus1, label: m.cards[1][1].split(" (")[0], view: "Potongan A–A", glow: 0 },
+      { W: m.W0, c: m.c0, focus: focus2, label: m.cards[2][1].split(" (")[0], view: "Potongan A–A", glow: 0 },
+      { ...s3, glow: 0 },
+      { W: 0.34, c: t, focus: "coating", label: "Coating", view: "Detail C", glow: 0.4 },
+      { W: 0.17, c: t, focus: "cladding", label: "Cladding", view: "Detail D", glow: 0.6 },
+      { W: 0.17, c: t, focus: "core", label: "Core", view: "Detail D", glow: 1 },
+    ];
+    m.dims.forEach((d) => { if (d.at === "tube0") { d.x = m.tube0[0]; d.y = m.tube0[1]; } });
+  });
+  let model = MODELS[0];
+  let coreUm = 9;
+
+  /* ---------- posisi gulir → t ---------- */
   const steps = [...document.querySelectorAll(".dive-step")];
   let t = 0;
   function readScroll() {
@@ -1335,148 +1491,147 @@ footer { font-size: 1rem; }
     const line = innerWidth <= 760 ? stageH + (innerHeight - stageH) / 2 : innerHeight / 2;
     const ys = steps.map((s) => { const r = s.getBoundingClientRect(); return r.top + r.height / 2; });
     if (line <= ys[0]) t = 0;
-    else if (line >= ys[ys.length - 1]) t = K.length - 1;
+    else if (line >= ys[ys.length - 1]) t = steps.length - 1;
     else for (let i = 0; i < ys.length - 1; i++) if (line < ys[i + 1]) { t = i + (line - ys[i]) / (ys[i + 1] - ys[i]); break; }
   }
-  function view() {
-    const i = Math.min(Math.floor(t), K.length - 2), g = JC.smooth(0.2, 0.8, t - i);
+  const has = (f, names) => f == null || (Array.isArray(names) ? names.includes(f) : f === names);
+  function viewAt(m, tt) {
+    const K = m.K, i = Math.min(Math.floor(tt), K.length - 2), g = JC.smooth(0.2, 0.8, tt - i);
     const a = K[i], b = K[i + 1];
     const W = Math.exp(JC.lerp(Math.log(a.W), Math.log(b.W), g));
     const k = Math.abs(a.W - b.W) > 1e-9 ? (a.W - W) / (a.W - b.W) : g;
     const c = [a.c[0] + (b.c[0] - a.c[0]) * k, a.c[1] + (b.c[1] - a.c[1]) * k];
-    const alpha = (name) => JC.lerp(a.focus == null || a.focus === name ? 1 : 0.28, b.focus == null || b.focus === name ? 1 : 0.28, g);
+    const alpha = (names) => JC.lerp(has(a.focus, names) ? 1 : 0.28, has(b.focus, names) ? 1 : 0.28, g);
     const ring = (name) => JC.lerp(a.focus === name ? 1 : 0, b.focus === name ? 1 : 0, g);
     return { W, c, near: g < 0.5 ? a : b, alpha, ring, glow: JC.lerp(a.glow, b.glow, g) };
   }
 
-  const st = JC.canvas(cv, () => draw());
-  function lens(w, h) {
-    const wide = w > 760;
-    const L = wide ? Math.min(w * 0.28, h * 0.38) : Math.min(w * 0.42, h * 0.37);
-    return { x: wide ? w * 0.66 : w / 2, y: wide ? h * 0.54 : h * 0.57, L };
-  }
-  function niceLen(mm) {
-    const p = Math.pow(10, Math.floor(Math.log10(mm)));
-    return [10, 5, 2, 1].map((m) => m * p).find((v) => v <= mm) || p;
-  }
-  const fmtLen = (mm) => (mm >= 1 ? JC.fmt(mm, Math.abs(mm - Math.round(mm)) < 0.05 ? 0 : 1) + " mm" : Math.round(mm * 1000).toLocaleString("id-ID") + " µm");
-  const fmtScale = (r) => (r >= 100 ? (Math.round(r / 10) * 10).toLocaleString("id-ID") : r >= 10 ? Math.round(r) : JC.fmt(r, 1)) + ":1";
-
-  function draw() {
-    readScroll();
-    const { ctx, w, h } = st, P = JC.pal;
-    const v = view(), Ls = lens(w, h), s = (2 * Ls.L) / v.W;
+  /* ---------- menggambar ---------- */
+  function render(ctx, w, h, m, v, Ls, opt) {
+    const P = JC.pal, s = (2 * Ls.L) / v.W;
     const X = (x) => Ls.x + (x - v.c[0]) * s, Y = (y) => Ls.y + (y - v.c[1]) * s;
     const vis = (x, y, r) => Math.hypot(X(x) - Ls.x, Y(y) - Ls.y) < Ls.L + r * s + 2;
-    const big = (r) => r * s < 60000;
     const circ = (x, y, r) => { ctx.beginPath(); ctx.arc(X(x), Y(y), Math.max(r * s, 0.3), 0, Math.PI * 2); };
-    const outlineC = (x, y, r, lw = 1.2) => { circ(x, y, r); ctx.strokeStyle = P.ink; ctx.lineWidth = lw; ctx.stroke(); };
-    const hatchLine = JC.hatch(ctx, P.hatch, 7), hatchCross = JC.hatch(ctx, P.hatch, 6, true);
+    const stroke = (lw, color = P.ink) => { ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke(); };
+    const hatch = JC.hatch(ctx, P.hatch, 7), cross = JC.hatch(ctx, P.hatch, 6, true);
+    const fillOf = (f) => (f === "hatch" ? hatch : f === "cross" ? cross : f === "paper" ? P.paper : f === "steel" ? STEEL : f === "aramid" ? ARAMID : f === "yellow" ? YELLOW : f);
+    const annulus = (x, y, r0, r1) => { ctx.beginPath(); ctx.arc(X(x), Y(y), r0 * s, 0, Math.PI * 2); ctx.arc(X(x), Y(y), r1 * s, 0, Math.PI * 2, true); };
 
-    ctx.clearRect(0, 0, w, h);
     ctx.save();
     ctx.beginPath(); ctx.arc(Ls.x, Ls.y, Ls.L, 0, Math.PI * 2); ctx.fillStyle = P.paper; ctx.fill(); ctx.clip();
 
-    // jaket: arsir potongan
-    ctx.globalAlpha = v.alpha("jacket");
-    if (big(CABLE.r)) {
-      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.r * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.jacketIn * s, 0, Math.PI * 2, true);
-      ctx.fillStyle = hatchLine; ctx.fill();
-      outlineC(0, 0, CABLE.r, 1.5);
-    }
-    // aramid
-    ctx.globalAlpha = v.alpha("strength");
-    if (big(CABLE.jacketIn)) {
-      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.jacketIn * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.aramidIn * s, 0, Math.PI * 2, true);
-      ctx.fillStyle = ARAMID; ctx.fill();
-    }
-    ctx.strokeStyle = ARAMID_2; ctx.lineWidth = Math.max(0.8, 0.018 * s);
-    strands.forEach((q) => {
-      const x = Math.cos(q.a) * q.r, y = Math.sin(q.a) * q.r;
-      if (!vis(x, y, 0.2)) return;
-      const ta = q.a + Math.PI / 2 + q.d, L = 0.12;
-      ctx.beginPath(); ctx.moveTo(X(x - Math.cos(ta) * L), Y(y - Math.sin(ta) * L)); ctx.lineTo(X(x + Math.cos(ta) * L), Y(y + Math.sin(ta) * L)); ctx.stroke();
+    m.prims.forEach((p) => {
+      ctx.globalAlpha = p.tag ? v.alpha(p.tag) * (p.t === "tube" && !p.main && v.near.focus === "tube" ? 0.5 : 1) : 1;
+      if (p.t === "ring") {
+        if (!vis(p.x, p.y, p.r0) || p.r0 * s > 60000) return;
+        annulus(p.x, p.y, p.r0, p.r1); ctx.fillStyle = fillOf(p.fill); ctx.fill();
+        if (p.fill === "yellow") { ctx.fillStyle = hatch; ctx.fill(); }
+        if (p.strands) {
+          ctx.strokeStyle = p.light ? "#c9a85a" : ARAMID_2; ctx.lineWidth = JC.clamp(0.018 * s, 0.8, 2.4);
+          p.strands.forEach((q) => {
+            const x = p.x + Math.cos(q.a) * q.r, y = p.y + Math.sin(q.a) * q.r;
+            if (!vis(x, y, 0.2)) return;
+            const ta = q.a + Math.PI / 2 + q.d, L = Math.min(0.12, (p.r0 - p.r1) * 0.4);
+            ctx.beginPath(); ctx.moveTo(X(x - Math.cos(ta) * L), Y(y - Math.sin(ta) * L)); ctx.lineTo(X(x + Math.cos(ta) * L), Y(y + Math.sin(ta) * L)); ctx.stroke();
+          });
+        }
+        if (p.corr) { // pita baja bergelombang
+          const rm = (p.r0 + p.r1) / 2, amp = (p.r0 - p.r1) * 0.32;
+          ctx.beginPath();
+          for (let k = 0; k <= 720; k++) { const a = (k / 720) * Math.PI * 2, r = rm + amp * Math.sin(a * 60); const px = X(p.x + Math.cos(a) * r), py = Y(p.y + Math.sin(a) * r); k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+          stroke(1, STEEL_2);
+        }
+        circ(p.x, p.y, p.r0); stroke(1.3); circ(p.x, p.y, p.r1); stroke(0.9);
+      } else if (p.t === "disc") {
+        if (!vis(p.x, p.y, p.r) || p.r * s > 60000) return;
+        circ(p.x, p.y, p.r); ctx.fillStyle = fillOf(p.fill); ctx.fill();
+        if (p.outline) stroke(p.outline);
+      } else if (p.t === "tube") {
+        if (!vis(p.x, p.y, p.r0)) return;
+        annulus(p.x, p.y, p.r0, p.r1); ctx.fillStyle = p.color; ctx.fill();
+        circ(p.x, p.y, p.r1); ctx.fillStyle = P.glass; const ga = ctx.globalAlpha; ctx.globalAlpha = ga * 0.45; ctx.fill(); ctx.globalAlpha = ga;
+        circ(p.x, p.y, p.r0); stroke(1.2); circ(p.x, p.y, p.r1); stroke(0.9);
+      } else if (p.t === "fig8") {
+        const am = Math.acos(p.ww / p.rm), ab = Math.acos(p.ww / p.rb);
+        ctx.beginPath();
+        ctx.arc(X(p.mx), Y(p.my), p.rm * s, Math.PI - am, am + Math.PI * 2);
+        ctx.arc(X(p.bx), Y(p.by), p.rb * s, -ab, ab - Math.PI + Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = hatch; ctx.fill(); stroke(1.5);
+        circ(p.mx, p.my, 1.5); ctx.fillStyle = P.paper; ctx.fill(); stroke(0.9);
+      } else if (p.t === "flat") { // kabel pipih dengan takik V atas-bawah
+        const x0 = p.x - p.w / 2, x1 = p.x + p.w / 2, y0 = p.y - p.h / 2, y1 = p.y + p.h / 2, r = p.rad;
+        ctx.beginPath();
+        ctx.moveTo(X(x0 + r), Y(y0)); ctx.lineTo(X(p.x - p.nw / 2), Y(y0)); ctx.lineTo(X(p.x), Y(y0 + p.nd)); ctx.lineTo(X(p.x + p.nw / 2), Y(y0)); ctx.lineTo(X(x1 - r), Y(y0));
+        ctx.arcTo(X(x1), Y(y0), X(x1), Y(y0 + r), r * s); ctx.lineTo(X(x1), Y(y1 - r)); ctx.arcTo(X(x1), Y(y1), X(x1 - r), Y(y1), r * s);
+        ctx.lineTo(X(p.x + p.nw / 2), Y(y1)); ctx.lineTo(X(p.x), Y(y1 - p.nd)); ctx.lineTo(X(p.x - p.nw / 2), Y(y1)); ctx.lineTo(X(x0 + r), Y(y1));
+        ctx.arcTo(X(x0), Y(y1), X(x0), Y(y1 - r), r * s); ctx.lineTo(X(x0), Y(y0 + r)); ctx.arcTo(X(x0), Y(y0), X(x0 + r), Y(y0), r * s);
+        ctx.closePath(); ctx.fillStyle = P.paper; ctx.fill(); ctx.fillStyle = hatch; ctx.fill(); stroke(1.5);
+      }
     });
-    if (big(CABLE.jacketIn)) { outlineC(0, 0, CABLE.jacketIn); outlineC(0, 0, CABLE.aramidIn, 0.8); }
-    // FRP: arsir silang, lapisan PE di luarnya
-    if (vis(0, 0, CABLE.frpCoat)) {
-      ctx.beginPath(); ctx.arc(X(0), Y(0), CABLE.frpCoat * s, 0, Math.PI * 2); ctx.arc(X(0), Y(0), CABLE.frp * s, 0, Math.PI * 2, true);
-      ctx.fillStyle = hatchLine; ctx.fill();
-      circ(0, 0, CABLE.frp); ctx.fillStyle = hatchCross; ctx.fill();
-      outlineC(0, 0, CABLE.frpCoat); outlineC(0, 0, CABLE.frp);
-    }
-    // tabung
-    tubes.forEach((tb, ti) => {
-      if (!vis(tb.x, tb.y, TUBE.r)) return;
-      ctx.globalAlpha = v.alpha("tube") * (v.near.focus === "tube" && ti !== 0 ? 0.5 : 1);
-      ctx.beginPath(); ctx.arc(X(tb.x), Y(tb.y), TUBE.r * s, 0, Math.PI * 2); ctx.arc(X(tb.x), Y(tb.y), TUBE.inner * s, 0, Math.PI * 2, true);
-      ctx.fillStyle = tb.color; ctx.fill();
-      circ(tb.x, tb.y, TUBE.inner); ctx.fillStyle = P.glass; ctx.globalAlpha *= 0.45; ctx.fill(); ctx.globalAlpha /= 0.45;
-      outlineC(tb.x, tb.y, TUBE.r); outlineC(tb.x, tb.y, TUBE.inner, 0.9);
-    });
+
     // serat
     const coreR = coreUm / 2000;
-    fibers.forEach((f) => {
+    m.fibers.forEach((f) => {
       if (!vis(f.x, f.y, FIBER.coat)) return;
-      const isT = f === target, other = v.near.W < 1 && !isT;
-      ctx.globalAlpha = isT ? v.alpha("coating") : other ? 0.35 : v.alpha("tube");
-      circ(f.x, f.y, FIBER.coat); ctx.fillStyle = f.color; ctx.fill();
-      ctx.strokeStyle = P.ink; ctx.lineWidth = FIBER.coat * s > 6 ? 1.2 : 0.6; ctx.stroke();
+      const isT = f === m.target, other = v.near.W < 1 && !isT;
+      ctx.globalAlpha = isT ? v.alpha(["coating", "fiber", "buffer", "tube"]) : other ? 0.35 : v.alpha(f.tag);
+      circ(f.x, f.y, FIBER.coat); ctx.fillStyle = f.color; ctx.fill(); stroke(FIBER.coat * s > 6 ? 1.2 : 0.6);
       if (FIBER.clad * s > 1.5) {
         ctx.globalAlpha = isT ? v.alpha("cladding") : 0.35;
-        circ(f.x, f.y, FIBER.clad); ctx.fillStyle = P.glass; ctx.fill(); ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2; ctx.stroke();
+        circ(f.x, f.y, FIBER.clad); ctx.fillStyle = P.glass; ctx.fill(); stroke(1.2);
       }
       const cr = isT ? coreR : 0.0045;
       if (cr * s > 0.8) {
-        ctx.globalAlpha = isT ? v.alpha("core") : 0.35;
-        circ(f.x, f.y, cr); ctx.fillStyle = P["glass-2"]; ctx.fill();
-        if (isT && v.glow > 0.01) { ctx.globalAlpha = v.glow; ctx.fillStyle = P.red; ctx.fill(); ctx.globalAlpha = isT ? v.alpha("core") : 0.35; }
-        ctx.strokeStyle = P.ink; ctx.lineWidth = 1; ctx.stroke();
+        const ca = isT ? v.alpha("core") : 0.35;
+        ctx.globalAlpha = ca; circ(f.x, f.y, cr); ctx.fillStyle = P["glass-2"]; ctx.fill();
+        if (isT && v.glow > 0.01) { ctx.globalAlpha = v.glow; ctx.fillStyle = P.red; ctx.fill(); ctx.globalAlpha = ca; }
+        stroke(1);
       }
     });
     ctx.globalAlpha = 1;
 
-    // garis ukur diameter untuk lapisan yang sedang dibahas
-    ctx.font = "600 13px 'Public Sans', sans-serif";
-    const arrow = (x, y, dir) => { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dir * 9, y - 3.5); ctx.lineTo(x - dir * 9, y + 3.5); ctx.closePath(); ctx.fill(); };
-    const dim = (name, x, y, r, txt, dy = 0) => {
-      const a = v.ring(name); if (a < 0.02) return;
-      ctx.globalAlpha = a; ctx.strokeStyle = P.red; ctx.fillStyle = P.red; ctx.lineWidth = 1.2;
-      const R = r * s, cx = X(x), cy = Y(y) + dy;
-      if (R > 40) {
-        const x0 = Math.max(cx - R, Ls.x - Ls.L + 4), x1 = Math.min(cx + R, Ls.x + Ls.L - 4);
-        ctx.beginPath(); ctx.moveTo(x0, cy); ctx.lineTo(x1, cy); ctx.stroke();
-        if (cx - R >= x0 - 0.5) arrow(cx - R, cy, -1);
-        if (cx + R <= x1 + 0.5) arrow(cx + R, cy, 1);
-        const tw = ctx.measureText(txt).width + 10;
-        ctx.fillStyle = P.paper; ctx.fillRect(cx - tw / 2, cy - 22, tw, 18);
-        ctx.fillStyle = P["red-ink"]; ctx.textAlign = "center"; ctx.fillText(txt, cx, cy - 8);
-      } else {
-        const lx = cx + Math.max(R, 4) + 54, ly = cy - 40;
-        ctx.beginPath(); ctx.moveTo(lx - 4, ly + 4); ctx.lineTo(cx + R * 0.72 + 3, cy - R * 0.72 - 3); ctx.stroke();
-        ctx.save(); ctx.translate(cx + R * 0.72, cy - R * 0.72); ctx.rotate(Math.atan2(cy - R * 0.72 - ly, cx + R * 0.72 - lx)); arrow(0, 0, 1); ctx.restore();
-        const tw = ctx.measureText(txt).width + 10;
-        ctx.fillStyle = P.paper; ctx.fillRect(lx - 2, ly - 14, tw, 18);
-        ctx.fillStyle = P["red-ink"]; ctx.textAlign = "left"; ctx.fillText(txt, lx + 3, ly);
-      }
-      ctx.textAlign = "left"; ctx.globalAlpha = 1;
-    };
-    dim("jacket", 0, 0, CABLE.r, "Ø 10 mm", -CABLE.r * s - 14);
-    dim("strength", 0, 0, CABLE.frpCoat, "FRP Ø 2,3 mm");
-    dim("tube", tubes[0].x, tubes[0].y, TUBE.r, "Ø 2,2 mm");
-    dim("coating", target.x, target.y, FIBER.coat, "Ø 250 µm", -FIBER.coat * s * 0.62);
-    dim("cladding", target.x, target.y, FIBER.clad, "Ø 125 µm", -FIBER.clad * s * 0.55);
-    dim("core", target.x, target.y, coreR, "Ø " + JC.fmt(coreUm, coreUm % 1 ? 1 : 0) + " µm");
+    if (opt.dims) {
+      ctx.font = "600 13px 'Public Sans', sans-serif";
+      const arrow = (x, y, dir) => { ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dir * 9, y - 3.5); ctx.lineTo(x - dir * 9, y + 3.5); ctx.closePath(); ctx.fill(); };
+      const dim = (d) => {
+        const a = v.ring(d.focus); if (a < 0.02) return;
+        ctx.globalAlpha = a; ctx.strokeStyle = P.red; ctx.fillStyle = P.red; ctx.lineWidth = 1.2;
+        const R = d.r * s, cx = X(d.x), cy = Y(d.y) + (d.yOff || 0) * s + (d.px || 0);
+        const tw = ctx.measureText(d.text).width + 10;
+        if (!d.leader && R > 40) {
+          const x0 = Math.max(cx - R, Ls.x - Ls.L + 4), x1 = Math.min(cx + R, Ls.x + Ls.L - 4);
+          ctx.beginPath(); ctx.moveTo(x0, cy); ctx.lineTo(x1, cy); ctx.stroke();
+          if (cx - R >= x0 - 0.5) arrow(cx - R, cy, -1);
+          if (cx + R <= x1 + 0.5) arrow(cx + R, cy, 1);
+          ctx.fillStyle = P.paper; ctx.fillRect(cx - tw / 2, cy - 22, tw, 18);
+          ctx.fillStyle = P["red-ink"]; ctx.textAlign = "center"; ctx.fillText(d.text, cx, cy - 8);
+        } else {
+          const ox = X(d.x), oy = Y(d.y), ex = ox + R * 0.72, ey = oy - R * 0.72;
+          const lx = Math.min(ox + Math.max(R, 4) + 54, Ls.x + Ls.L - tw - 6), ly = oy - Math.max(R * 0.72, 4) - 40;
+          ctx.beginPath(); ctx.moveTo(lx - 4, ly + 4); ctx.lineTo(ex + 3, ey - 3); ctx.stroke();
+          ctx.save(); ctx.translate(ex, ey); ctx.rotate(Math.atan2(ey - (ly + 4), ex - (lx - 4))); arrow(0, 0, 1); ctx.restore();
+          ctx.fillStyle = P.paper; ctx.fillRect(lx - 2, ly - 14, tw, 18);
+          ctx.fillStyle = P["red-ink"]; ctx.textAlign = "left"; ctx.fillText(d.text, lx + 3, ly);
+        }
+        ctx.textAlign = "left"; ctx.globalAlpha = 1;
+      };
+      m.dims.forEach(dim);
+      const tg = m.target;
+      dim({ focus: "coating", x: tg.x, y: tg.y, r: FIBER.coat, text: "Ø 250 µm", yOff: -FIBER.coat * 0.62 });
+      dim({ focus: "cladding", x: tg.x, y: tg.y, r: FIBER.clad, text: "Ø 125 µm", yOff: -FIBER.clad * 0.55 });
+      dim({ focus: "core", x: tg.x, y: tg.y, r: coreR, text: "Ø " + JC.fmt(coreUm, coreUm % 1 ? 1 : 0) + " µm", leader: coreR * s <= 40 });
+    }
 
-    // balon keterangan (hanya di potongan utuh)
-    const ba = 1 - JC.smooth(0.15, 0.7, t);
-    if (ba > 0.02) {
-      ctx.globalAlpha = ba; ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      BALLOONS.forEach(([n, p, ang]) => {
-        const bx = X(Math.cos(ang) * 6.6), by = Y(Math.sin(ang) * 6.6);
+    if (opt.balloons > 0.02) {
+      ctx.globalAlpha = opt.balloons; ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      const dist = 0.44 * m.W0;
+      m.balloons.forEach(([n, , p, ang]) => {
+        const pt = Array.isArray(p) ? p : [p.x, p.y];
+        const bx = X(m.c0[0] + Math.cos(ang) * dist), by = Y(m.c0[1] + Math.sin(ang) * dist);
         ctx.strokeStyle = P.ink; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(X(p[0]), Y(p[1])); ctx.lineTo(bx - Math.cos(ang) * 12, by - Math.sin(ang) * 12); ctx.stroke();
-        ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(X(pt[0]), Y(pt[1])); ctx.lineTo(bx - Math.cos(ang) * 12, by - Math.sin(ang) * 12); ctx.stroke();
+        ctx.fillStyle = P.ink; ctx.beginPath(); ctx.arc(X(pt[0]), Y(pt[1]), 2.2, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = P.paper; ctx.beginPath(); ctx.arc(bx, by, 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         ctx.fillStyle = P.ink; ctx.fillText(String(n), bx, by + 1);
       });
@@ -1484,14 +1639,37 @@ footer { font-size: 1rem; }
     }
     ctx.restore();
 
-    // bingkai detail + garis sumbu (titik-strip)
-    ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(Ls.x, Ls.y, Ls.L, 0, Math.PI * 2); ctx.stroke();
-    ctx.strokeStyle = P["ink-3"]; ctx.lineWidth = 0.8; ctx.setLineDash([16, 4, 2, 4]);
-    ctx.beginPath(); ctx.moveTo(Ls.x - Ls.L - 18, Ls.y); ctx.lineTo(Ls.x + Ls.L + 18, Ls.y); ctx.moveTo(Ls.x, Ls.y - Ls.L - 18); ctx.lineTo(Ls.x, Ls.y + Ls.L + 18); ctx.stroke();
-    ctx.setLineDash([]);
+    if (opt.frame) {
+      ctx.strokeStyle = P.ink; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(Ls.x, Ls.y, Ls.L, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = P["ink-3"]; ctx.lineWidth = 0.8; ctx.setLineDash([16, 4, 2, 4]);
+      ctx.beginPath(); ctx.moveTo(Ls.x - Ls.L - 18, Ls.y); ctx.lineTo(Ls.x + Ls.L + 18, Ls.y); ctx.moveTo(Ls.x, Ls.y - Ls.L - 18); ctx.lineTo(Ls.x, Ls.y + Ls.L + 18); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    return s;
+  }
 
-    // kotak keterangan
+  const st = JC.canvas(cv, () => draw());
+  function lens(w, h) {
+    if (w > 760) { const L = Math.min(w * 0.28, h * 0.38); return { x: w * 0.66, y: h * 0.54, L }; }
+    // ponsel: lingkaran mengisi ruang di bawah kotak keterangan
+    const top = hudEl.getBoundingClientRect().bottom - cv.getBoundingClientRect().top + 10;
+    const L = Math.max(60, Math.min(w * 0.42, (h - top - 10) / 2));
+    return { x: w / 2, y: top + L, L };
+  }
+  function niceLen(mm) {
+    const p = Math.pow(10, Math.floor(Math.log10(mm)));
+    return [10, 5, 2, 1].map((k) => k * p).find((x) => x <= mm) || p;
+  }
+  const fmtLen = (mm) => (mm >= 1 ? JC.fmt(mm, Math.abs(mm - Math.round(mm)) < 0.05 ? 0 : 1) + " mm" : Math.round(mm * 1000).toLocaleString("id-ID") + " µm");
+  const fmtScale = (r) => (r >= 100 ? (Math.round(r / 10) * 10).toLocaleString("id-ID") : r >= 10 ? Math.round(r) : JC.fmt(r, 1)) + ":1";
+
+  function draw() {
+    readScroll();
+    const { ctx, w, h } = st;
+    ctx.clearRect(0, 0, w, h);
+    const v = viewAt(model, t), Ls = lens(w, h);
+    const s = render(ctx, w, h, model, v, Ls, { dims: true, balloons: 1 - JC.smooth(0.15, 0.7, t), frame: true });
     hud.view.textContent = v.near.view;
     hud.scale.textContent = fmtScale(s * 0.26458);
     hud.w.textContent = fmtLen(v.W);
@@ -1503,6 +1681,39 @@ footer { font-size: 1rem; }
 
   let queued = false;
   addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } }, { passive: true });
+
+  /* ---------- kartu, pilihan kabel, katalog ---------- */
+  const cards = [...document.querySelectorAll("[data-card]")];
+  function fillCards() {
+    model.cards.forEach(([eyebrow, title, text], i) => {
+      let html = `<p class="chapter-no" style="--c:var(--c2)"><i></i>${eyebrow}</p><h3>${title}</h3><p>${text}</p>`;
+      if (i === 0) html += `<ol>${model.balloons.map(([n, label]) => `<li><b>${n}</b>${label}</li>`).join("")}</ol><p>Gulir untuk masuk.</p>`;
+      cards[i].innerHTML = html;
+    });
+  }
+  sel.innerHTML = MODELS.map((m) => `<option value="${m.id}">${m.name}</option>`).join("");
+  cat.innerHTML = MODELS.map((m) => `<button type="button" class="cable-btn" id="cab-${m.id}" data-cable="${m.id}" aria-pressed="${m === model}"><canvas aria-hidden="true"></canvas><b>${m.name}</b><span>${m.where}</span></button>`).join("");
+  const catBtns = [...cat.querySelectorAll(".cable-btn")];
+  function setModel(id, jump) {
+    model = MODELS.find((m) => m.id === id) || MODELS[0];
+    sel.value = model.id;
+    catBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cable === model.id)));
+    fillCards(); draw();
+    if (jump) scrollTo({ top: scroller.getBoundingClientRect().top + scrollY + (innerWidth <= 760 ? 0 : 0), behavior: JC.reduced ? "auto" : "smooth" });
+  }
+  sel.addEventListener("change", () => setModel(sel.value));
+  catBtns.forEach((b) => b.addEventListener("click", () => setModel(b.dataset.cable, true)));
+  // gambar mini di katalog memakai mesin gambar yang sama
+  catBtns.forEach((b) => {
+    const m = MODELS.find((x) => x.id === b.dataset.cable);
+    const th = JC.canvas(b.querySelector("canvas"), (ctx, w, h) => {
+      ctx.clearRect(0, 0, w, h);
+      const v = { W: m.W0 / 1.38, c: m.c0, near: m.K[0], alpha: () => 1, ring: () => 0, glow: 0 };
+      render(ctx, w, h, m, v, { x: w / 2, y: h / 2, L: Math.min(w, h) / 2 - 2 }, { dims: false, balloons: 0, frame: false });
+    });
+    requestAnimationFrame(() => th.draw(th.ctx, th.w, th.h));
+  });
+  fillCards();
 
   const coreNote = document.getElementById("coreNote");
   const NOTES = {
