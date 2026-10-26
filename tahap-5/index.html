@@ -590,11 +590,13 @@ svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); 
 .crread b { font-weight: 650; font-variant-numeric: tabular-nums; font-size: .9375rem; }
 .check:not(.ok):not(.warn):not(.bad) i { color: var(--ink-3); }
 #crCanvas { touch-action: pan-y; cursor: ew-resize; }
+#lsRes { min-width: 0; }
 @media (max-width: 600px) {
   .setgrid { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .setgrid > span { margin-top: 6px; }
   .crread div { padding: 6px 8px; }
   .crread b { font-size: .875rem; }
+  #lsRes th, #lsRes td { padding: 8px 5px; font-size: .8125rem; }
   #heroSvg .txt { font-size: 18px; }
   #heroSvg .txt-m { font-size: 19px; }
   #ptSvg .txt, #ptSvg .txt-2 { font-size: 17px; }
@@ -643,7 +645,7 @@ svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); 
       <tr><td>Tahap 3</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-3/">Praktik persiapan</a></td><td>buka</td></tr>
       <tr><td>Tahap 4</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">Penyambungan &amp; finishing</a></td><td>buka</td></tr>
       <tr class="now"><td>Tahap 5</td><td>Pengukuran</td><td>sedang dibaca</td></tr>
-      <tr><td>Tahap 6</td><td>Troubleshooting &amp; perawatan</td><td>berikutnya</td></tr>
+      <tr><td>Tahap 6</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-6/">Troubleshooting &amp; perawatan</a></td><td>berikutnya</td></tr>
       <tr><td>Tahap 7</td><td>Aplikasi lapangan</td><td></td></tr>
     </table>
   </div>
@@ -905,7 +907,7 @@ svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); 
       <p class="small">Berikutnya · Tahap 6</p>
       <h3>Troubleshooting &amp; perawatan</h3>
       <p>Mencari penyebab redaman tinggi dan sambungan gagal, serta membersihkan dan mengkalibrasi splicer.</p>
-      <p><a class="btn" href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">← Kembali ke Tahap 4</a></p>
+      <p class="row-actions" style="flex-wrap:wrap"><a class="btn primary" href="https://nothinsphere.github.io/jalur-cahaya/tahap-6/">Buka Tahap 6 →</a><a class="btn" href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">← Kembali ke Tahap 4</a></p>
     </div>
   </div>
 </section>

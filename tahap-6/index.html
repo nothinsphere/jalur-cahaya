@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalur Cahaya Tahap 6</title>
+<meta name="description" content="Modul belajar interaktif teknisi fiber optik Tahap 6: mencari gangguan dengan ukur mundur, membaca tanda di OTDR, menemukan titik putus, sambungan gagal, merawat splicer dan cleaver, uji busur.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Public+Sans:ital,wght@0,400..800;1,400..800&display=swap">
+<style>
+/* dasar */
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: lembar datasheet / gambar teknik. Kertas + tinta, gambar di dalam bingkai berkisi,
+   penanda bab memakai urutan kode warna serat (TIA-598). Merah = cahaya VFL & coretan koreksi. */
+:root {
+  --paper: #fafbfb;
+  --paper-2: #eef1f2;
+  --grid: #e3e8ea;
+  --ink: #16191b;
+  --ink-2: #454e54;
+  --ink-3: #737e85;
+  --rule: #c5cdd1;
+  --red: #cf2a1e;
+  --red-ink: #b0231a;
+  --ok: #1b7a3c;
+  --bad: #c42a1f;
+  --warn: #93600a;
+  --iso: #f5c400;
+  --glass: #dcebf1;
+  --glass-2: #b7d3de;
+  --jacket: #33393d;
+  --hatch: rgba(22, 25, 27, .5);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  /* warna penanda bab = kode warna tabung */
+  --c1: #1f6fe0; --c2: #f47b20; --c3: #22a04b; --c4: #8b5a2b; --c5: #8c969c; --c6: #f3f3ef; --c7: #d92b2b;
+  /* satu keluarga sans-serif untuk semua peran; angka memakai tabular-nums, bukan monospace */
+  --font-display: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  /* Garamond untuk judul, Source Serif untuk teks bacaan; label, data, dan gambar tetap sans */
+  --font-serif: "EB Garamond", Garamond, "Times New Roman", serif;
+  --font-read: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+    --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+    --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+  --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+  --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 650; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.5rem, 6.2vw, 4.3rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.02; }
+h2 { font-size: clamp(1.85rem, 4.2vw, 2.7rem); font-weight: 700; letter-spacing: -.025em; }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.1rem; }
+p { margin: 0; }
+a { color: var(--red-ink); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.small { font-size: .875rem; color: var(--ink-3); }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.col { max-width: 880px; margin-inline: auto; }
+.prose { display: grid; gap: .9rem; max-width: 66ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: .35rem; }
+
+/* ---------- rel bab ---------- */
+.rail { position: fixed; left: max(22px, env(safe-area-inset-left, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: none; }
+.rail::before { content: ""; position: absolute; left: 4px; top: 4px; bottom: 4px; width: 1px; background: var(--rule); }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; position: relative; }
+.rail a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink-3); font-size: 13px; }
+.rail a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; transition: transform .15s; }
+.rail a span { background: var(--paper); padding: 1px 6px; opacity: 0; transition: opacity .15s; white-space: nowrap; border: 1px solid var(--rule); }
+.rail:hover a span, .rail a.on span { opacity: 1; }
+.rail a.on { color: var(--ink); }
+.rail a.on i { transform: scale(1.5); }
+.topbar { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 3px; z-index: 20; }
+.topbar i { display: block; height: 100%; width: 0; background: var(--red); }
+@media (min-width: 1200px) { .rail { display: block; } .topbar { display: none; } }
+
+/* ---------- hero: lembar gambar ---------- */
+.hero { padding-block: clamp(36px, 7vw, 80px) 32px; }
+.hero .col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.kicker { font-size: .9375rem; color: var(--ink-2); }
+.kicker b { color: var(--ink); }
+.hero .lede { font-size: 1.25rem; color: var(--ink-2); max-width: 44ch; line-height: 1.5; }
+.sheet { border: 1.5px solid var(--ink); background: var(--paper); }
+.sheet-draw { background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; padding: 18px; overflow-x: auto; }
+.sheet-draw svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.tblock { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; border-top: 1.5px solid var(--ink); }
+.tblock div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; gap: 1px; min-width: 0; }
+.tblock div:first-child { border-left: 0; }
+.tblock small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.tblock b { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+@media (max-width: 620px) { .tblock { grid-template-columns: 1fr 1fr; } .tblock div:nth-child(3) { border-left: 0; } .tblock div:nth-child(n+3) { border-top: 1px solid var(--ink); } }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+
+/* svg gambar teknik */
+.ln { stroke: var(--ink); stroke-width: 1.4; }
+.ln-thin { fill: none; stroke: var(--ink-2); stroke-width: 1; }
+.txt { fill: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+.txt-2 { fill: var(--ink-2); font-family: var(--font-body); font-size: 12.5px; }
+.txt-m { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
+.balloon circle { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.balloon text { fill: var(--ink); font-family: var(--font-display); font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.f-jacket { fill: var(--jacket); }
+.f-glass { fill: var(--glass); }
+.f-glass2 { fill: var(--glass-2); }
+.f-paper { fill: var(--paper); }
+.f-ink { fill: var(--ink); }
+.f-red { fill: var(--red); }
+.s-red { stroke: var(--red); }
+
+/* daftar tahap */
+.stages { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.stages td { padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+.stages td:first-child { font-family: var(--font-display); font-weight: 600; width: 5.5em; color: var(--ink-3); }
+.stages tr.now td { color: var(--ink); font-weight: 700; }
+.stages tr.now td:first-child { color: var(--red-ink); }
+.stages td:last-child { text-align: right; color: var(--ink-3); font-size: .8125rem; white-space: nowrap; }
+
+/* ---------- bab ---------- */
+.chapter { padding-block: clamp(64px, 10vw, 112px) 16px; }
+.chapter-head { display: grid; gap: 14px; margin-bottom: 32px; border-top: 1.5px solid var(--ink); padding-top: 14px; }
+.chapter-no { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); }
+.chapter-no i { width: 34px; height: 8px; border-radius: 4px; background: var(--c); border: 1px solid var(--ink); }
+.block { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 56px; }
+.chapter-head, .sheet-q, .game, .rx, .fig-ctl, .dive-card { grid-template-columns: minmax(0, 1fr); }
+
+/* tabel umum */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .9375rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl thead th { border-bottom: 1.5px solid var(--ink); font-family: var(--font-display); font-weight: 600; font-size: .9375rem; }
+.tbl tbody th { font-weight: 400; color: var(--ink-3); }
+.tbl .sw { display: inline-block; width: 22px; height: 6px; border-radius: 3px; vertical-align: 3px; margin-right: 6px; border: 1px solid var(--ink); }
+.tbl .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- gambar (figure) ---------- */
+.fig { margin: 0; border: 1.5px solid var(--ink); background: var(--paper); }
+.fig-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 8px 10px; border-bottom: 1px solid var(--ink); }
+.fig-bar .lbl { font-size: .875rem; color: var(--ink-2); }
+.fig-draw { position: relative; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; }
+.fig-draw canvas { display: block; width: 100%; }
+.fig-ctl { padding: 12px 14px; border-top: 1px solid var(--ink); display: grid; gap: 12px; }
+.fig + figcaption, .fig figcaption, .cap { font-size: .875rem; color: var(--ink-2); margin-top: 8px; }
+.cap b { font-family: var(--font-display); font-weight: 600; color: var(--ink); margin-right: 6px; }
+.msg { font-size: .9375rem; color: var(--ink-2); }
+.msg strong { color: var(--ink); }
+
+/* kontrol */
+.tabs { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--ink); }
+.tabs button { border: 0; border-left: 1px solid var(--ink); background: var(--paper); padding: 5px 12px; cursor: pointer; font-size: .875rem; }
+.tabs button:first-child { border-left: 0; }
+.tabs button:hover { background: var(--paper-2); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.range { display: grid; gap: 4px; }
+.range label { display: flex; justify-content: space-between; gap: 12px; font-size: .9375rem; color: var(--ink-2); }
+.range output { font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--red); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 9px 16px; border-radius: 2px; cursor: pointer; font-weight: 700; text-decoration: none; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+
+/* label peringatan laser (bentuk stiker asli) */
+.warnlabel { display: flex; gap: 14px; align-items: center; border: 2px solid #111; background: var(--iso); color: #111; padding: 10px 14px; max-width: 560px; }
+.warnlabel svg { flex: none; width: 46px; height: 41px; }
+.warnlabel p { font-family: var(--font-display); font-weight: 600; font-size: 1rem; line-height: 1.25; }
+.warnlabel small { display: block; font-family: var(--font-body); font-weight: 400; font-size: .8125rem; }
+
+/* ---------- K3 ---------- */
+.eye-view { aspect-ratio: 16 / 6.5; min-height: 210px; max-width: 100%; }
+.eye-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sheet-q { border: 1.5px solid var(--ink); padding: 20px; display: grid; gap: 16px; min-height: 220px; align-content: start; }
+.sheet-q .q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; line-height: 1.25; }
+.ticks { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-size: .8125rem; color: var(--ink-3); }
+.ticks i { width: 18px; height: 18px; border: 1px solid var(--ink); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
+.ticks i.r { color: var(--ok); }
+.ticks i.w { color: var(--bad); }
+.ticks i.c { background: var(--ink); }
+.ticks span { margin-left: 8px; }
+.row-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.row-actions .btn { flex: 1 1 140px; }
+.mark { display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 12px; }
+.mark b { font-family: var(--font-display); font-size: 1.15rem; }
+.mark.good b { color: var(--ok); }
+.mark.bad b { color: var(--bad); }
+
+/* ---------- dive (struktur) ---------- */
+.dive { position: relative; }
+.dive-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.dive-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: 1fr 1fr; min-width: 250px; z-index: 3; }
+.dive-hud > div { padding: 6px 10px; display: grid; gap: 0; border-top: 1px solid var(--ink); min-width: 0; }
+.dive-hud > div:first-child { border-top: 0; }
+.dive-hud .h-scale, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+.dive-hud label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud select { font: inherit; font-weight: 650; font-size: 1rem; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); padding: 4px 6px; width: 100%; margin-top: 2px; }
+.dive-hud small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.dive-hud .wide { grid-column: 1 / -1; }
+.scalebar { display: flex; align-items: center; gap: 8px; }
+.scalebar i { display: block; height: 7px; border: 1.5px solid var(--ink); border-top: 0; }
+.scalebar span { font-family: var(--font-mono); font-size: 12px; }
+.dive-steps { position: relative; margin-top: -100vh; margin-top: -100svh; }
+.dive-step { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; pointer-events: none; }
+.dive-card { pointer-events: auto; max-width: 380px; background: var(--paper); border: 1.5px solid var(--ink); padding: 18px 20px; display: grid; gap: 10px; }
+.dive-card .chapter-no { font-size: .9375rem; }
+.dive-card p { color: var(--ink-2); font-size: .9375rem; line-height: 1.6; }
+.dive-card ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); }
+.dive-card ol li { display: flex; gap: 8px; align-items: center; }
+.dive-card ol b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+.dive-intro { padding-block: clamp(64px, 10vw, 112px) 40px; }
+@media (min-width: 1200px) { .dive-steps { padding-left: 210px; } }
+@media (max-width: 760px) {
+  .dive-step { align-items: flex-end; padding-bottom: 5vh; }
+  .dive-card { max-width: none; width: 100%; padding: 14px 16px; }
+  .dive-hud { min-width: 0; left: max(16px, env(safe-area-inset-left, 0px)); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dive-hud .h-view, .dive-hud .h-bar { display: none; }
+  .dive-hud .h-sel { display: flex; align-items: center; gap: 10px; padding-block: 5px; }
+  .dive-hud .h-sel label { flex: none; }
+  .dive-hud .h-sel select { margin-top: 0; }
+  .dive-hud .h-scale { border-left: 0; }
+  .dive-hud .h-w, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+}
+
+/* katalog jenis kabel */
+.cable-cat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 900px) { .cable-cat { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.cable-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 8px 8px 10px; display: grid; gap: 2px; text-align: left; cursor: pointer; align-content: start; }
+.cable-btn canvas { width: 100%; height: auto; aspect-ratio: 1 / 1; display: block; margin-bottom: 6px; }
+.cable-btn b { font-weight: 650; font-size: .9375rem; line-height: 1.25; }
+.cable-btn span { font-size: .8125rem; color: var(--ink-3); line-height: 1.3; }
+.cable-btn:hover { background: var(--paper-2); }
+.cable-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--ink); }
+.dive-intro .col { display: grid; gap: 14px; }
+.dive-after .block { margin-top: 0; padding-block: 56px 0; }
+@media (max-width: 600px) { .cable-cat { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- SM vs MM ---------- */
+.bits { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 13px; }
+.bits .bitwrap { display: contents; }
+.bits span { width: 26px; text-align: center; padding: 2px 0; border: 1px solid var(--ink); }
+.bits span.err { background: var(--red); border-color: var(--red); color: #fff; }
+.bits .lab { width: 76px; border: 0; text-align: left; font-family: var(--font-body); color: var(--ink-2); }
+
+/* ---------- kode warna ---------- */
+.fan { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+@media (max-width: 600px) { .fan { grid-template-columns: 1fr; } }
+.fan h4 { font-size: 1rem; padding-bottom: 6px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
+.fiber-btn { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: none; padding: 8px 4px; cursor: pointer; }
+.fiber-btn b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; text-align: right; }
+.fiber-btn i { height: 8px; border-radius: 4px; border: 1px solid var(--ink); }
+.fiber-btn span { font-size: .9375rem; min-width: 5.5em; }
+.fiber-btn:hover { background: var(--paper-2); }
+.fiber-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 -2px 0 var(--ink); }
+.fiber-btn.right { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.fiber-btn.wrong { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.finder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+@media (max-width: 760px) { .finder { grid-template-columns: 1fr; } }
+.finder-form { padding: 16px; display: grid; gap: 12px; align-content: start; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .finder-form { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.field { display: grid; gap: 4px; }
+.field label { font-size: .875rem; color: var(--ink-2); }
+.field input, .field select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 8px 10px; font-family: var(--font-mono); font-size: 16px; width: 100%; }
+.finder-result { display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.finder-result .row { display: flex; align-items: center; gap: 10px; }
+.finder-result .chip { width: 30px; height: 8px; border-radius: 4px; border: 1px solid var(--ink); flex: none; }
+.finder-result .formula { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); line-height: 1.75; }
+.finder .fig-draw { display: grid; place-items: center; padding: 14px; }
+.finder svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.game { display: grid; gap: 14px; border: 1.5px solid var(--ink); padding: 18px; }
+.game-q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.game-q .num { font-size: 2.6rem; line-height: 1; color: var(--red-ink); }
+.game-q .chipbig { width: 64px; height: 12px; border-radius: 6px; border: 1px solid var(--ink); display: inline-block; }
+.game-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 18px; }
+
+/* ---------- redaman ---------- */
+.dbbars { padding: 18px 16px 8px; display: grid; gap: 10px; }
+.dbbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 72px; align-items: center; gap: 10px; font-size: .875rem; color: var(--ink-2); }
+.dbbar .track { height: 16px; border: 1px solid var(--ink); background: var(--paper); position: relative; }
+.dbbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--red); transition: width .15s; }
+.dbbar output { font-family: var(--font-mono); color: var(--ink); text-align: right; }
+.db-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.db-stats div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; }
+.db-stats div:first-child { border-left: 0; }
+.db-stats small { font-size: .8125rem; color: var(--ink-3); }
+.db-stats b { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--ink); background: var(--paper); padding: 4px 10px; cursor: pointer; font-size: .8125rem; }
+.chips button:hover { background: var(--paper-2); }
+.formula-line { font-family: var(--font-mono); font-size: .9375rem; border: 1px solid var(--ink); padding: 10px 14px; width: fit-content; max-width: 100%; color: var(--ink); }
+
+.budget { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.bt td, .bt th { vertical-align: middle; }
+.bt td:last-child, .bt th:last-child { text-align: right; }
+.bt tfoot td { border-top: 1.5px solid var(--ink); border-bottom: 0; font-weight: 700; }
+.bt .key { display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: 0; border: 1px solid var(--ink); }
+.bt small { display: block; font-size: .8125rem; color: var(--ink-3); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); }
+.stepper button { border: 0; background: var(--paper); width: 32px; height: 30px; cursor: pointer; font-weight: 700; }
+.stepper button:hover { background: var(--paper-2); }
+.stepper output { min-width: 72px; text-align: center; font-family: var(--font-mono); font-size: 14px; border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); line-height: 30px; }
+.bt select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 5px 8px; font-family: var(--font-mono); font-size: 14px; }
+.rx { display: grid; gap: 16px; border: 1.5px solid var(--ink); padding: 16px; }
+.rx-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.rx-big small { width: 100%; font-size: .875rem; color: var(--ink-3); }
+.rx-big b { font-family: var(--font-mono); font-size: clamp(34px, 7vw, 50px); font-weight: 500; line-height: 1; }
+.verdict { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.verdict.ok { color: var(--ok); } .verdict.warn { color: var(--warn); } .verdict.bad { color: var(--bad); }
+.stack { display: flex; height: 30px; gap: 2px; position: relative; }
+.stack div { height: 100%; min-width: 0; }
+.stack div:first-child { border-radius: 4px 0 0 4px; }
+.stack .margin { background-image: repeating-linear-gradient(135deg, var(--ink-3) 0 1px, transparent 1px 6px); border: 1px dashed var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8125rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border: 1px solid var(--ink); }
+.legend b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
+.scale { position: relative; height: 46px; margin-top: 4px; }
+.scale .zones { position: absolute; left: 0; right: 0; top: 6px; height: 8px; display: flex; gap: 2px; }
+.scale .zones div { height: 100%; }
+.scale .marker { position: absolute; top: -4px; width: 0; height: 26px; border-left: 2px solid var(--ink); transition: left .2s; }
+.scale .marker::before { content: ""; position: absolute; left: -7px; top: -8px; border: 6px solid transparent; border-top-color: var(--ink); }
+.scale .tk { position: absolute; left: 0; right: 0; top: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.scale .tk span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 13px; padding: 5px 9px; font-family: var(--font-mono); white-space: nowrap; }
+
+/* ---------- konektor ---------- */
+.conn { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .conn { grid-template-columns: 1fr; } }
+.conn .fig-draw { display: grid; place-items: center; padding: 16px; min-height: 240px; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .conn .fig-draw { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.conn .fig-draw svg { width: 100%; max-width: 400px; height: auto; }
+.conn-info { padding: 18px; display: grid; gap: 12px; align-content: start; }
+.conn-info h3 { font-size: 2.4rem; }
+.conn-info p { color: var(--ink-2); font-size: .9375rem; }
+.conn-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; margin: 0; font-size: .9375rem; border-top: 1px solid var(--ink); }
+.conn-info dt, .conn-info dd { padding: 6px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+.conn-info dt { color: var(--ink-3); padding-right: 16px; }
+.polish-view { aspect-ratio: 16 / 6.5; min-height: 220px; max-width: 100%; }
+.polish-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---------- kuis ---------- */
+.quiz { display: grid; gap: 0; border-top: 1.5px solid var(--ink); }
+.qitem { padding: 22px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 12px; }
+.qitem h4 { font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; line-height: 1.4; display: flex; gap: 10px; }
+.qitem h4 span { font-family: var(--font-display); font-weight: 600; color: var(--ink-3); flex: none; }
+.opts { display: grid; gap: 6px; padding-left: 28px; }
+.opts button { display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; gap: 10px; align-items: center; text-align: left; border: 0; background: none; padding: 5px 4px; cursor: pointer; line-height: 1.4; }
+.opts button .l { width: 24px; height: 24px; border: 1px solid var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+.opts button:hover:not(:disabled) .l { background: var(--paper-2); }
+.opts button:disabled { cursor: default; }
+.opts button .m { font-weight: 700; font-size: 18px; }
+.opts button.right .l { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opts button.right .m { color: var(--ok); }
+.opts button.wrong .l { background: var(--bad); border-color: var(--bad); color: #fff; }
+.opts button.wrong .m { color: var(--bad); }
+.qexp { font-size: .9375rem; color: var(--ink-2); padding-left: 28px; }
+.score { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; padding: 22px 0; }
+.grade { width: 96px; height: 96px; border: 3px solid var(--red); border-radius: 50%; display: grid; place-items: center; color: var(--red-ink); font-family: var(--font-display); font-weight: 700; font-size: 2rem; transform: rotate(-8deg); flex: none; }
+.next { margin-top: 56px; border: 1.5px dashed var(--ink-3); padding: 18px 20px; display: grid; gap: 6px; color: var(--ink-2); }
+footer { padding-block: 40px 56px; color: var(--ink-3); font-size: .875rem; }
+footer .col { border-top: 1.5px solid var(--ink); padding-top: 14px; }
+
+/* ---------- ponsel ---------- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, input, select { touch-action: manipulation; }
+.bm, .hero-legend { display: none; }
+.balloon.big circle { stroke-width: 1.6; }
+.balloon.big text { font-size: 24px; }
+@media (max-width: 640px) {
+  .sheet-draw { padding: 8px; overflow: visible; }
+  .sheet-draw svg { min-width: 0; }
+  .bd { display: none; }
+  .bm { display: inline; }
+  .hero-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; list-style: none; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ink); font-size: .9375rem; color: var(--ink-2); }
+  .hero-legend li { display: flex; gap: 8px; align-items: center; }
+  .hero-legend b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+}
+@media (max-width: 760px) {
+  .dive-stage { height: 56vh; height: 56svh; z-index: 2; }
+  .dive-steps { margin-top: 0; z-index: 1; }
+  .dive-step { min-height: 72vh; min-height: 72svh; align-items: center; padding-block: 12px; }
+  .dive-card { padding: 14px 16px; gap: 8px; }
+  .dive-card h3 { font-size: 1.3rem; }
+  .dive-card ol { grid-template-columns: 1fr 1fr; }
+  .dive-hud { top: 10px; }
+  .dive-hud b { font-size: 1rem; }
+}
+@media (max-width: 600px) {
+  .fig-bar { padding: 8px; }
+  .fig-bar .lbl { width: 100%; }
+  .fig-bar .tabs, .dive-card .tabs { display: flex; width: 100%; }
+  .fig-bar .tabs button, .dive-card .tabs button { flex: 1 1 0; padding-inline: 6px; }
+  .fig-ctl { padding: 12px; }
+  .tbl.rs { min-width: 0; }
+  .tbl.rs thead { display: none; }
+  .tbl.rs tr { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .tbl.rs th, .tbl.rs td { display: block; padding: 0; border: 0; }
+  .tbl.rs tbody th { color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .tbl.rs td[data-label]::before { content: attr(data-label); display: block; font-size: .8125rem; color: var(--ink-3); }
+  .bt { min-width: 0; }
+  .bt thead { display: none; }
+  .bt tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .bt td { border: 0; padding: 0; }
+  .bt td:first-child { grid-row: span 2; }
+  .bt td:nth-child(3) { grid-column: 2; text-align: right; font-size: .8125rem; color: var(--ink-3); padding-top: 4px; }
+  .bt tfoot tr { border-bottom: 0; border-top: 1.5px solid var(--ink); }
+  .bt tfoot td { border: 0; }
+  .bt tfoot td:nth-child(2) { display: none; }
+  .bt tfoot td:nth-child(3) { grid-row: 1; color: var(--ink); font-size: 1rem; padding: 0; }
+  .rx { padding: 14px; }
+  .opts, .qexp { padding-left: 0; }
+  .sheet-q, .game { padding: 16px; }
+  .sheet-q .q, .game-q { font-size: 1.3rem; }
+  .conn svg .txt-2 { font-size: 15px; }
+  .db-stats div { padding: 8px; }
+  .db-stats b { font-size: 1.1rem; }
+  .dbbar { grid-template-columns: 52px minmax(0, 1fr) 54px; }
+}
+@media (pointer: coarse) {
+  .tabs button { min-height: 44px; }
+  .stepper button { width: 42px; height: 40px; }
+  .stepper output { line-height: 40px; min-width: 64px; }
+  .chips button { min-height: 40px; padding-inline: 12px; }
+  .btn { min-height: 46px; }
+  .opts button { padding-block: 8px; }
+  input[type="range"] { height: 34px; }
+  .bt select, .field select, .field input { font-size: 16px; min-height: 40px; }
+}
+
+/* angka sejajar kolom tanpa font monospace */
+.range output, .bits, .field input, .finder-result .formula, .db-stats b, .dbbar output, .formula-line, .stepper output,
+.bt select, .rx-big b, .legend b, .scale .tk, .tip, .scalebar span, .dive-hud b, .tblock b, .fiber-btn b, .game-q .num, .grade, .tbl .num { font-variant-numeric: tabular-nums; }
+.rx-big b { font-weight: 650; letter-spacing: -.02em; }
+.db-stats b, .range output, .stepper output { font-weight: 600; }
+.conn-info h3 { font-weight: 750; letter-spacing: -.02em; }
+
+/* ---------- Garamond untuk judul, Source Serif 4 untuk teks bacaan ---------- */
+h1, h2, h3, h4, .sheet-q .q, .game-q, .qitem h4 { font-family: var(--font-serif); font-variant-numeric: lining-nums; }
+.prose, .lede, .dive-card p, .msg, .qexp, .conn-info p, .mark, .next p, footer, .cap {
+  font-family: var(--font-read); font-variant-numeric: lining-nums; font-optical-sizing: auto;
+}
+h1 { font-size: clamp(2.9rem, 7.4vw, 5.2rem); font-weight: 500; letter-spacing: -.015em; line-height: 1; }
+h2 { font-size: clamp(2.1rem, 4.8vw, 3.1rem); font-weight: 500; letter-spacing: -.01em; line-height: 1.05; }
+h3 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; }
+h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
+.conn-info h3 { font-size: 2.6rem; font-weight: 600; letter-spacing: 0; }
+.prose { font-size: 1.125rem; line-height: 1.62; }
+.hero .lede { font-size: 1.3rem; line-height: 1.5; }
+.msg, .dive-card p, .conn-info p, .qexp, .mark { font-size: 1rem; line-height: 1.58; }
+.cap { font-size: .9375rem; font-style: italic; }
+.cap b { font-style: normal; font-weight: 600; }
+.sheet-q .q, .game-q { font-size: 1.6rem; font-weight: 500; line-height: 1.2; }
+.qitem h4 { font-size: 1.3rem; font-weight: 600; line-height: 1.3; }
+.qitem h4 span { font-family: var(--font-serif); }
+.mark b { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; }
+.prose .mono, .msg .mono { font-family: var(--font-mono); font-size: .92em; }
+footer { font-size: 1rem; }
+@media (max-width: 600px) {
+  .prose { font-size: 1.0625rem; }
+  .sheet-q .q, .game-q { font-size: 1.4rem; }
+}
+
+/* ---------- Tahap 2 ---------- */
+.kicker a { color: var(--ink-2); }
+.fig-draw > svg { display: block; width: 100%; height: auto; }
+.toolkit-wrap { padding: 14px; }
+.toolkit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.toolkit svg, .tool-opt svg { min-width: 0 !important; width: 100%; height: auto; display: block; }
+.tool { display: grid; gap: 4px; padding: 8px 10px 10px; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); }
+.tool:hover { border-color: var(--ink); }
+.tool span { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: .9375rem; line-height: 1.2; }
+.tool span b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; flex: none; }
+.parts { list-style: none; margin: 0; padding: 14px; border-top: 1px solid var(--ink); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; }
+.parts li { display: flex; gap: 10px; align-items: baseline; font-family: var(--font-read); font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.parts li strong { color: var(--ink); }
+.parts li b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink); flex: none; transform: translateY(5px); font-family: var(--font-body); }
+.rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 4px; max-width: 640px; }
+.rule b { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); }
+.rule p { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.5; }
+.tool-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tool-opt { border: 1px solid var(--rule); background: var(--paper); padding: 6px 8px 8px; cursor: pointer; display: grid; gap: 2px; text-align: left; }
+.tool-opt:hover:not(:disabled) { border-color: var(--ink); }
+.tool-opt span { font-size: .875rem; font-weight: 650; }
+.tool-opt:disabled { cursor: default; }
+.tool-opt.right { border: 2px solid var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.tool-opt.wrong { border: 2px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.otdr-read { font-size: .9375rem; color: var(--ink-2); }
+.otdr-info { display: grid; gap: 4px; border-top: 1px solid var(--rule); padding-top: 10px; }
+.otdr-info b { font-weight: 700; }
+.otdr-info .mono { font-size: .875rem; color: var(--ink-2); }
+.otdr-info p { font-family: var(--font-read); font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+#otdrCanvas { touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) {
+  #stripSvg .txt, #stripSvg .txt-2 { font-size: 24px; }
+  #sleeveSvg .txt, #sleeveSvg .txt-2 { font-size: 20px; }
+  #opmSvg .txt-2 { font-size: 18px; }
+  .parts { grid-template-columns: 1fr; }
+  .tool span { font-size: .8125rem; }
+  .tool-opt span { font-size: .75rem; }
+  .toolkit-wrap { padding: 8px; }
+}
+
+/* ---------- Tahap 3 ---------- */
+.tabs button:disabled { opacity: .4; cursor: default; }
+.order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.order-list li { display: flex; gap: 12px; align-items: center; padding: 8px 2px; border-bottom: 1px solid var(--rule); min-height: 42px; }
+.order-list li b { width: 24px; height: 24px; border: 1.2px solid var(--ink-3); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink-3); flex: none; }
+.order-list li.ok b { border-color: var(--ok); background: var(--ok); color: #fff; }
+.order-list li.ok span { font-weight: 650; }
+.step-pool { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.step-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 10px 12px; text-align: left; cursor: pointer; line-height: 1.35; min-height: 48px; }
+.step-btn:hover { background: var(--paper-2); }
+.step-btn.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+@media (max-width: 600px) { .step-pool { grid-template-columns: 1fr; } }
+svg .ln-thin.bad { stroke: var(--bad); } svg .f-ink.bad { fill: var(--bad); } svg text.bad { fill: var(--bad); }
+svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); } svg text.warn { fill: var(--warn); }
+.checks { display: grid; gap: 6px; }
+.check { display: flex; gap: 10px; align-items: baseline; font-size: .9375rem; color: var(--ink-2); }
+.check i { font-style: normal; font-weight: 800; width: 20px; height: 20px; display: grid; place-items: center; flex: none; border: 1.5px solid currentColor; font-size: 12px; transform: translateY(4px); }
+.check.ok i { color: var(--ok); } .check.warn i { color: var(--warn); } .check.bad i { color: var(--bad); }
+.check strong { color: var(--ink); }
+.checklist { border: 1.5px solid var(--ink); display: grid; }
+.check-head { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--ink); }
+.check-head b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ck-bar { flex: 1; height: 8px; border: 1px solid var(--ink); }
+.ck-bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .2s; }
+.ck { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.ck:hover { background: var(--paper-2); }
+.ck input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--ok); flex: none; }
+.ck b { display: block; font-weight: 650; }
+.ck small { display: block; color: var(--ink-3); font-size: .875rem; margin-top: 2px; }
+.ck:has(input:checked) b { text-decoration: line-through; text-decoration-color: var(--ok); text-decoration-thickness: 2px; }
+.checklist .msg { padding: 12px 14px; }
+@media (max-width: 600px) {
+  #lenSvg .txt, #lenSvg .txt-2 { font-size: 18px; }
+  #heroSvg .txt, #heroSvg .txt-2 { font-size: 17px; }
+}
+
+/* ---------- Tahap 4 ---------- */
+.prose ol { margin: 0; padding-left: 1.4em; display: grid; gap: .4rem; }
+.hot { cursor: pointer; }
+.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; }
+.hot:focus-visible { outline: none; stroke: var(--red); stroke-width: 2; stroke-dasharray: 4 3; }
+.found { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-family: var(--font-read); font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.found:empty { display: none; }
+.found b { color: var(--ink); font-family: var(--font-body); }
+.fig-bar .lbl + .lbl { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) { #heroSvg .txt { font-size: 22px; } }
+
+/* ---------- Tahap 5 ---------- */
+.setgrid { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; align-items: center; }
+.setgrid > span { font-size: .875rem; color: var(--ink-2); }
+.setgrid .tabs { justify-self: start; }
+.setrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.setrow .btn { padding: 5px 14px; }
+.game .scale { margin: 0 0 6px; }
+.crread { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule); }
+.crread div { padding: 8px 10px; display: grid; gap: 2px; border-left: 1px solid var(--rule); }
+.crread div:first-child { border-left: 0; }
+.crread small { font-size: .75rem; letter-spacing: .06em; color: var(--ink-3); }
+.crread b { font-weight: 650; font-variant-numeric: tabular-nums; font-size: .9375rem; }
+.check:not(.ok):not(.warn):not(.bad) i { color: var(--ink-3); }
+#crCanvas { touch-action: pan-y; cursor: ew-resize; }
+@media (max-width: 600px) {
+  .setgrid { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .setgrid > span { margin-top: 6px; }
+  .crread div { padding: 6px 8px; }
+  .crread b { font-size: .875rem; }
+  #heroSvg .txt { font-size: 18px; }
+  #heroSvg .txt-m { font-size: 19px; }
+  #ptSvg .txt, #ptSvg .txt-2 { font-size: 17px; }
+  #lsSvg .txt, #lsSvg .txt-2 { font-size: 17px; }
+}
+
+/* ---------- Tahap 6 ---------- */
+.tagv { fill: var(--ink); font: 650 17px var(--font-mono); font-variant-numeric: tabular-nums; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.chips button:disabled { cursor: default; }
+.fig-ctl .chips button { padding: 6px 10px; font-size: .875rem; }
+.tbl.calc tr.off td { color: var(--ink-3); font-style: italic; }
+.tbl.calc { min-width: 0; }
+.tbl.calc td.num { white-space: normal; }
+.tbl.calc th { width: 52%; }
+.tbl.calc tr.sum th, .tbl.calc tr.sum td { font-weight: 700; border-top: 1.5px solid var(--ink); color: var(--ink); }
+.fig-ctl .opts { margin: 0; padding-left: 0; }
+.phone-only { display: none; }
+@media (max-width: 600px) {
+  .phone-only { display: block; }
+  .tagv { font-size: 24px; }
+  #csSvg .tagn { font-size: 15px; }
+  #csSvg .txt, #mapSvg .txt { font-size: 18px; }
+  #heroSvg .txt-2, #csSvg .txt-2, #mapSvg .txt-2, #clSvg .txt-2 { font-size: 18px; }
+  #mapSvg .txt-m { font-size: 18px; }
+  #arcCanvas { height: 165px !important; }
+  .tbl.calc th, .tbl.calc td { padding: 8px 6px; font-size: .875rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<nav class="rail" aria-label="Bagian Tahap 6">
+  <ol>
+    <li><a href="#alur" style="--c:var(--c1)"><i></i><span>6.1 Ukur mundur</span></a></li>
+    <li><a href="#gejala" style="--c:var(--c2)"><i></i><span>6.2 Tanda di OTDR</span></a></li>
+    <li><a href="#lokasi" style="--c:var(--c3)"><i></i><span>6.3 OTDR ke tiang</span></a></li>
+    <li><a href="#gagal" style="--c:var(--c4)"><i></i><span>6.4 Sambungan gagal</span></a></li>
+    <li><a href="#bersih" style="--c:var(--c5)"><i></i><span>6.5 Membersihkan alat</span></a></li>
+    <li><a href="#busur" style="--c:var(--c6)"><i></i><span>6.6 Uji busur &amp; jadwal</span></a></li>
+    <li><a href="#kuis" style="--c:var(--c7)"><i></i><span>Cek pemahaman</span></a></li>
+  </ol>
+</nav>
+
+<header class="hero wrap">
+  <div class="col">
+    <p class="kicker"><b>Jalur Cahaya</b> · modul pelatihan teknisi fiber optik · <a href="https://nothinsphere.github.io/jalur-cahaya/tahap-5/">← Tahap 5</a></p>
+    <h1>Troubleshooting &amp; perawatan</h1>
+    <p class="lede">Gangguan pasti terjadi: konektor kotor, kabel tertekuk, serat putus, atau splicer yang terus menolak. Tahap ini melatih cara mencari penyebabnya dengan urutan yang jelas, dan cara merawat alat supaya hasil kerja tetap bagus.</p>
+    <div class="sheet">
+      <div class="sheet-draw"><svg id="heroSvg" viewBox="0 0 720 340" role="img" aria-label="Jalur dari ODC ke rumah pelanggan dengan hasil ukur di tiap titik. Daya normal sampai port ODP, lalu turun jauh di roset karena drop cable terganggu."></svg></div>
+      <div class="tblock">
+        <div><small>Judul</small><b>Troubleshooting &amp; perawatan</b></div>
+        <div><small>Tahap</small><b>6 dari 7</b></div>
+        <div><small>Durasi</small><b>±45 menit</b></div>
+        <div><small>Isi</small><b>6 bagian + kuis</b></div>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:-12px"><b>Gambar 0</b> Mengukur mundur dari pelanggan. Daya masih normal di port ODP, tetapi sudah turun jauh di roset, jadi gangguannya ada di drop cable.</p>
+    <table class="stages" aria-label="Tujuh tahap pelatihan">
+      <tr><td>Tahap 1</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/">K3 &amp; teori</a></td><td>buka</td></tr>
+      <tr><td>Tahap 2</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-2/">Pengenalan alat</a></td><td>buka</td></tr>
+      <tr><td>Tahap 3</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-3/">Praktik persiapan</a></td><td>buka</td></tr>
+      <tr><td>Tahap 4</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">Penyambungan &amp; finishing</a></td><td>buka</td></tr>
+      <tr><td>Tahap 5</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-5/">Pengukuran</a></td><td>buka</td></tr>
+      <tr class="now"><td>Tahap 6</td><td>Troubleshooting &amp; perawatan</td><td>sedang dibaca</td></tr>
+      <tr><td>Tahap 7</td><td>Aplikasi lapangan</td><td>berikutnya</td></tr>
+    </table>
+  </div>
+</header>
+
+<main>
+<!-- ================= 6.1 ALUR ================= -->
+<section class="chapter wrap" id="alur" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c1)"><i></i>6.1 · Urutan mencari gangguan</p>
+      <h2>Mulai dari pelanggan, ukur mundur</h2>
+      <div class="prose">
+        <p>Gangguan dicari dari titik yang paling dekat dengan pelanggan, lalu mundur ke arah ODC. Setiap pengukuran membagi jalur menjadi dua: bagian yang sudah terbukti bagus, dan bagian yang masih dicurigai.</p>
+        <ol>
+          <li>Catat keluhannya dan lihat lampu ONT.</li>
+          <li>Ukur daya di ONT dengan OPM (1490 nm).</li>
+          <li>Ukur mundur: ujung drop cable di roset, port ODP, lalu sisi ODC.</li>
+          <li>Bandingkan dengan port lain di ODP yang sama. Kalau semua pelanggan di satu ODP bermasalah, penyebabnya ada sebelum ODP.</li>
+          <li>Setelah ketemu bagian yang dayanya turun tidak wajar, cari titiknya: dengan VFL untuk jarak dekat, dengan OTDR untuk jarak jauh.</li>
+          <li>Perbaiki, ukur ulang, lalu catat.</li>
+        </ol>
+        <p>Coba empat kasus berikut. Pilih titik yang mau diukur, lalu tentukan di bagian mana masalahnya.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="csLbl">Kasus 1 dari 4</span><span class="lbl" id="csScore"></span></div>
+        <div class="fig-draw"><svg id="csSvg" viewBox="0 0 720 280" role="img" aria-label="Jalur dari ODC ke rumah pelanggan dengan titik ukur bernomor"></svg></div>
+        <div class="fig-ctl" id="csCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 6.1</b> Angka contoh: OLT +3 dBm, splitter 1:4 di ODC dan 1:8 di ODP. Pelanggan yang normal menerima sekitar −20 dBm.</p>
+    </div>
+    <div class="tbl-wrap" style="margin-top:24px">
+      <table class="tbl rs">
+        <thead><tr><th>Lampu ONT</th><th>Artinya</th><th>Langkah pertama</th></tr></thead>
+        <tbody>
+          <tr><th>LOS merah</th><td>Tidak ada cahaya yang sampai ke ONT</td><td>Ukur daya. Cari serat putus, konektor lepas, atau tekukan parah.</td></tr>
+          <tr><th>PON berkedip lama</th><td>Ada cahaya, tetapi ONT belum tersambung ke OLT</td><td>Ukur daya. Kalau dayanya normal, cek pendaftaran ONT ke tim NOC.</td></tr>
+          <tr><th>PON menyala, internet putus-putus</th><td>Daya mungkin mepet</td><td>Ukur daya, cari konektor kotor atau tekukan.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cap">Arti lampu bisa sedikit berbeda antarmerek ONT. Lihat panduan perangkat yang dipakai operatormu.</p>
+  </div>
+</section>
+
+<!-- ================= 6.2 GEJALA OTDR ================= -->
+<section class="chapter wrap" id="gejala" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c2)"><i></i>6.2 · Tanda gangguan di OTDR</p>
+      <h2>Membaca penyebab dari bentuk jejak</h2>
+      <div class="prose">
+        <p>OTDR tidak hanya menunjukkan letak gangguan, tetapi juga petunjuk penyebabnya. Perhatikan dua hal:</p>
+        <ul>
+          <li>Apakah event-nya punya <strong>puncak pantulan</strong>? Puncak berarti ada permukaan kaca yang berhadapan dengan udara atau celah, misalnya konektor atau ujung yang patah.</li>
+          <li>Bandingkan jejak <strong>1310 nm dan 1550 nm</strong>. Tekukan jauh lebih berpengaruh di 1550 nm.</li>
+        </ul>
+        <p>Semua jejak di bawah berasal dari jalur 4,0 km yang sama, diukur dari ODC. Tentukan penyebab event di 2,7 km.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="gjLbl">Jejak 1 dari 5</span><span class="lbl" id="gjScore"></span></div>
+        <div class="fig-draw"><canvas id="gjCanvas" style="height:260px" aria-label="Jejak OTDR 1310 nm dan 1550 nm di sekitar sebuah event" role="img"></canvas></div>
+        <div class="fig-ctl" id="gjCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 6.2</b> Jejak disederhanakan, jendela 1 sampai 5 km. Garis hitam 1310 nm, garis merah putus-putus 1550 nm.</p>
+    </div>
+    <div class="tbl-wrap" style="margin-top:24px">
+      <table class="tbl rs">
+        <thead><tr><th>Bentuk event</th><th>1310 dan 1550 nm</th><th>Penyebab paling mungkin</th></tr></thead>
+        <tbody>
+          <tr><th>Turun, tanpa puncak</th><td>1550 nm jauh lebih besar</td><td>Tekukan atau serat terjepit</td></tr>
+          <tr><th>Turun, tanpa puncak</th><td>Hampir sama</td><td>Sambungan fusion buruk</td></tr>
+          <tr><th>Puncak, lalu turun besar</th><td>Hampir sama</td><td>Konektor kotor, rusak, atau kurang rapat</td></tr>
+          <tr><th>Puncak atau langsung jatuh ke derau</th><td>Sama</td><td>Serat putus, terutama bila lebih pendek dari panjang jalur di catatan</td></tr>
+          <tr><th>Naik sedikit</th><td>Kecil di keduanya</td><td>Gainer, bukan gangguan. Ukur dari dua arah.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6.3 LOKASI ================= -->
+<section class="chapter wrap" id="lokasi" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c3)"><i></i>6.3 · Dari OTDR ke tiang</p>
+      <h2>Menemukan titik putus di lapangan</h2>
+      <div class="prose">
+        <p>Lanjutan kasus kabel distribusi putus di 6.1. OTDR dipasang di ODC dengan kabel peluncur 1 km, dan ujung serat terlihat di <strong>2,060 km</strong>. Di tiang mana kabelnya putus?</p>
+        <p>Angka OTDR tidak bisa langsung dipakai. Ada tiga koreksi:</p>
+        <ul>
+          <li><strong>Kabel peluncur</strong> ikut terukur, jadi panjangnya dikurangkan.</li>
+          <li><strong>Serat lebih panjang dari kabel</strong>, karena di dalam tabung serat dibuat sedikit bergelombang. Selisihnya sekitar 1–2%; lihat datasheet kabel.</li>
+          <li><strong>Gulungan cadangan</strong> di tiang atau closure menghabiskan panjang kabel tanpa menambah jarak di rute.</li>
+        </ul>
+        <p>Nyalakan koreksinya satu per satu dan lihat perkiraan lokasinya bergeser.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar">
+          <span class="lbl">Rute ODC ke ODP, 1.500 m</span>
+          <div class="tabs" role="group" aria-label="Koreksi">
+            <button type="button" data-fix="launch" aria-pressed="false">Kabel peluncur</button>
+            <button type="button" data-fix="helix" aria-pressed="false">Serat 1,5% lebih panjang</button>
+            <button type="button" data-fix="slack" aria-pressed="false">Gulungan cadangan</button>
+          </div>
+        </div>
+        <div class="fig-draw"><svg id="mapSvg" viewBox="0 0 720 220" role="img" aria-label="Rute kabel dengan tiang setiap 50 meter dan perkiraan lokasi putus"></svg></div>
+        <div class="fig-ctl">
+          <div class="tbl-wrap"><table class="tbl calc" id="mapCalc"></table></div>
+          <p class="msg" id="mapMsg" aria-live="polite"></p>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 6.3</b> Tiang berjarak 50 m. Dua gulungan cadangan masing-masing 20 m, di tiang 6 dan tiang 14.</p>
+    </div>
+    <div class="block">
+      <div class="prose">
+        <p>Perkiraan ini masih bisa meleset beberapa meter. Periksa kabel di sekitar titik itu: bekas gesekan, tertimpa, terbakar, atau digigit hewan. Kalau masih ragu, ukur juga dari ujung sebaliknya (dari ODP). Dua perkiraan dari dua arah mempersempit area pencarian.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6.4 GAGAL ================= -->
+<section class="chapter wrap" id="gagal" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c4)"><i></i>6.4 · Sambungan gagal</p>
+      <h2>Ketika splicer menolak</h2>
+      <div class="prose">
+        <p>Splicer memeriksa serat sebelum dan sesudah busur. Kalau ada yang tidak beres, splicer berhenti dan menampilkan pesan. Bunyi pesannya berbeda di tiap merek, tetapi artinya mirip. Pilih tindakan yang tepat untuk tiap pesan.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="erLbl">Pesan 1 dari 6</span><span class="lbl" id="erScore"></span></div>
+        <div class="fig-draw"><svg id="erSvg" viewBox="0 0 720 240" role="img" aria-label="Layar splicer dengan pesan kesalahan"></svg></div>
+        <div class="fig-ctl" id="erCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 6.4</b> Layar splicer disederhanakan. Bunyi pesan di alatmu bisa berbeda.</p>
+    </div>
+    <div class="block">
+      <h3>Gagal terus? Periksa dari yang paling sering</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Gejala berulang</th><th>Biasanya karena</th><th>Periksa</th></tr></thead>
+          <tbody>
+            <tr><th>Sudut belah sering ditolak</th><td>Pisau cleaver tumpul atau kotor, bantalan karet kotor</td><td>Bersihkan cleaver, putar pisau ke posisi berikutnya.</td></tr>
+            <tr><th>Serat miring atau core bergeser</th><td>Debu di V-groove atau klem</td><td>Bersihkan V-groove dan klem (bagian 6.5).</td></tr>
+            <tr><th>Sambungan menipis atau menebal</th><td>Kekuatan busur tidak pas</td><td>Lakukan uji busur (bagian 6.6).</td></tr>
+            <tr><th>Gelembung</th><td>Kaca kotor atau belahan jelek</td><td>Bersihkan kaca dengan IPA, belah ulang.</td></tr>
+            <tr><th>Serat putus saat uji tarik</th><td>Kaca tergores saat dikupas atau tersentuh</td><td>Periksa stripper, kupas pelan dan lurus.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6.5 BERSIH ================= -->
+<section class="chapter wrap" id="bersih" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c5)"><i></i>6.5 · Membersihkan alat</p>
+      <h2>Merawat splicer dan cleaver</h2>
+      <div class="prose">
+        <p>Banyak sambungan gagal karena alat yang kotor. Debu di V-groove membuat serat miring. Kotoran di lensa terlihat seperti cacat pada serat. Pisau cleaver yang kotor atau tumpul membuat belahan miring.</p>
+        <p>Pakai alkohol IPA berkadar tinggi (99%) dan cotton bud yang tidak berbulu. Matikan splicer sebelum membersihkan bagian di dekat elektroda. Pilih cara membersihkan yang tepat untuk tiap bagian.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="clLbl">Bagian 1 dari 7</span><span class="lbl" id="clScore"></span></div>
+        <div class="fig-draw"><svg id="clSvg" viewBox="0 0 720 340" role="img" aria-label="Splicer atau cleaver dengan bagian yang sedang dibahas ditandai"></svg></div>
+        <div class="fig-ctl" id="clCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 6.5</b> Tampak atas, disederhanakan. Lingkaran merah menandai bagian yang sedang dibahas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6.6 BUSUR ================= -->
+<section class="chapter wrap" id="busur" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c6)"><i></i>6.6 · Uji busur &amp; jadwal</p>
+      <h2>Menjaga busur tetap pas</h2>
+      <div class="prose">
+        <p>Kekuatan busur dipengaruhi kondisi udara (ketinggian tempat, suhu, kelembapan) dan keausan elektroda. Dengan <strong>uji busur</strong> (arc check atau arc calibration), splicer mengukur busurnya sendiri lalu menyesuaikan dayanya.</p>
+        <p>Lakukan uji busur setelah mengganti elektroda, saat bekerja di tempat atau cuaca yang berbeda, dan saat hasil sambungan mulai menipis atau menebal. Coba ubah kondisinya, lalu lakukan sambung tes dan uji busur.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl">Splicer, program SM</span></div>
+        <div class="fig-draw"><canvas id="arcCanvas" style="height:230px" aria-label="Hasil uji busur dan gambar sambung tes" role="img"></canvas></div>
+        <div class="fig-ctl">
+          <div class="setgrid">
+            <span>Kondisi kerja</span>
+            <div class="tabs" role="group" aria-label="Kondisi kerja"><button type="button" data-env="0" aria-pressed="true">Sama seperti kemarin</button><button type="button" data-env="1" aria-pressed="false">Lokasi atau cuaca berbeda</button></div>
+            <span>Elektroda</span>
+            <div class="tabs" role="group" aria-label="Elektroda"><button type="button" data-el="0" aria-pressed="false">Baru diganti</button><button type="button" data-el="1" aria-pressed="true">2.500 busur</button><button type="button" data-el="2" aria-pressed="false">Aus, 5.200 busur</button></div>
+          </div>
+          <div class="row-actions"><button type="button" class="btn" id="arcTest">Sambung tes</button><button type="button" class="btn primary" id="arcCheck">Uji busur</button></div>
+          <p class="msg" id="arcMsg" aria-live="polite"></p>
+          <ol class="found" id="arcLog"></ol>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 6.6</b> Angka kekuatan busur adalah ilustrasi. Batas jumlah busur elektroda berbeda tiap splicer; ikuti manualnya.</p>
+    </div>
+    <div class="block">
+      <h3>Jadwal perawatan</h3>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Kapan</th><th>Splicer</th><th>Cleaver dan lainnya</th></tr></thead>
+          <tbody>
+            <tr><th>Setiap mulai kerja</th><td>Bersihkan V-groove dan klem. Cek baterai. Uji busur bila tempat atau cuaca berbeda.</td><td>Bersihkan pisau dan bantalan karet. Siapkan alkohol, tisu, dan wadah limbah serat.</td></tr>
+            <tr><th>Saat hasil memburuk</th><td>Bersihkan lensa, uji busur, periksa elektroda.</td><td>Putar pisau ke posisi berikutnya.</td></tr>
+            <tr><th>Setiap minggu</th><td>Bersihkan pemanas sleeve dan bagian luar.</td><td>Bersihkan stripper dari sisa coating.</td></tr>
+            <tr><th>Sesuai hitungan alat</th><td>Ganti sepasang elektroda, lalu uji busur.</td><td>Ganti pisau setelah semua posisinya terpakai.</td></tr>
+            <tr><th>Setahun sekali</th><td colspan="2">Servis dan kalibrasi di service center resmi, termasuk OPM, light source, dan OTDR.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KUIS ================= -->
+<section class="chapter wrap" id="kuis" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c7)"><i></i>Cek pemahaman</p>
+      <h2>Tujuh pertanyaan</h2>
+      <div class="prose"><p>Jawab semuanya, lalu lihat nilaimu. Penjelasan muncul setelah kamu memilih jawaban.</p></div>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <div class="score" id="score" hidden></div>
+    <div class="next">
+      <p class="small">Berikutnya · Tahap 7</p>
+      <h3>Aplikasi lapangan</h3>
+      <p>Topologi FTTH, splitter, closure, ODC dan ODP, serta pembagian core dari OLT sampai rumah pelanggan.</p>
+      <p><a class="btn" href="https://nothinsphere.github.io/jalur-cahaya/tahap-5/">← Kembali ke Tahap 5</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap"><div class="col">Jalur Cahaya · Tahap 6: troubleshooting &amp; perawatan. Angka dan gambar di halaman ini adalah contoh umum untuk belajar. Di lapangan, ikuti manual alat dan standar operator tempatmu bekerja.</div></footer>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+/* core.js */
+/* Jalur Cahaya — utilitas bersama: tema, kanvas, animasi, rel bab, tabel ponsel */
+(function () {
+  const JC = (window.JC = {});
+  JC.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  JC.COLORS = [
+    { n: 1, name: "Biru", hex: "#1f6fe0" },
+    { n: 2, name: "Oranye", hex: "#f47b20" },
+    { n: 3, name: "Hijau", hex: "#22a04b" },
+    { n: 4, name: "Cokelat", hex: "#8b5a2b" },
+    { n: 5, name: "Abu-abu", hex: "#8c969c" },
+    { n: 6, name: "Putih", hex: "#f3f3ef" },
+    { n: 7, name: "Merah", hex: "#d92b2b" },
+    { n: 8, name: "Hitam", hex: "#1b1b1b" },
+    { n: 9, name: "Kuning", hex: "#f5d000" },
+    { n: 10, name: "Ungu", hex: "#7d3cc0" },
+    { n: 11, name: "Merah muda", hex: "#f28cb5" },
+    { n: 12, name: "Toska", hex: "#22c7c0" },
+  ];
+
+  // angka gaya Indonesia: koma desimal, tanda minus asli
+  JC.fmt = function (v, d = 1) {
+    const s = Math.abs(v).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (v < 0 && Number(s.replace(/\./g, "").replace(",", ".")) !== 0 ? "−" : "") + s;
+  };
+  JC.clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  JC.lerp = (a, b, t) => a + (b - a) * t;
+  JC.smooth = (e0, e1, x) => { const t = JC.clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+
+  // warna tinta & kertas diambil dari token tema, disegarkan saat tema berganti
+  const TOK = ["paper", "paper-2", "grid", "ink", "ink-2", "ink-3", "rule", "red", "red-ink", "ok", "bad", "glass", "glass-2", "jacket", "hatch"];
+  JC.pal = {};
+  const readPal = () => { const cs = getComputedStyle(document.documentElement); TOK.forEach((k) => (JC.pal[k] = cs.getPropertyValue("--" + k).trim())); };
+  readPal();
+  const canvases = [];
+  const onTheme = () => { readPal(); canvases.forEach((st) => st.draw && st.draw(st.ctx, st.w, st.h)); };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme);
+  if (document.fonts) document.fonts.ready.then(onTheme); // gambar ulang setelah font web selesai dimuat
+  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+
+  // pola arsir potongan (gambar teknik), jarak garis tetap di layar
+  JC.hatch = function (ctx, color, gap = 7, cross = false) {
+    const c = document.createElement("canvas"); c.width = c.height = gap;
+    const x = c.getContext("2d"); x.strokeStyle = color; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(0, gap); x.lineTo(gap, 0); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(gap - 1, gap + 1); x.lineTo(gap + 1, gap - 1);
+    if (cross) { x.moveTo(0, 0); x.lineTo(gap, gap); }
+    x.stroke();
+    return ctx.createPattern(c, "repeat");
+  };
+
+  // kanvas tajam di layar retina; draw(ctx, w, h) dipanggil saat ukuran atau tema berubah
+  // minW: lebar gambar minimum; di layar lebih sempit gambar diperkecil utuh, bukan ditumpuk
+  JC.canvas = function (cv, draw, minW = 0) {
+    const ctx = cv.getContext("2d");
+    const st = { ctx, w: 0, h: 0, draw };
+    const fit = (redraw) => {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const k = minW && r.width < minW ? Math.max(r.width, 1) / minW : 1;
+      st.w = Math.max(1, r.width) / k; st.h = Math.max(1, r.height) / k;
+      cv.width = Math.round(Math.max(1, r.width) * dpr); cv.height = Math.round(Math.max(1, r.height) * dpr);
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
+      if (redraw !== false && st.draw && r.width >= 2 && r.height >= 2) st.draw(ctx, st.w, st.h);
+    };
+    st.fit = fit;
+    fit(false); // ukur dulu; gambar pertama menunggu pemanggil selesai menyimpan st
+    new ResizeObserver(() => fit()).observe(cv);
+    canvases.push(st);
+    return st;
+  };
+
+  // jalankan loop animasi hanya saat elemen terlihat
+  JC.loop = function (el, frame) {
+    let on = false, raf = 0; const t0 = performance.now();
+    const tick = (t) => { frame((t - t0) / 1000); if (on) raf = requestAnimationFrame(tick); };
+    new IntersectionObserver((es) => {
+      const vis = es[0].isIntersecting;
+      if (JC.reduced) { if (vis) frame(1.3); return; }
+      if (vis && !on) { on = true; raf = requestAnimationFrame(tick); }
+      else if (!vis) { on = false; cancelAnimationFrame(raf); }
+    }).observe(el);
+  };
+
+  // jalankan langkah awal sebuah gambar tanpa menghentikan gambar lain bila gagal
+  JC.safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
+
+  // grup tombol dengan aria-pressed
+  JC.seg = function (buttons, attr, cb) {
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      cb(b.dataset[attr], b);
+    }));
+  };
+
+  JC.store = {
+    get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+  };
+
+  /* ---------- rel bab ---------- */
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const railLinks = [...document.querySelectorAll(".rail a")];
+  const topFill = document.getElementById("topFill");
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    topFill.style.width = (max > 0 ? JC.clamp(scrollY / max, 0, 1) : 0) * 100 + "%";
+    let cur = -1;
+    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < innerHeight * 0.45) cur = i; });
+    railLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- ponsel: tabel diberi label kolom ---------- */
+  document.querySelectorAll(".tbl.rs").forEach((tb) => {
+    const heads = [...tb.querySelectorAll("thead th")].map((th) => th.textContent.trim());
+    tb.querySelectorAll("tbody tr").forEach((tr) => [...tr.children].forEach((cell, j) => { if (cell.tagName === "TD" && heads[j]) cell.dataset.label = heads[j]; }));
+  });
+
+})();
+</script>
+<script>
+/* t6-trouble.js */
+/* Jalur Cahaya · Tahap 6 — gambar pembuka, ukur mundur, tanda di OTDR, dari OTDR ke tiang */
+(function () {
+  const JC = window.JC;
+  const el = (id) => document.getElementById(id);
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const dbm = (v) => (v == null ? "LO" : JC.fmt(v, 1));
+
+  /* ---------- gambar pembuka ---------- */
+  function hero() {
+    const tag = (x, v, ok, px, py) => `<path d="M${x} 58 L${px} ${py}" class="ln-thin" stroke-dasharray="3 3"/><rect x="${x - 52}" y="16" width="104" height="42" rx="4" class="f-paper ln"/>` +
+      `<text x="${x - 8}" y="44" text-anchor="middle" class="tagv">${v}</text>` +
+      `<text x="${x + 38}" y="44" text-anchor="middle" class="tagv" style="fill:${ok ? "var(--ok)" : "var(--bad)"}">${ok ? "✓" : "✕"}</text>`;
+    let s = `<path d="M0 300 H720" class="ln-thin"/>`;
+    // ODC dan feeder
+    s += `<path d="M0 210 H30" style="stroke:var(--jacket)" stroke-width="6"/><rect x="30" y="150" width="100" height="80" rx="4" class="f-paper ln"/><text x="80" y="196" text-anchor="middle" class="txt">ODC</text>`;
+    s += `<path d="M130 175 C 200 175, 260 150, 330 150" fill="none" style="stroke:var(--jacket)" stroke-width="5"/>`;
+    // tiang dan ODP
+    s += `<path d="M370 185 V300" style="stroke:var(--ink-3)" stroke-width="7"/><rect x="330" y="120" width="80" height="65" rx="4" class="f-paper ln"/><text x="370" y="158" text-anchor="middle" class="txt">ODP</text>`;
+    // drop cable ke rumah
+    s += `<path d="M410 160 Q 480 230 560 200 L 600 236" fill="none" style="stroke:var(--jacket)" stroke-width="4"/>`;
+    s += `<path d="M474 197 l16 16 M490 197 l-16 16" style="stroke:var(--red)" stroke-width="3"/>`;
+    s += `<path d="M568 200 L642 146 L716 200 Z" class="f-paper ln"/><rect x="578" y="200" width="128" height="100" class="f-paper ln"/>`;
+    s += `<rect x="590" y="226" width="20" height="22" rx="2" class="f-paper ln"/><path d="M610 238 C 630 238, 630 262, 648 262" fill="none" stroke="var(--ink)" stroke-width="4.5"/><path d="M610 238 C 630 238, 630 262, 648 262" fill="none" stroke="#f2c500" stroke-width="2.6"/>`;
+    s += `<rect x="648" y="250" width="50" height="28" rx="4" class="f-paper ln"/><circle cx="660" cy="268" r="3.5" style="fill:var(--bad)"/><circle cx="672" cy="268" r="3.5" style="fill:var(--paper-2);stroke:var(--ink)" stroke-width=".7"/><circle cx="684" cy="268" r="3.5" style="fill:var(--paper-2);stroke:var(--ink)" stroke-width=".7"/>`;
+    // nilai ukur
+    s += tag(80, "−7,1", true, 130, 175) + tag(330, "−18,8", true, 410, 160) + tag(510, "−28,4", false, 600, 236) + tag(658, "−28,9", false, 660, 250);
+    // keterangan
+    s += `<text x="232" y="150" text-anchor="middle" class="txt-2 halo">kabel distribusi</text>`;
+    s += `<text x="470" y="250" text-anchor="middle" class="txt-2 halo">drop cable</text><text x="482" y="190" text-anchor="middle" class="txt-2 halo" style="fill:var(--red-ink)">gangguan</text>`;
+    s += `<text x="586" y="222" class="txt-2">roset</text><text x="673" y="293" text-anchor="middle" class="txt-2">ONT</text>`;
+    s += `<path d="M700 324 H44 M56 318 L44 324 L56 330" fill="none" class="ln" stroke-width="1.6"/><text x="372" y="318" text-anchor="middle" class="txt-2 halo">ukur mundur, dari ONT ke arah ODC</text>`;
+    el("heroSvg").innerHTML = s;
+  }
+  JC.safe(hero);
+
+  /* ---------- 6.1 ukur mundur ---------- */
+  const PTS = [
+    { n: "ONT", s: "ONT", x: 650, y: 226, tx: 662 }, { n: "Roset", s: "Roset", x: 576, y: 206, tx: 546 }, { n: "Port ODP pelanggan", s: "Port ini", x: 380, y: 165, tx: 300 },
+    { n: "Port ODP lain", s: "Port lain", x: 380, y: 115, tx: 420 }, { n: "Input ODP", s: "Input ODP", x: 290, y: 140, tx: 180 }, { n: "Port ODC", s: "Port ODC", x: 110, y: 150, tx: 60 },
+  ];
+  const DIAG = { home: "Patchcord atau konektor di rumah", drop: "Drop cable", odp: "Port atau konektor di ODP", dist: "Kabel distribusi ODC–ODP", feeder: "Sebelum ODC" };
+  const CASES = [
+    { k: "home", say: "Internet lambat dan kadang putus. Lampu PON menyala.", v: [-26.8, -19.5, -18.8, -18.9, -8.3, -7.1],
+      why: "Di roset dayanya masih normal (−19,5 dBm), tetapi di ONT turun ke −26,8 dBm. Turun 7,3 dB di bagian sependek itu berarti patchcord atau konektor di rumah bermasalah. Bersihkan konektor roset dan ONT, periksa dengan scope, ganti patchcord bila perlu, lalu ukur ulang." },
+    { k: "drop", say: "Internet sering putus sejak kemarin, setelah ada pemasangan kabel lain di tiang. Lampu LOS kadang merah.", v: [-28.9, -28.4, -18.8, -18.9, -8.3, -7.1],
+      why: "Port ODP normal (−18,8 dBm), tetapi di roset sudah −28,4 dBm. Masalahnya di drop cable, kemungkinan terjepit klem atau tertekuk saat kabel lain dipasang. Telusuri dengan VFL; titik yang terjepit akan menyala." },
+    { k: "dist", say: "Delapan pelanggan di ODP yang sama melapor LOS pada waktu bersamaan.", v: [null, null, null, null, null, -7.1],
+      why: "Tidak ada cahaya sama sekali di ODP, sedangkan port ODC normal (−7,1 dBm). Kabel distribusi antara ODC dan ODP putus. Ukur dengan OTDR dari ODC untuk mencari lokasinya, seperti di bagian 6.3." },
+    { k: "odp", say: "Pelanggan baru. ONT menyala, tetapi teknisi pemasang mencatat daya −24,6 dBm. Pelanggan lain di ODP itu normal.", v: [-24.6, -24.1, -23.4, -18.9, -8.3, -7.1],
+      why: "Port pelanggan ini −23,4 dBm, sedangkan port lain di ODP yang sama −18,9 dBm. Masalahnya ada di port itu sendiri: adaptor atau konektor kotor, atau pigtail splitter yang tertekuk. Bersihkan dan periksa; kalau tetap, pindahkan pelanggan ke port lain yang kosong." },
+  ];
+  const csCtl = el("csCtl");
+  let cOrder = [], cIdx = 0, cRes = [], cAns = null, measured = new Set();
+  function drawCase() {
+    const c = CASES[cOrder[Math.min(cIdx, cOrder.length - 1)]];
+    let s = `<path d="M0 260 H720" class="ln-thin"/>`;
+    s += `<path d="M0 185 H20" style="stroke:var(--jacket)" stroke-width="6"/><rect x="20" y="120" width="90" height="80" rx="4" class="f-paper ln"/><text x="65" y="166" text-anchor="middle" class="txt">ODC</text><text x="2" y="215" class="txt-2">dari OLT</text>`;
+    s += `<path d="M110 150 C 170 150, 230 140, 290 140" fill="none" style="stroke:var(--jacket)" stroke-width="5"/>`;
+    s += `<path d="M335 190 V260" style="stroke:var(--ink-3)" stroke-width="7"/><rect x="290" y="100" width="90" height="90" rx="4" class="f-paper ln"/><text x="335" y="150" text-anchor="middle" class="txt">ODP</text>`;
+    s += `<path d="M380 115 Q 450 112 510 98" fill="none" style="stroke:var(--jacket)" stroke-width="3.5"/><text x="514" y="102" class="txt-2">ke pelanggan lain</text>`;
+    s += `<path d="M380 165 Q 460 225 545 190 L 566 206" fill="none" style="stroke:var(--jacket)" stroke-width="3.5"/>`;
+    s += `<path d="M535 172 L622 118 L710 172 Z" class="f-paper ln"/><rect x="545" y="172" width="155" height="88" class="f-paper ln"/>`;
+    s += `<rect x="566" y="196" width="20" height="22" rx="2" class="f-paper ln"/><path d="M586 206 C 606 206, 606 226, 626 226" fill="none" stroke="var(--ink)" stroke-width="4.5"/><path d="M586 206 C 606 206, 606 226, 626 226" fill="none" stroke="#f2c500" stroke-width="2.6"/>`;
+    s += `<rect x="626" y="212" width="52" height="28" rx="4" class="f-paper ln"/><text x="652" y="254" text-anchor="middle" class="txt-2">ONT</text>`;
+    PTS.forEach((p, i) => {
+      const on = measured.has(i), v = c.v[i];
+      s += `<path d="M${p.tx} 52 L${p.x} ${p.y}" class="ln-thin" stroke-dasharray="3 3"/><circle cx="${p.x}" cy="${p.y}" r="4" class="${on ? "f-red" : "f-ink"}"/>`;
+      s += `<rect x="${p.tx - 50}" y="8" width="100" height="44" rx="4" class="ln" style="fill:${on ? "var(--paper)" : "var(--paper-2)"}" ${on ? "" : 'stroke-dasharray="4 3"'}/>`;
+      s += `<text x="${p.tx}" y="24" text-anchor="middle" class="txt-m tagn">${i + 1} · ${p.s}</text>`;
+      s += `<text x="${p.tx}" y="46" text-anchor="middle" class="tagv" style="fill:${on ? "var(--ink)" : "var(--ink-3)"}">${on ? dbm(v) : "?"}</text>`;
+    });
+    el("csSvg").innerHTML = s;
+  }
+  function csRender() {
+    el("csLbl").textContent = cIdx < cOrder.length ? `Kasus ${cIdx + 1} dari ${cOrder.length}` : `${cOrder.length} kasus`;
+    el("csScore").textContent = `Benar ${cRes.filter(Boolean).length} dari ${cRes.length}`;
+    if (cIdx >= cOrder.length) {
+      const ok = cRes.filter(Boolean).length;
+      csCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${cOrder.length} tepat.</strong> Kuncinya: cari bagian tempat daya turun tidak wajar, lalu bandingkan dengan titik di sebelahnya.</p><div class="row-actions"><button type="button" class="btn" id="csAgain">Ulangi</button></div>`;
+      el("csAgain").onclick = csStart; drawCase(); return;
+    }
+    const c = CASES[cOrder[cIdx]];
+    let h = `<p class="msg"><strong>Keluhan:</strong> ${c.say}</p>`;
+    h += `<div class="chips" role="group" aria-label="Titik ukur">${PTS.map((p, i) => `<button type="button" data-m="${i}" ${measured.has(i) ? 'aria-pressed="true" disabled' : 'aria-pressed="false"'}>Ukur ${i + 1} · ${p.n}</button>`).join("")}</div>`;
+    if (cAns === null) h += `<p class="small">${measured.size ? "Di bagian mana masalahnya?" : "Mulai dari titik yang paling dekat dengan pelanggan."}</p><div class="row-actions">${Object.entries(DIAG).map(([k, t]) => `<button type="button" class="btn" data-dg="${k}">${t}</button>`).join("")}</div>`;
+    else {
+      const right = cAns === c.k;
+      h += `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Tepat" : "✕ Kurang tepat"}: ${DIAG[c.k].toLowerCase()}.</b>${c.why} <span class="small">Kamu mengukur di ${measured.size} titik.</span></div><div class="row-actions"><button type="button" class="btn primary" id="csNext">${cIdx === cOrder.length - 1 ? "Lihat hasil" : "Kasus berikutnya"}</button></div>`;
+    }
+    csCtl.innerHTML = h;
+    csCtl.querySelectorAll("[data-m]").forEach((b) => b.onclick = () => { measured.add(+b.dataset.m); csRender(); });
+    csCtl.querySelectorAll("[data-dg]").forEach((b) => b.onclick = () => { cAns = b.dataset.dg; cRes.push(cAns === c.k); PTS.forEach((_, i) => measured.add(i)); csRender(); el("csNext").focus(); });
+    const nx = el("csNext"); if (nx) nx.onclick = () => { cIdx++; cAns = null; measured = new Set(); csRender(); };
+    drawCase();
+  }
+  function csStart() { cOrder = shuffle(CASES.map((_, i) => i)); cIdx = 0; cRes = []; cAns = null; measured = new Set(); csRender(); }
+  JC.safe(csStart);
+
+  /* ---------- 6.2 tanda gangguan di OTDR ---------- */
+  const GJ = [
+    { k: "bend", loss: [0.15, 0.9], why: "Tidak ada puncak, dan redaman di 1550 nm (±0,9 dB) jauh lebih besar dari 1310 nm (±0,15 dB). Itu tanda tekukan: serat tertekuk di closure, ODP, atau klem. Kalau dekat, cari dengan VFL." },
+    { k: "splice", loss: [0.6, 0.55], why: "Tidak ada puncak, dan redamannya ±0,6 dB, hampir sama di kedua panjang gelombang. Ini sambungan fusion yang buruk; sambung ulang." },
+    { k: "conn", loss: [1.2, 1.15], refl: 2.6, why: "Ada puncak pantulan, lalu redamannya ±1,2 dB. Konektor kotor, tergores, atau kurang rapat. Bersihkan, periksa dengan scope, ganti bila rusak." },
+    { k: "break", end: true, refl: 3.2, why: "Jejak berhenti di 2,7 km, padahal jalur ini 4,0 km. Setelah titik itu hanya derau. Serat putus di 2,7 km; cari lokasinya seperti di bagian 6.3." },
+    { k: "gainer", loss: [-0.12, -0.1], why: "Jejak justru naik sedikit. Ini gainer: dua serat dengan ukuran inti sedikit berbeda membuat sambungan tampak menguatkan bila diukur dari satu arah. Ukur dari arah sebaliknya lalu ambil rata-ratanya; biasanya hasilnya kecil dan wajar." },
+  ];
+  const GOPT = { bend: "Tekukan", splice: "Sambungan buruk", conn: "Konektor kotor atau rusak", break: "Serat putus", gainer: "Gainer, bukan gangguan" };
+  const gjCv = el("gjCanvas"), gjCtl = el("gjCtl");
+  let gOrder = [], gIdx = 0, gRes = [], gAns = null;
+  let gseed = 3; const GN = Array.from({ length: 2048 }, () => ((gseed = (gseed * 16807) % 2147483647) / 2147483647) * 2 - 1);
+  const gs = JC.canvas(gjCv, () => drawGj(), 460);
+  function lvl(c, li, x) {
+    const E = 2.7, W = 0.08;
+    let y = li ? -2.9 - 0.21 * (x - 1) : -2 - 0.35 * (x - 1);
+    if (c.end && x > E + W) return null;
+    if (c.loss) y -= c.loss[li] * JC.smooth(E + (c.refl ? W * 0.6 : 0), E + W, x);
+    if (c.refl && x >= E) y += c.refl * (1 - JC.smooth(E + W * 0.6, E + W, x));
+    return y + GN[Math.floor(x * 300) % GN.length] * 0.012;
+  }
+  function drawGj() {
+    const { ctx, w, h } = gs, P = JC.pal;
+    if (w < 40 || h < 40 || !gOrder.length) return;
+    ctx.clearRect(0, 0, w, h);
+    const c = GJ[gOrder[Math.min(gIdx, gOrder.length - 1)]];
+    const L = 40, R = 14, T = 14, B = 44, x0 = 1, x1 = 5, yt = 1, yb = -6;
+    const X = (km) => L + ((km - x0) / (x1 - x0)) * (w - L - R), Y = (db) => T + ((yt - db) / (yt - yb)) * (h - T - B);
+    ctx.font = "12px 'Public Sans', sans-serif"; ctx.strokeStyle = P.rule; ctx.lineWidth = 1; ctx.fillStyle = P["ink-3"];
+    for (let d = 1; d >= yb; d--) { ctx.beginPath(); ctx.moveTo(L, Y(d)); ctx.lineTo(w - R, Y(d)); ctx.stroke(); ctx.textAlign = "right"; ctx.fillText((d > 0 ? "+" : d < 0 ? "−" : "") + Math.abs(d), L - 6, Y(d) + 4); }
+    for (let k = 1; k <= 5; k++) { ctx.textAlign = k === 5 ? "right" : "center"; ctx.fillText(k + (k === 5 ? " km" : ""), k === 5 ? X(k) + 6 : X(k), Y(yb) + 16); }
+    ctx.textAlign = "left"; ctx.fillText("dB", 4, T + 10);
+    // segitiga letak event
+    const ex = X(2.7); ctx.fillStyle = P.red; ctx.beginPath(); ctx.moveTo(ex, Y(yb) + 20); ctx.lineTo(ex - 5, Y(yb) + 29); ctx.lineTo(ex + 5, Y(yb) + 29); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = P["ink-2"]; ctx.textAlign = "left"; ctx.fillText("2,7 km", ex + 9, Y(yb) + 29);
+    ctx.save(); ctx.beginPath(); ctx.rect(L, T, w - L - R, Y(yb) - T); ctx.clip();
+    [[0, P.ink, []], [1, P.red, [6, 4]]].forEach(([li, col, dash]) => {
+      ctx.beginPath(); let started = false;
+      for (let i = 0; i <= 800; i++) {
+        const km = x0 + (i / 800) * (x1 - x0); let y = lvl(c, li, km);
+        if (y == null) y = -5.55 + GN[(i * 7 + li * 13) % GN.length] * 0.16; // derau setelah serat putus
+        const py = Y(JC.clamp(y, yb - 1, yt + 1));
+        started ? ctx.lineTo(X(km), py) : ctx.moveTo(X(km), py); started = true;
+      }
+      ctx.setLineDash(dash); ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.stroke(); ctx.setLineDash([]);
+    });
+    ctx.restore();
+    // keterangan garis
+    ctx.font = "600 12px 'Public Sans', sans-serif"; ctx.textAlign = "left";
+    const lx = w - R - 150, ly = T + 16;
+    ctx.fillStyle = P.paper; ctx.fillRect(lx - 8, ly - 14, 152, 40);
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(lx, ly - 4); ctx.lineTo(lx + 26, ly - 4); ctx.stroke();
+    ctx.strokeStyle = P.red; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(lx, ly + 14); ctx.lineTo(lx + 26, ly + 14); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = P.ink; ctx.fillText("1310 nm", lx + 34, ly); ctx.fillText("1550 nm", lx + 34, ly + 18);
+  }
+  function gjRender() {
+    el("gjLbl").textContent = gIdx < gOrder.length ? `Jejak ${gIdx + 1} dari ${gOrder.length}` : `${gOrder.length} jejak`;
+    el("gjScore").textContent = `Benar ${gRes.filter(Boolean).length} dari ${gRes.length}`;
+    if (gIdx >= gOrder.length) {
+      const ok = gRes.filter(Boolean).length;
+      gjCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${gOrder.length} tepat.</strong> Dua pertanyaan kunci: ada puncak atau tidak, dan apakah 1550 nm jauh lebih besar dari 1310 nm.</p><div class="row-actions"><button type="button" class="btn" id="gjAgain">Ulangi</button></div>`;
+      el("gjAgain").onclick = gjStart; drawGj(); return;
+    }
+    const c = GJ[gOrder[gIdx]];
+    if (gAns === null) gjCtl.innerHTML = `<p class="msg">Apa penyebab event di 2,7 km?</p><div class="row-actions">${Object.entries(GOPT).map(([k, t]) => `<button type="button" class="btn" data-gj="${k}">${t}</button>`).join("")}</div>`;
+    else {
+      const right = gAns === c.k;
+      gjCtl.innerHTML = `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Tepat" : "✕ Kurang tepat"}: ${GOPT[c.k].toLowerCase()}.</b>${c.why}</div><div class="row-actions"><button type="button" class="btn primary" id="gjNext">${gIdx === gOrder.length - 1 ? "Lihat hasil" : "Jejak berikutnya"}</button></div>`;
+      el("gjNext").onclick = () => { gIdx++; gAns = null; gjRender(); };
+    }
+    gjCtl.querySelectorAll("[data-gj]").forEach((b) => b.onclick = () => { gAns = b.dataset.gj; gRes.push(gAns === c.k); gjRender(); el("gjNext").focus(); });
+    drawGj();
+  }
+  function gjStart() { gOrder = shuffle(GJ.map((_, i) => i)); gIdx = 0; gRes = []; gAns = null; gjRender(); }
+  JC.safe(gjStart);
+
+  /* ---------- 6.3 dari OTDR ke tiang ---------- */
+  const OTDR = 2060, LAUNCH = 1000, HELIX = 1.015, ROUTE = 1500, SPAN = 50;
+  const SLACK = [{ at: 300, len: 20, pole: 6 }, { at: 700, len: 20, pole: 14 }];
+  const fix = { launch: false, helix: false, slack: false };
+  const XM = (m) => 40 + (m * 650) / ROUTE;
+  // panjang kabel → posisi di rute: gulungan cadangan memakan kabel tanpa menambah jarak
+  const toRoute = (cable) => { let r = cable; for (const s of SLACK) { if (r <= s.at) break; r = Math.max(s.at, r - s.len); } return r; };
+  const nf = (v) => Math.round(v).toLocaleString("id-ID");
+  const where = (p) => {
+    if (p > ROUTE) return "di luar rute, lebih jauh dari ODP";
+    const n = Math.floor(p / SPAN), off = p - n * SPAN;
+    if (n === 0 && off < 25) return `±${nf(off)} m dari ODC`;
+    return off < 25 ? `±${nf(off)} m setelah tiang ${n}` : `±${nf(SPAN - off)} m sebelum tiang ${n + 1}`;
+  };
+  function mapRender() {
+    const d1 = fix.launch ? OTDR - LAUNCH : OTDR, d2 = fix.helix ? d1 / HELIX : d1, p = fix.slack ? toRoute(d2) : d2;
+    const all = fix.launch && fix.helix && fix.slack;
+    let s = `<path d="M40 110 H690" style="stroke:var(--jacket)" stroke-width="4"/>`;
+    s += `<rect x="8" y="94" width="32" height="32" rx="3" class="f-paper ln"/><text x="24" y="148" text-anchor="middle" class="txt-m">ODC</text>`;
+    s += `<rect x="690" y="94" width="26" height="32" rx="3" class="f-paper ln"/><text x="703" y="148" text-anchor="middle" class="txt-m">ODP</text>`;
+    for (let k = 1; k < ROUTE / SPAN; k++) {
+      const x = XM(k * SPAN);
+      s += `<path d="M${x} 103 V117" class="ln-thin"/><circle cx="${x}" cy="110" r="2.6" class="f-ink"/>`;
+      if (k % 4 === 0) s += `<text x="${x}" y="134" text-anchor="middle" class="txt-m">T${k}</text>`;
+    }
+    SLACK.forEach((g) => { const x = XM(g.at); s += `<ellipse cx="${x - 3}" cy="92" rx="9" ry="7" fill="none" style="stroke:var(--ink-2)" stroke-width="2.4"/><ellipse cx="${x + 3}" cy="92" rx="9" ry="7" fill="none" style="stroke:var(--ink-2)" stroke-width="2.4"/><text x="${x}" y="72" text-anchor="middle" class="txt-2">cadangan 20 m</text>`; });
+    if (p <= ROUTE) {
+      const x = XM(p);
+      s += `<path d="M${x} 46 V160" style="stroke:var(--red)" stroke-width="1.4" stroke-dasharray="4 3"/><path d="M${x - 7} 36 L${x + 7} 36 L${x} 46 Z" class="f-red"/>`;
+      s += `<text x="${JC.clamp(x, 70, 650)}" y="28" text-anchor="middle" class="txt-2 halo" style="fill:var(--red-ink)">perkiraan ${nf(p)} m</text>`;
+    } else {
+      s += `<path d="M640 40 H700 M692 34 L700 40 L692 46" fill="none" style="stroke:var(--red)" stroke-width="2"/><text x="634" y="45" text-anchor="end" class="txt-2 halo" style="fill:var(--red-ink)">perkiraan ${nf(p)} m, di luar rute</text>`;
+    }
+    if (all) s += `<path d="M${XM(p) - 7} 103 l14 14 M${XM(p) + 7} 103 l-14 14" style="stroke:var(--red)" stroke-width="3"/><text x="${XM(p)}" y="186" text-anchor="middle" class="txt-2 halo" style="fill:var(--red-ink)">kabel putus ditemukan di sini</text>`;
+    s += `<text x="40" y="210" class="txt-m">0 m</text><text x="690" y="210" text-anchor="end" class="txt-m">1.500 m</text>`;
+    el("mapSvg").innerHTML = s;
+    const row = (on, t, v) => `<tr class="${on ? "" : "off"}"><th>${t}</th><td class="num">${on ? v : "belum dikoreksi"}</td></tr>`;
+    el("mapCalc").innerHTML = `<tbody><tr><th>Jarak di OTDR</th><td class="num">${nf(OTDR)} m</td></tr>` +
+      row(fix.launch, "Kabel peluncur", `−${nf(LAUNCH)} m`) +
+      row(fix.helix, "Serat lebih panjang (÷ 1,015)", `−${nf(d1 - d2)} m`) +
+      row(fix.slack, "Gulungan cadangan yang terlewati", `−${nf(d2 - p)} m`) +
+      `<tr class="sum"><th>Perkiraan di rute</th><td class="num">${nf(p)} m · ${where(p)}</td></tr></tbody>`;
+    let m;
+    if (!fix.launch) m = `Tanpa mengurangi kabel peluncur, perkiraannya ${nf(p)} m, padahal ODP hanya 1.500 m dari ODC. Pasti ada yang belum dikoreksi.`;
+    else if (all) m = `<strong>Ketiga koreksi dipakai: ${where(p)}.</strong> Tim yang naik ke tiang 20 menemukan kabel putus tergesek dahan pohon. Tanpa koreksi serat dan gulungan, pencarian akan dimulai hampir satu gawang tiang terlalu jauh.`;
+    else if (!fix.helix && !fix.slack) m = `Setelah kabel peluncur dikurangi: ${nf(p)} m. Sudah di dalam rute, tetapi belum memperhitungkan kelebihan panjang serat dan gulungan cadangan.`;
+    else m = `Perkiraan sekarang ${nf(p)} m (${where(p)}). Nyalakan koreksi yang lain. Selisih 20 sampai 40 m sudah hampir satu gawang tiang.`;
+    el("mapMsg").innerHTML = m;
+  }
+  document.querySelectorAll("[data-fix]").forEach((b) => b.addEventListener("click", () => {
+    fix[b.dataset.fix] = !fix[b.dataset.fix]; b.setAttribute("aria-pressed", String(fix[b.dataset.fix])); mapRender();
+  }));
+  JC.safe(mapRender);
+})();
+</script>
+<script>
+/* t6-care.js */
+/* Jalur Cahaya · Tahap 6 — pesan error splicer, membersihkan alat, uji busur, kuis */
+(function () {
+  const JC = window.JC;
+  const el = (id) => document.getElementById(id);
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  // pilihan jawaban panjang memakai gaya tombol kuis
+  const opts = (list, attr, done, right, picked) => `<div class="opts">${list.map((t, k) => {
+    let cls = "", m = "";
+    if (done) { if (k === right) { cls = "right"; m = "✓"; } else if (k === picked) { cls = "wrong"; m = "✕"; } }
+    return `<button type="button" data-${attr}="${k}" class="${cls}" ${done ? "disabled" : ""}><span class="l">${"ABCD"[k]}</span><span>${t}</span><span class="m" aria-hidden="true">${m}</span></button>`;
+  }).join("")}</div>`;
+
+  /* ---------- 6.4 pesan error splicer ---------- */
+  const ER = [
+    { id: "angle", msg: "Sudut belah terlalu besar: kiri 2,3°", ok: "Belah ulang serat kiri. Kalau sering terjadi, bersihkan cleaver dan putar pisaunya.", bad: ["Tekan SET sekali lagi", "Naikkan daya busur", "Ganti elektroda"], why: "Splicer menolak belahan yang miring, biasanya di atas 1°. Menekan SET lagi tidak mengubah ujung seratnya." },
+    { id: "dust", msg: "Serat kotor: ada bayangan di serat kiri", ok: "Bersihkan serat dengan IPA. Kalau bayangan tetap di posisi yang sama, bersihkan lensa splicer.", bad: ["Langsung sambung, debunya akan terbakar busur", "Belah ulang tanpa membersihkan", "Ganti V-groove"], why: "Debu di kaca membuat gelembung atau sambungan lemah. Bayangan yang tidak ikut berpindah saat serat diganti biasanya ada di lensa, bukan di serat." },
+    { id: "far", msg: "Posisi serat salah: serat terlalu jauh dari elektroda", ok: "Letakkan ulang ujung serat di antara ujung V-groove dan elektroda. Periksa juga panjang belahnya.", bad: ["Naikkan daya busur", "Tekan SET berkali-kali", "Panaskan sleeve dulu"], why: "Splicer hanya bisa menggerakkan serat sejauh beberapa ratus mikron. Ujung yang terlalu jauh atau belahan yang terlalu pendek harus diletakkan ulang." },
+    { id: "loss", msg: "Perkiraan redaman 0,28 dB", ok: "Sambung ulang. Kalau sering terjadi, bersihkan V-groove dan lakukan uji busur.", bad: ["Terima, masih di bawah 0,5 dB", "Panaskan sleeve dua kali", "Ukur dengan OPM dulu"], why: "Target sambungan fusion umumnya di bawah 0,1 dB. Angka 0,28 dB dengan core yang bergeser berarti ada yang tidak beres." },
+    { id: "proof", msg: "Uji tarik: serat putus", ok: "Kupas dan belah ulang dengan hati-hati; jangan sampai kaca tergores atau tersentuh.", bad: ["Matikan uji tarik di menu", "Ganti sleeve", "Naikkan daya busur"], why: "Serat yang putus saat uji tarik biasanya sudah tergores saat dikupas atau dipegang. Lebih baik putus di splicer daripada setelah closure ditutup." },
+    { id: "arc", msg: "Busur tidak stabil. Periksa elektroda", ok: "Bersihkan elektroda dengan busur pembersih. Kalau masih, ganti sepasang lalu uji busur.", bad: ["Abaikan, splicer masih bisa menyambung", "Bersihkan V-groove", "Ganti baterai"], why: "Elektroda yang kotor atau aus membuat busur goyah, sehingga hasil sambungan tidak menentu." },
+  ];
+  const erCtl = el("erCtl");
+  let eOrder = [], eIdx = 0, eRes = [], eAns = null, eOpts = [];
+  function drawEr(c) {
+    const cy = 100, P = "var(--glass)";
+    let s = `<rect x="30" y="10" width="660" height="220" rx="12" class="ln" style="fill:var(--glass-2)"/>`;
+    s += `<text x="48" y="34" class="txt-m" style="fill:var(--ink)">SM AUTO</text><rect x="628" y="24" width="40" height="14" rx="2" fill="none" class="ln"/><rect x="631" y="27" width="${c.id === "arc" ? 30 : 26}" height="8" class="f-ink"/>`;
+    const fiber = (x0, x1, endL, endR) => {
+      // cladding dengan ujung kiri/kanan bisa miring
+      let d = `M${x0} ${cy - 22} H${x1 - (endR || 0)} L${x1 + (endR || 0)} ${cy + 22} H${x0} Z`;
+      if (endL) d = `M${x0 + endL} ${cy - 22} H${x1} V${cy + 22} H${x0 - endL} Z`;
+      return `<path d="${d}" class="ln" style="fill:${P}"/><path d="M${x0 + 2} ${cy} H${x1 - 2}" style="stroke:var(--ink-3)" stroke-width="5"/>`;
+    };
+    if (c.id === "angle") s += fiber(50, 340, 0, 9) + fiber(380, 670);
+    else if (c.id === "dust") s += fiber(50, 340) + fiber(380, 670) + `<circle cx="300" cy="${cy - 9}" r="6" class="f-ink"/><circle cx="270" cy="${cy + 11}" r="3.5" class="f-ink"/><circle cx="318" cy="${cy + 4}" r="2.5" class="f-ink"/>`;
+    else if (c.id === "far") s += fiber(50, 230) + fiber(490, 670) + `<path d="M232 ${cy + 32} H488 M232 ${cy + 27} V${cy + 37} M488 ${cy + 27} V${cy + 37}" class="ln-thin"/><text x="360" y="${cy + 50}" text-anchor="middle" class="txt-2">celah terlalu lebar</text>`;
+    else if (c.id === "loss") s += `<path d="M50 ${cy - 22} H670 V${cy + 22} H50 Z" class="ln" style="fill:${P}"/><path d="M52 ${cy} H360" style="stroke:var(--ink-3)" stroke-width="5"/><path d="M360 ${cy + 7} H668" style="stroke:var(--ink-3)" stroke-width="5"/>`;
+    else if (c.id === "proof") s += `<path d="M50 ${cy - 22} H420 L410 ${cy - 6} L426 ${cy + 6} L414 ${cy + 22} H50 Z" class="ln" style="fill:${P}"/><path d="M52 ${cy} H412" style="stroke:var(--ink-3)" stroke-width="5"/><path d="M452 ${cy - 16} H670 V${cy + 28} H446 L456 ${cy + 12} L444 ${cy} Z" class="ln" style="fill:${P}"/><path d="M452 ${cy + 6} H668" style="stroke:var(--ink-3)" stroke-width="5"/>`;
+    else s += fiber(50, 345) + fiber(375, 670) + `<path d="M360 40 V64 M360 160 V136" class="ln" stroke-width="5"/><circle cx="360" cy="66" r="5" class="f-ink"/><circle cx="360" cy="134" r="5" class="f-ink"/>`;
+    s += `<rect x="50" y="160" width="620" height="54" rx="6" class="f-paper ln"/><path d="M78 176 L92 202 H64 Z" style="fill:var(--red)"/><text x="78" y="199" text-anchor="middle" style="fill:#fff;font:800 14px var(--font-display)">!</text>`;
+    s += `<text x="108" y="193" style="fill:var(--ink);font:650 17px var(--font-display)">${c.msg}</text>`;
+    el("erSvg").innerHTML = s;
+  }
+  function erRender() {
+    el("erLbl").textContent = eIdx < eOrder.length ? `Pesan ${eIdx + 1} dari ${eOrder.length}` : `${eOrder.length} pesan`;
+    el("erScore").textContent = `Benar ${eRes.filter(Boolean).length} dari ${eRes.length}`;
+    if (eIdx >= eOrder.length) {
+      const ok = eRes.filter(Boolean).length;
+      erCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${eOrder.length} tepat.</strong> Hampir semua pesan error berujung pada tiga hal: serat yang bersih, belahan yang bagus, dan alat yang terawat.</p><div class="row-actions"><button type="button" class="btn" id="erAgain">Ulangi</button></div>`;
+      el("erAgain").onclick = erStart; return;
+    }
+    const c = ER[eOrder[eIdx]], right = eOpts.indexOf(c.ok);
+    drawEr(c);
+    let h = `<p class="msg phone-only">Pesan di layar: <strong>${c.msg}</strong></p><p class="msg">Apa yang kamu lakukan?</p>` + opts(eOpts, "er", eAns !== null, right, eAns);
+    if (eAns !== null) h += `<div class="mark ${eAns === right ? "good" : "bad"}"><b>${eAns === right ? "✓ Tepat." : "✕ Kurang tepat."}</b>${c.why}</div><div class="row-actions"><button type="button" class="btn primary" id="erNext">${eIdx === eOrder.length - 1 ? "Lihat hasil" : "Pesan berikutnya"}</button></div>`;
+    erCtl.innerHTML = h;
+    erCtl.querySelectorAll("[data-er]").forEach((b) => b.onclick = () => { eAns = +b.dataset.er; eRes.push(eAns === right); erRender(); el("erNext").focus(); });
+    const nx = el("erNext"); if (nx) nx.onclick = () => { eIdx++; eAns = null; erNew(); erRender(); };
+  }
+  function erNew() { if (eIdx < eOrder.length) { const c = ER[eOrder[eIdx]]; eOpts = shuffle([c.ok, ...c.bad]); } }
+  function erStart() { eOrder = shuffle(ER.map((_, i) => i)); eIdx = 0; eRes = []; eAns = null; erNew(); erRender(); }
+  JC.safe(erStart);
+
+  /* ---------- 6.5 membersihkan splicer dan cleaver ---------- */
+  const SPLICER = `<rect x="60" y="30" width="620" height="270" rx="26" class="f-paper ln"/>
+    <path d="M330 56 L340 16 H600 L610 56" class="ln" style="fill:var(--paper-2)" stroke-dasharray="5 3"/>
+    <rect x="90" y="56" width="190" height="140" rx="6" class="f-glass2 ln"/>
+    <path d="M104 92 H176 M194 92 H266 M104 158 H176 M194 158 H266" stroke="var(--ink-2)" stroke-width="10"/>
+    <path d="M104 92 H176 M194 92 H266 M104 158 H176 M194 158 H266" stroke="var(--glass)" stroke-width="7"/>
+    <rect x="330" y="56" width="280" height="140" rx="6" fill="none" class="ln"/>
+    <rect x="356" y="90" width="60" height="62" rx="4" class="ln" style="fill:var(--paper-2)"/><rect x="514" y="90" width="60" height="62" rx="4" class="ln" style="fill:var(--paper-2)"/>
+    <rect x="520" y="94" width="48" height="14" rx="3" class="ln" style="fill:var(--jacket)"/>
+    <path d="M300 121 H362 M570 121 H640" stroke="#1f6fe0" stroke-width="5"/><path d="M362 121 H460 M470 121 H570" stroke="var(--ink-2)" stroke-width="2"/>
+    <path d="M420 114 L432 126 L444 114 M486 114 L498 126 L510 114" fill="none" class="ln"/>
+    <path d="M465 60 V108 M465 182 V134" fill="none" class="ln" stroke-width="2.4"/>
+    <circle cx="448" cy="170" r="6" class="ln f-glass"/><circle cx="482" cy="170" r="6" class="ln f-glass"/>
+    <rect x="350" y="222" width="260" height="56" rx="10" class="ln" style="fill:#f1cf74"/><path d="M366 250 H594" class="ln-thin" stroke-dasharray="6 4"/>
+    <circle cx="112" cy="254" r="13" class="ln f-paper"/><circle cx="150" cy="254" r="13" class="ln f-paper"/><circle cx="188" cy="254" r="13" class="ln f-paper"/>
+    <rect x="628" y="222" width="44" height="66" rx="6" class="ln" style="fill:#9aa3a9"/>
+    <text x="370" y="326" text-anchor="middle" class="txt-2">fusion splicer, penutup angin terbuka</text>`;
+  let CLEAVER = `<rect x="150" y="26" width="420" height="92" rx="12" class="ln" style="fill:var(--paper-2)"/><text x="170" y="52" class="txt-2">tutup (terbuka)</text>
+    <rect x="300" y="94" width="120" height="14" rx="2" class="ln" style="fill:var(--jacket)"/>
+    <rect x="210" y="118" width="20" height="30" class="ln f-paper"/><rect x="490" y="118" width="20" height="30" class="ln f-paper"/>
+    <rect x="150" y="148" width="420" height="150" rx="14" class="f-paper ln"/>
+    <rect x="300" y="160" width="120" height="14" rx="2" class="ln" style="fill:var(--jacket)"/>
+    <rect x="170" y="204" width="120" height="24" rx="3" class="ln" style="fill:var(--paper-2)"/>
+    <path d="M0 216 H230" stroke="#1f6fe0" stroke-width="5"/><path d="M230 216 H372" style="stroke:var(--ink-2)" stroke-width="2"/>
+    <circle cx="360" cy="252" r="26" class="ln" style="fill:#c9ced2"/><circle cx="360" cy="252" r="6" class="ln f-paper"/>
+    <rect x="570" y="176" width="110" height="104" rx="8" class="ln" style="fill:var(--paper-2)"/>
+    <path d="M590 250 l14 -6 M612 262 l12 4 M640 248 l10 -8 M600 230 l16 2" class="ln-thin"/>
+    <text x="360" y="326" text-anchor="middle" class="txt-2">cleaver, tutup terbuka</text>`;
+  for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2; CLEAVER += `<path d="M${360 + Math.cos(a) * 18} ${252 + Math.sin(a) * 18} L${360 + Math.cos(a) * 24} ${252 + Math.sin(a) * 24}" class="ln-thin"/>`; }
+  const CL = [
+    { n: "V-groove", dev: "s", hl: [386, 121, 40], m: "Cotton bud tipis dengan IPA, usap searah alur. Kotoran yang membandel didorong keluar dengan ujung serat yang sudah dibelah.", when: "Setiap mulai kerja, dan setiap kali serat tampak miring di layar." },
+    { n: "Klem serat", dev: "s", hl: [544, 101, 30], m: "Usap bantalan penjepit dengan cotton bud ber-IPA, lalu biarkan kering sebelum dipakai.", when: "Setiap mulai kerja." },
+    { n: "Lensa", dev: "s", hl: [465, 170, 30], m: "Cotton bud dengan sedikit IPA, usap melingkar dari tengah ke luar dengan sangat pelan.", when: "Saat ada bayangan atau bintik yang tetap terlihat walau seratnya sudah dibersihkan." },
+    { n: "Elektroda", dev: "s", hl: [465, 84, 30], m: "Jangan disentuh tangan. Jalankan busur pembersih dari menu; kalau ujungnya tumpul atau berkerak, ganti sepasang.", when: "Saat busur tidak stabil, dan ganti sesuai hitungan busur di manual." },
+    { n: "Pemanas sleeve", dev: "s", hl: [480, 250, 0, 280, 72], m: "Tunggu sampai dingin, buang sisa lem, lalu lap kering.", when: "Setiap minggu, atau saat ada sisa lem yang menempel." },
+    { n: "Pisau dan bantalan cleaver", dev: "c", hl: [360, 200, 0, 160, 128], m: "Usap pisau dan bantalan karet dengan cotton bud ber-IPA. Kalau belahan tetap miring, putar pisau ke posisi berikutnya.", when: "Setiap mulai kerja; putar pisau saat belahan mulai sering ditolak." },
+    { n: "Penampung serpihan", dev: "c", hl: [625, 228, 0, 128, 122], m: "Kosongkan ke wadah limbah serat yang tertutup, jangan dibuang sembarangan.", when: "Setiap selesai kerja atau saat hampir penuh." },
+  ];
+  const clCtl = el("clCtl");
+  let lOrder = [], lIdx = 0, lRes = [], lAns = null, lOpts = [];
+  function drawCl(c) {
+    const [x, y, r, w, h] = c.hl;
+    const ring = r ? `<circle cx="${x}" cy="${y}" r="${r}" fill="none" style="stroke:var(--red)" stroke-width="2.4" stroke-dasharray="6 4"/>`
+      : `<rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="12" fill="none" style="stroke:var(--red)" stroke-width="2.4" stroke-dasharray="6 4"/>`;
+    el("clSvg").innerHTML = (c.dev === "s" ? SPLICER : CLEAVER) + ring;
+  }
+  function clRender() {
+    el("clLbl").textContent = lIdx < lOrder.length ? `Bagian ${lIdx + 1} dari ${lOrder.length}` : `${lOrder.length} bagian`;
+    el("clScore").textContent = `Benar ${lRes.filter(Boolean).length} dari ${lRes.length}`;
+    if (lIdx >= lOrder.length) {
+      const ok = lRes.filter(Boolean).length;
+      clCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${lOrder.length} tepat.</strong> Simpan alkohol, cotton bud, dan wadah limbah serat di tas yang sama dengan splicer, supaya membersihkan jadi kebiasaan.</p><div class="row-actions"><button type="button" class="btn" id="clAgain">Ulangi</button></div>`;
+      el("clAgain").onclick = clStart; return;
+    }
+    const c = CL[lOrder[lIdx]], right = lOpts.indexOf(c.m);
+    drawCl(c);
+    let h = `<p class="msg">Bagaimana membersihkan <strong>${c.n.toLowerCase()}</strong>?</p>` + opts(lOpts, "cl", lAns !== null, right, lAns);
+    if (lAns !== null) h += `<div class="mark ${lAns === right ? "good" : "bad"}"><b>${lAns === right ? "✓ Tepat." : "✕ Kurang tepat."}</b>Kapan: ${c.when}</div><div class="row-actions"><button type="button" class="btn primary" id="clNext">${lIdx === lOrder.length - 1 ? "Lihat hasil" : "Bagian berikutnya"}</button></div>`;
+    clCtl.innerHTML = h;
+    clCtl.querySelectorAll("[data-cl]").forEach((b) => b.onclick = () => { lAns = +b.dataset.cl; lRes.push(lAns === right); clRender(); el("clNext").focus(); });
+    const nx = el("clNext"); if (nx) nx.onclick = () => { lIdx++; lAns = null; clNew(); clRender(); };
+  }
+  function clNew() { if (lIdx < lOrder.length) { const c = CL[lOrder[lIdx]]; lOpts = shuffle([c.m, ...shuffle(CL.filter((x) => x !== c)).slice(0, 3).map((x) => x.m)]); } }
+  function clStart() { lOrder = shuffle(CL.map((_, i) => i)); lIdx = 0; lRes = []; lAns = null; clNew(); clRender(); }
+  JC.safe(clStart);
+
+  /* ---------- 6.6 uji busur ---------- */
+  const ENV = [0, 12], WEAR = [6, -4, -15], JIT = [1, 1.2, 9];
+  const arc = { env: 0, el: 1, c: 4, last: null, test: null, log: [], badRuns: 0 };
+  const mean = () => 100 + ENV[arc.env] + WEAR[arc.el] + arc.c;
+  const randn = () => { let u = 0; for (let i = 0; i < 6; i++) u += Math.random(); return (u - 3) / 1.2; };
+  const arcCv = el("arcCanvas");
+  const as = JC.canvas(arcCv, () => drawArc(), 520);
+  function drawArc() {
+    const { ctx, w, h } = as, P = JC.pal;
+    if (w < 40 || h < 40) return;
+    ctx.clearRect(0, 0, w, h);
+    const half = w * 0.5, pad = 22;
+    // skala hasil uji busur
+    ctx.font = "650 13px 'Public Sans', sans-serif"; ctx.fillStyle = P.ink; ctx.textAlign = "left";
+    ctx.fillText("Uji busur terakhir", pad, 28);
+    const gx0 = pad, gx1 = half - pad, gy = 110, X = (v) => gx0 + ((JC.clamp(v, 70, 130) - 70) / 60) * (gx1 - gx0);
+    ctx.fillStyle = P["paper-2"]; ctx.fillRect(gx0, gy - 8, gx1 - gx0, 16); ctx.strokeStyle = P.ink; ctx.lineWidth = 1; ctx.strokeRect(gx0 + 0.5, gy - 7.5, gx1 - gx0, 15);
+    ctx.fillStyle = P.ok; ctx.fillRect(X(97), gy - 8, X(103) - X(97), 16);
+    ctx.font = "12px 'Public Sans', sans-serif"; ctx.fillStyle = P["ink-3"]; ctx.textAlign = "center";
+    [70, 85, 100, 115, 130].forEach((v) => { ctx.fillText(v + "%", X(v), gy + 26); ctx.fillRect(X(v) - 0.5, gy + 8, 1, 5); });
+    ctx.fillText("lemah", gx0 + 20, gy - 18); ctx.fillText("kuat", gx1 - 16, gy - 18);
+    if (arc.last != null) {
+      const x = X(arc.last);
+      ctx.fillStyle = P.red; ctx.beginPath(); ctx.moveTo(x, gy - 10); ctx.lineTo(x - 7, gy - 22); ctx.lineTo(x + 7, gy - 22); ctx.closePath(); ctx.fill();
+      ctx.fillRect(x - 1, gy - 10, 2, 20);
+      ctx.font = "650 22px 'Public Sans', sans-serif"; ctx.fillStyle = P.ink; ctx.textAlign = "center";
+      ctx.fillText(Math.round(arc.last) + "%", X(100), gy + 70);
+    } else { ctx.font = "13px 'Public Sans', sans-serif"; ctx.fillStyle = P["ink-3"]; ctx.fillText("belum ada uji busur", X(100), gy + 66); }
+    // sambung tes
+    ctx.textAlign = "left"; ctx.font = "650 13px 'Public Sans', sans-serif"; ctx.fillStyle = P.ink; ctx.fillText("Sambung tes", half + pad, 28);
+    const sx0 = half + pad, sx1 = w - pad, cx = (sx0 + sx1) / 2, cy = 112, hw0 = 30;
+    ctx.fillStyle = P["paper-2"]; ctx.fillRect(sx0, 44, sx1 - sx0, 136); ctx.strokeStyle = P.ink; ctx.strokeRect(sx0 + 0.5, 44.5, sx1 - sx0, 136);
+    if (arc.test) {
+      const t = arc.test, bump = t === "thin" ? -0.35 : t === "fat" ? 0.25 : 0;
+      const hw = (x) => hw0 * (1 + bump * Math.exp(-Math.pow((x - cx) / 22, 2)));
+      ctx.beginPath();
+      for (let x = sx0 + 6; x <= sx1 - 6; x += 2) ctx.lineTo(x, cy - hw(x));
+      for (let x = sx1 - 6; x >= sx0 + 6; x -= 2) ctx.lineTo(x, cy + hw(x));
+      ctx.closePath(); ctx.fillStyle = P.glass; ctx.fill(); ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.fillStyle = P["glass-2"]; ctx.fillRect(sx0 + 6, cy - 4, sx1 - sx0 - 12, 8);
+      if (t === "bubble") { ctx.beginPath(); ctx.ellipse(cx + 3, cy - 10, 6, 9, 0, 0, Math.PI * 2); ctx.fillStyle = P.paper; ctx.fill(); ctx.strokeStyle = P.ink; ctx.stroke(); }
+      const name = { ok: "rata", thin: "menipis", fat: "menebal", bubble: "ada gelembung" }[t];
+      ctx.font = "650 13px 'Public Sans', sans-serif"; ctx.fillStyle = t === "ok" ? P.ok : P.bad; ctx.textAlign = "center"; ctx.fillText("Hasil: " + name, cx, 204);
+    } else { ctx.font = "13px 'Public Sans', sans-serif"; ctx.fillStyle = P["ink-3"]; ctx.textAlign = "center"; ctx.fillText("belum ada sambung tes", cx, cy + 4); }
+    ctx.textAlign = "left";
+  }
+  const arcMsg = el("arcMsg"), arcLog = el("arcLog");
+  const logIt = (t) => { arc.log.unshift(t); arc.log = arc.log.slice(0, 4); arcLog.innerHTML = arc.log.map((x) => `<li>${x}</li>`).join(""); };
+  function changed() {
+    arc.last = null; arc.test = null; arc.badRuns = 0;
+    arcMsg.innerHTML = "Kondisi berubah. Lakukan sambung tes atau uji busur sebelum menyambung di jalur.";
+    drawArc();
+  }
+  JC.seg([...document.querySelectorAll("[data-env]")], "env", (v) => { arc.env = +v; changed(); });
+  JC.seg([...document.querySelectorAll("[data-el]")], "el", (v) => { arc.el = +v; changed(); });
+  el("arcTest").addEventListener("click", () => {
+    const a = mean() + JIT[arc.el] * randn();
+    arc.test = arc.el === 2 && Math.random() < 0.4 ? "bubble" : a > 106 ? "thin" : a < 94 ? "fat" : "ok";
+    const M = {
+      ok: "<strong>Sambungan rata.</strong> Busur pas untuk kondisi ini; boleh menyambung di jalur.",
+      thin: "<strong>Sambungan menipis:</strong> busur terlalu kuat. Lakukan uji busur.",
+      fat: "<strong>Sambungan menebal:</strong> busur terlalu lemah. Lakukan uji busur.",
+      bubble: "<strong>Ada gelembung</strong> walau seratnya bersih. Busur dari elektroda aus tidak stabil.",
+    };
+    arcMsg.innerHTML = M[arc.test]; logIt(`Sambung tes: ${{ ok: "rata", thin: "menipis", fat: "menebal", bubble: "gelembung" }[arc.test]}`);
+    drawArc();
+  });
+  el("arcCheck").addEventListener("click", () => {
+    const m = mean() + JIT[arc.el] * randn();
+    arc.last = m;
+    const dev = m - 100;
+    if (arc.el === 2) {
+      arc.badRuns++;
+      arc.c -= dev * 0.85;
+      arcMsg.innerHTML = arc.badRuns >= 2 ? `<strong>Hasil uji melompat-lompat.</strong> Elektroda aus membuat busur tidak stabil, jadi kalibrasi tidak pernah selesai. Ganti sepasang elektroda, lalu uji busur lagi.` : `Uji busur: ${Math.round(m)}%. Splicer menyesuaikan daya. Ulangi uji busur.`;
+      logIt(`Uji busur: ${Math.round(m)}%${arc.badRuns >= 2 ? ", tidak stabil" : ""}`);
+    } else if (Math.abs(dev) <= 3) {
+      arcMsg.innerHTML = `<strong>Uji busur selesai: ${Math.round(m)}%.</strong> Busur sudah pas. Lakukan sambung tes untuk memastikan.`;
+      logIt(`Uji busur: ${Math.round(m)}%, selesai`);
+    } else {
+      arc.c -= dev * 0.85;
+      arcMsg.innerHTML = `Uji busur: ${Math.round(m)}%, terlalu ${dev > 0 ? "kuat" : "lemah"}. Splicer ${dev > 0 ? "menurunkan" : "menaikkan"} daya busur. <strong>Ulangi uji busur</strong> sampai hasilnya pas.`;
+      logIt(`Uji busur: ${Math.round(m)}%, daya ${dev > 0 ? "diturunkan" : "dinaikkan"}`);
+    }
+    drawArc();
+  });
+  arcMsg.innerHTML = "Splicer sudah dikalibrasi kemarin dengan elektroda yang sama. Ubah kondisinya untuk melihat apa yang terjadi.";
+
+  /* ---------- kuis ---------- */
+  const Q = [
+    { q: "ONT pelanggan membaca LO, sedangkan port ODP-nya −19 dBm. Masalah paling mungkin ada di…", o: ["Kabel distribusi ODC–ODP", "Drop cable atau konektor di rumah", "OLT", "Splitter di ODC"], a: 1, e: "Sampai port ODP dayanya normal. Berarti masalahnya di antara port ODP dan ONT." },
+    { q: "Semua pelanggan di satu ODP mati bersamaan, sedangkan port ODC normal. Langkah berikutnya?", o: ["Ganti semua ONT", "Ukur kabel distribusi dari ODC dengan OTDR", "Bersihkan konektor di rumah pelanggan satu per satu", "Tunggu sampai pulih sendiri"], a: 1, e: "Masalah bersama di satu ODP berarti penyebabnya sebelum ODP. OTDR dari ODC menunjukkan lokasinya." },
+    { q: "Event di OTDR tanpa puncak, 0,2 dB di 1310 nm dan 1,1 dB di 1550 nm. Penyebab paling mungkin?", o: ["Konektor kotor", "Sambungan fusion buruk", "Tekukan atau serat terjepit", "Gainer"], a: 2, e: "Tekukan jauh lebih berpengaruh di 1550 nm. Sambungan buruk menunjukkan redaman yang hampir sama di keduanya." },
+    { q: "Kenapa jarak OTDR biasanya lebih panjang dari jarak di rute?", o: ["OTDR selalu salah", "Ada kabel peluncur, serat lebih panjang dari kabel, dan ada gulungan cadangan", "Cahaya lebih lambat di siang hari", "Karena splitter"], a: 1, e: "Ketiganya menambah panjang yang terbaca OTDR tanpa menambah jarak di rute." },
+    { q: "Splicer berulang kali menolak karena sudut belah terlalu besar. Yang paling perlu diperiksa?", o: ["Elektroda", "Cleaver: bersihkan, lalu putar pisaunya", "Baterai splicer", "Pemanas sleeve"], a: 1, e: "Sudut belah ditentukan cleaver. Pisau yang kotor atau tumpul membuat belahan miring." },
+    { q: "Debu di V-groove tidak hilang dengan cotton bud. Apa yang bisa dilakukan?", o: ["Tiup dengan mulut", "Dorong keluar dengan ujung serat yang sudah dibelah", "Kerok dengan obeng kecil", "Biarkan saja"], a: 1, e: "Ujung serat yang sudah dibelah cukup kecil untuk mendorong debu keluar dari alur tanpa merusaknya." },
+    { q: "Kapan uji busur perlu dilakukan?", o: ["Hanya saat splicer baru dibeli", "Setelah ganti elektroda, saat tempat atau cuaca berbeda, dan saat hasil menipis atau menebal", "Setiap selesai satu sambungan", "Tidak perlu, splicer sudah otomatis"], a: 1, e: "Kondisi udara dan keausan elektroda mengubah busur. Uji busur menyesuaikannya kembali." },
+  ];
+  const quizEl = el("quiz"), scoreEl = el("score");
+  let ans = [];
+  function render() {
+    quizEl.innerHTML = Q.map((it, i) => {
+      const dn = ans[i] !== undefined;
+      const o = it.o.map((t, k) => {
+        let cls = "", m = "";
+        if (dn) { if (k === it.a) { cls = "right"; m = "✓"; } else if (k === ans[i]) { cls = "wrong"; m = "✕"; } }
+        return `<button type="button" id="q${i}-${k}" data-q="${i}" data-k="${k}" class="${cls}" ${dn ? "disabled" : ""}><span class="l">${"ABCD"[k]}</span><span>${t}</span><span class="m" aria-hidden="true">${m}</span></button>`;
+      }).join("");
+      const exp = dn ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
+      return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${o}</div>${exp}</div>`;
+    }).join("");
+    quizEl.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; render(); });
+    if (ans.filter((v) => v !== undefined).length === Q.length) {
+      const ok = Q.filter((it, i) => ans[i] === it.a).length;
+      const best = Math.max(ok, JC.store.get("t6best", 0)); JC.store.set("t6best", best);
+      scoreEl.hidden = false;
+      scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${Q.length}">${ok}/${Q.length}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === Q.length ? "Sempurna. Siap lanjut ke Tahap 7." : ok >= Q.length - 1 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${Q.length}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
+      el("quizAgain").onclick = () => { ans = []; scoreEl.hidden = true; render(); quizEl.scrollIntoView({ block: "start" }); };
+    } else scoreEl.hidden = true;
+  }
+  render();
+})();
+</script>
+</body>
+</html>

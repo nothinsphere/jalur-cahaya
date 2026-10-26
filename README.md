@@ -7,6 +7,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - Tahap 3: https://nothinsphere.github.io/jalur-cahaya/tahap-3/
 - Tahap 4: https://nothinsphere.github.io/jalur-cahaya/tahap-4/
 - Tahap 5: https://nothinsphere.github.io/jalur-cahaya/tahap-5/
+- Tahap 6: https://nothinsphere.github.io/jalur-cahaya/tahap-6/
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -52,6 +53,16 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 5.4 VFL: game identifikasi core dan kebocoran di tray closure
 - 5.5 Setelan OTDR: rentang, lebar pulsa, waktu rata-rata, kabel peluncur
 - 5.6 Membaca OTDR: dua kursor untuk panjang jalur, redaman sambungan, dan dB/km
+- Kuis 7 soal
+
+**Tahap 6 · Troubleshooting & perawatan** (`tahap-6/index.html`)
+
+- 6.1 Ukur mundur: simulasi 4 kasus gangguan pelanggan dengan OPM di 6 titik
+- 6.2 Tanda gangguan di OTDR: game membaca jejak 1310/1550 nm (tekukan, sambungan buruk, konektor, putus, gainer)
+- 6.3 Dari OTDR ke tiang: koreksi kabel peluncur, kelebihan panjang serat, dan gulungan cadangan
+- 6.4 Sambungan gagal: game pesan error splicer
+- 6.5 Membersihkan alat: cara membersihkan bagian splicer dan cleaver
+- 6.6 Uji busur dan jadwal perawatan
 - Kuis 7 soal
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
