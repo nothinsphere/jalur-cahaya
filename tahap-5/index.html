@@ -1,0 +1,1610 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalur Cahaya Tahap 5</title>
+<meta name="description" content="Modul belajar interaktif teknisi fiber optik Tahap 5: inspeksi konektor, OPM di pelanggan, light source dan OPM, VFL, setelan dan pembacaan OTDR.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=Public+Sans:ital,wght@0,400..800;1,400..800&display=swap">
+<style>
+/* dasar */
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+
+/* Layout: lembar datasheet / gambar teknik. Kertas + tinta, gambar di dalam bingkai berkisi,
+   penanda bab memakai urutan kode warna serat (TIA-598). Merah = cahaya VFL & coretan koreksi. */
+:root {
+  --paper: #fafbfb;
+  --paper-2: #eef1f2;
+  --grid: #e3e8ea;
+  --ink: #16191b;
+  --ink-2: #454e54;
+  --ink-3: #737e85;
+  --rule: #c5cdd1;
+  --red: #cf2a1e;
+  --red-ink: #b0231a;
+  --ok: #1b7a3c;
+  --bad: #c42a1f;
+  --warn: #93600a;
+  --iso: #f5c400;
+  --glass: #dcebf1;
+  --glass-2: #b7d3de;
+  --jacket: #33393d;
+  --hatch: rgba(22, 25, 27, .5);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+  /* warna penanda bab = kode warna tabung */
+  --c1: #1f6fe0; --c2: #f47b20; --c3: #22a04b; --c4: #8b5a2b; --c5: #8c969c; --c6: #f3f3ef; --c7: #d92b2b;
+  /* satu keluarga sans-serif untuk semua peran; angka memakai tabular-nums, bukan monospace */
+  --font-display: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+  /* Garamond untuk judul, Source Serif untuk teks bacaan; label, data, dan gambar tetap sans */
+  --font-serif: "EB Garamond", Garamond, "Times New Roman", serif;
+  --font-read: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+    --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+    --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181c1f; --paper-2: #20262a; --grid: #252b2f; --ink: #e7eaeb; --ink-2: #b3bcc1; --ink-3: #85919a;
+  --rule: #3a4349; --red: #ff5b4d; --red-ink: #ff8073; --ok: #52c785; --bad: #ff6a5d; --warn: #e3a843;
+  --glass: #35505b; --glass-2: #27404a; --jacket: #4a5258; --hatch: rgba(231, 234, 235, .38);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.0625rem; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 650; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(2.5rem, 6.2vw, 4.3rem); font-weight: 750; letter-spacing: -.03em; line-height: 1.02; }
+h2 { font-size: clamp(1.85rem, 4.2vw, 2.7rem); font-weight: 700; letter-spacing: -.025em; }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.1rem; }
+p { margin: 0; }
+a { color: var(--red-ink); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.small { font-size: .875rem; color: var(--ink-3); }
+
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.col { max-width: 880px; margin-inline: auto; }
+.prose { display: grid; gap: .9rem; max-width: 66ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); }
+.prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: .35rem; }
+
+/* ---------- rel bab ---------- */
+.rail { position: fixed; left: max(22px, env(safe-area-inset-left, 0px)); top: 50%; transform: translateY(-50%); z-index: 20; display: none; }
+.rail::before { content: ""; position: absolute; left: 4px; top: 4px; bottom: 4px; width: 1px; background: var(--rule); }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; position: relative; }
+.rail a { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink-3); font-size: 13px; }
+.rail a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; transition: transform .15s; }
+.rail a span { background: var(--paper); padding: 1px 6px; opacity: 0; transition: opacity .15s; white-space: nowrap; border: 1px solid var(--rule); }
+.rail:hover a span, .rail a.on span { opacity: 1; }
+.rail a.on { color: var(--ink); }
+.rail a.on i { transform: scale(1.5); }
+.topbar { position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 3px; z-index: 20; }
+.topbar i { display: block; height: 100%; width: 0; background: var(--red); }
+@media (min-width: 1200px) { .rail { display: block; } .topbar { display: none; } }
+
+/* ---------- hero: lembar gambar ---------- */
+.hero { padding-block: clamp(36px, 7vw, 80px) 32px; }
+.hero .col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.kicker { font-size: .9375rem; color: var(--ink-2); }
+.kicker b { color: var(--ink); }
+.hero .lede { font-size: 1.25rem; color: var(--ink-2); max-width: 44ch; line-height: 1.5; }
+.sheet { border: 1.5px solid var(--ink); background: var(--paper); }
+.sheet-draw { background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; padding: 18px; overflow-x: auto; }
+.sheet-draw svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.tblock { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; border-top: 1.5px solid var(--ink); }
+.tblock div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; gap: 1px; min-width: 0; }
+.tblock div:first-child { border-left: 0; }
+.tblock small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.tblock b { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
+@media (max-width: 620px) { .tblock { grid-template-columns: 1fr 1fr; } .tblock div:nth-child(3) { border-left: 0; } .tblock div:nth-child(n+3) { border-top: 1px solid var(--ink); } }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+
+/* svg gambar teknik */
+.ln { stroke: var(--ink); stroke-width: 1.4; }
+.ln-thin { fill: none; stroke: var(--ink-2); stroke-width: 1; }
+.txt { fill: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 600; }
+.txt-2 { fill: var(--ink-2); font-family: var(--font-body); font-size: 12.5px; }
+.txt-m { fill: var(--ink-2); font-family: var(--font-mono); font-size: 11px; }
+.balloon circle { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.balloon text { fill: var(--ink); font-family: var(--font-display); font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: central; }
+.f-jacket { fill: var(--jacket); }
+.f-glass { fill: var(--glass); }
+.f-glass2 { fill: var(--glass-2); }
+.f-paper { fill: var(--paper); }
+.f-ink { fill: var(--ink); }
+.f-red { fill: var(--red); }
+.s-red { stroke: var(--red); }
+
+/* daftar tahap */
+.stages { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.stages td { padding: 7px 10px; border-bottom: 1px solid var(--rule); }
+.stages td:first-child { font-family: var(--font-display); font-weight: 600; width: 5.5em; color: var(--ink-3); }
+.stages tr.now td { color: var(--ink); font-weight: 700; }
+.stages tr.now td:first-child { color: var(--red-ink); }
+.stages td:last-child { text-align: right; color: var(--ink-3); font-size: .8125rem; white-space: nowrap; }
+
+/* ---------- bab ---------- */
+.chapter { padding-block: clamp(64px, 10vw, 112px) 16px; }
+.chapter-head { display: grid; gap: 14px; margin-bottom: 32px; border-top: 1.5px solid var(--ink); padding-top: 14px; }
+.chapter-no { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--ink-2); }
+.chapter-no i { width: 34px; height: 8px; border-radius: 4px; background: var(--c); border: 1px solid var(--ink); }
+.block { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; margin-top: 56px; }
+.chapter-head, .sheet-q, .game, .rx, .fig-ctl, .dive-card { grid-template-columns: minmax(0, 1fr); }
+
+/* tabel umum */
+.tbl-wrap { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: .9375rem; min-width: 540px; }
+.tbl th, .tbl td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl thead th { border-bottom: 1.5px solid var(--ink); font-family: var(--font-display); font-weight: 600; font-size: .9375rem; }
+.tbl tbody th { font-weight: 400; color: var(--ink-3); }
+.tbl .sw { display: inline-block; width: 22px; height: 6px; border-radius: 3px; vertical-align: 3px; margin-right: 6px; border: 1px solid var(--ink); }
+.tbl .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---------- gambar (figure) ---------- */
+.fig { margin: 0; border: 1.5px solid var(--ink); background: var(--paper); }
+.fig-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 8px 10px; border-bottom: 1px solid var(--ink); }
+.fig-bar .lbl { font-size: .875rem; color: var(--ink-2); }
+.fig-draw { position: relative; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; }
+.fig-draw canvas { display: block; width: 100%; }
+.fig-ctl { padding: 12px 14px; border-top: 1px solid var(--ink); display: grid; gap: 12px; }
+.fig + figcaption, .fig figcaption, .cap { font-size: .875rem; color: var(--ink-2); margin-top: 8px; }
+.cap b { font-family: var(--font-display); font-weight: 600; color: var(--ink); margin-right: 6px; }
+.msg { font-size: .9375rem; color: var(--ink-2); }
+.msg strong { color: var(--ink); }
+
+/* kontrol */
+.tabs { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--ink); }
+.tabs button { border: 0; border-left: 1px solid var(--ink); background: var(--paper); padding: 5px 12px; cursor: pointer; font-size: .875rem; }
+.tabs button:first-child { border-left: 0; }
+.tabs button:hover { background: var(--paper-2); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.range { display: grid; gap: 4px; }
+.range label { display: flex; justify-content: space-between; gap: 12px; font-size: .9375rem; color: var(--ink-2); }
+.range output { font-family: var(--font-mono); color: var(--ink); font-weight: 500; }
+input[type="range"] { width: 100%; accent-color: var(--red); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 9px 16px; border-radius: 2px; cursor: pointer; font-weight: 700; text-decoration: none; }
+.btn:hover { background: var(--paper-2); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+
+/* label peringatan laser (bentuk stiker asli) */
+.warnlabel { display: flex; gap: 14px; align-items: center; border: 2px solid #111; background: var(--iso); color: #111; padding: 10px 14px; max-width: 560px; }
+.warnlabel svg { flex: none; width: 46px; height: 41px; }
+.warnlabel p { font-family: var(--font-display); font-weight: 600; font-size: 1rem; line-height: 1.25; }
+.warnlabel small { display: block; font-family: var(--font-body); font-weight: 400; font-size: .8125rem; }
+
+/* ---------- K3 ---------- */
+.eye-view { aspect-ratio: 16 / 6.5; min-height: 210px; max-width: 100%; }
+.eye-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sheet-q { border: 1.5px solid var(--ink); padding: 20px; display: grid; gap: 16px; min-height: 220px; align-content: start; }
+.sheet-q .q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; line-height: 1.25; }
+.ticks { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-size: .8125rem; color: var(--ink-3); }
+.ticks i { width: 18px; height: 18px; border: 1px solid var(--ink); display: grid; place-items: center; font-style: normal; font-size: 12px; font-weight: 700; }
+.ticks i.r { color: var(--ok); }
+.ticks i.w { color: var(--bad); }
+.ticks i.c { background: var(--ink); }
+.ticks span { margin-left: 8px; }
+.row-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.row-actions .btn { flex: 1 1 140px; }
+.mark { display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); border-top: 1px solid var(--rule); padding-top: 12px; }
+.mark b { font-family: var(--font-display); font-size: 1.15rem; }
+.mark.good b { color: var(--ok); }
+.mark.bad b { color: var(--bad); }
+
+/* ---------- dive (struktur) ---------- */
+.dive { position: relative; }
+.dive-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 20px 20px; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.dive-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dive-hud { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + 16px); border: 1.5px solid var(--ink); background: var(--paper); display: grid; grid-template-columns: 1fr 1fr; min-width: 250px; z-index: 3; }
+.dive-hud > div { padding: 6px 10px; display: grid; gap: 0; border-top: 1px solid var(--ink); min-width: 0; }
+.dive-hud > div:first-child { border-top: 0; }
+.dive-hud .h-scale, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+.dive-hud label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud select { font: inherit; font-weight: 650; font-size: 1rem; border: 1px solid var(--ink); border-radius: 0; background: var(--paper); color: var(--ink); padding: 4px 6px; width: 100%; margin-top: 2px; }
+.dive-hud small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.dive-hud b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.dive-hud .wide { grid-column: 1 / -1; }
+.scalebar { display: flex; align-items: center; gap: 8px; }
+.scalebar i { display: block; height: 7px; border: 1.5px solid var(--ink); border-top: 0; }
+.scalebar span { font-family: var(--font-mono); font-size: 12px; }
+.dive-steps { position: relative; margin-top: -100vh; margin-top: -100svh; }
+.dive-step { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; pointer-events: none; }
+.dive-card { pointer-events: auto; max-width: 380px; background: var(--paper); border: 1.5px solid var(--ink); padding: 18px 20px; display: grid; gap: 10px; }
+.dive-card .chapter-no { font-size: .9375rem; }
+.dive-card p { color: var(--ink-2); font-size: .9375rem; line-height: 1.6; }
+.dive-card ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .9375rem; color: var(--ink-2); }
+.dive-card ol li { display: flex; gap: 8px; align-items: center; }
+.dive-card ol b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+.dive-intro { padding-block: clamp(64px, 10vw, 112px) 40px; }
+@media (min-width: 1200px) { .dive-steps { padding-left: 210px; } }
+@media (max-width: 760px) {
+  .dive-step { align-items: flex-end; padding-bottom: 5vh; }
+  .dive-card { max-width: none; width: 100%; padding: 14px 16px; }
+  .dive-hud { min-width: 0; left: max(16px, env(safe-area-inset-left, 0px)); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .dive-hud .h-view, .dive-hud .h-bar { display: none; }
+  .dive-hud .h-sel { display: flex; align-items: center; gap: 10px; padding-block: 5px; }
+  .dive-hud .h-sel label { flex: none; }
+  .dive-hud .h-sel select { margin-top: 0; }
+  .dive-hud .h-scale { border-left: 0; }
+  .dive-hud .h-w, .dive-hud .h-layer { border-left: 1px solid var(--ink); }
+}
+
+/* katalog jenis kabel */
+.cable-cat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 900px) { .cable-cat { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.cable-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 8px 8px 10px; display: grid; gap: 2px; text-align: left; cursor: pointer; align-content: start; }
+.cable-btn canvas { width: 100%; height: auto; aspect-ratio: 1 / 1; display: block; margin-bottom: 6px; }
+.cable-btn b { font-weight: 650; font-size: .9375rem; line-height: 1.25; }
+.cable-btn span { font-size: .8125rem; color: var(--ink-3); line-height: 1.3; }
+.cable-btn:hover { background: var(--paper-2); }
+.cable-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 0 0 2px var(--ink); }
+.dive-intro .col { display: grid; gap: 14px; }
+.dive-after .block { margin-top: 0; padding-block: 56px 0; }
+@media (max-width: 600px) { .cable-cat { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- SM vs MM ---------- */
+.bits { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 13px; }
+.bits .bitwrap { display: contents; }
+.bits span { width: 26px; text-align: center; padding: 2px 0; border: 1px solid var(--ink); }
+.bits span.err { background: var(--red); border-color: var(--red); color: #fff; }
+.bits .lab { width: 76px; border: 0; text-align: left; font-family: var(--font-body); color: var(--ink-2); }
+
+/* ---------- kode warna ---------- */
+.fan { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+@media (max-width: 600px) { .fan { grid-template-columns: 1fr; } }
+.fan h4 { font-size: 1rem; padding-bottom: 6px; border-bottom: 1.5px solid var(--ink); margin-bottom: 4px; }
+.fiber-btn { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 12px; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: none; padding: 8px 4px; cursor: pointer; }
+.fiber-btn b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; text-align: right; }
+.fiber-btn i { height: 8px; border-radius: 4px; border: 1px solid var(--ink); }
+.fiber-btn span { font-size: .9375rem; min-width: 5.5em; }
+.fiber-btn:hover { background: var(--paper-2); }
+.fiber-btn[aria-pressed="true"] { background: var(--paper-2); box-shadow: inset 0 -2px 0 var(--ink); }
+.fiber-btn.right { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.fiber-btn.wrong { background: color-mix(in srgb, var(--bad) 12%, transparent); }
+.finder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+@media (max-width: 760px) { .finder { grid-template-columns: 1fr; } }
+.finder-form { padding: 16px; display: grid; gap: 12px; align-content: start; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .finder-form { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.field { display: grid; gap: 4px; }
+.field label { font-size: .875rem; color: var(--ink-2); }
+.field input, .field select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 8px 10px; font-family: var(--font-mono); font-size: 16px; width: 100%; }
+.finder-result { display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.finder-result .row { display: flex; align-items: center; gap: 10px; }
+.finder-result .chip { width: 30px; height: 8px; border-radius: 4px; border: 1px solid var(--ink); flex: none; }
+.finder-result .formula { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-2); line-height: 1.75; }
+.finder .fig-draw { display: grid; place-items: center; padding: 14px; }
+.finder svg { width: 100%; max-width: 360px; height: auto; display: block; }
+.game { display: grid; gap: 14px; border: 1.5px solid var(--ink); padding: 18px; }
+.game-q { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.game-q .num { font-size: 2.6rem; line-height: 1; color: var(--red-ink); }
+.game-q .chipbig { width: 64px; height: 12px; border-radius: 6px; border: 1px solid var(--ink); display: inline-block; }
+.game-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 18px; }
+
+/* ---------- redaman ---------- */
+.dbbars { padding: 18px 16px 8px; display: grid; gap: 10px; }
+.dbbar { display: grid; grid-template-columns: 74px minmax(0, 1fr) 72px; align-items: center; gap: 10px; font-size: .875rem; color: var(--ink-2); }
+.dbbar .track { height: 16px; border: 1px solid var(--ink); background: var(--paper); position: relative; }
+.dbbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--red); transition: width .15s; }
+.dbbar output { font-family: var(--font-mono); color: var(--ink); text-align: right; }
+.db-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.db-stats div { padding: 8px 12px; border-left: 1px solid var(--ink); display: grid; }
+.db-stats div:first-child { border-left: 0; }
+.db-stats small { font-size: .8125rem; color: var(--ink-3); }
+.db-stats b { font-family: var(--font-mono); font-size: 1.35rem; font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips button { border: 1px solid var(--ink); background: var(--paper); padding: 4px 10px; cursor: pointer; font-size: .8125rem; }
+.chips button:hover { background: var(--paper-2); }
+.formula-line { font-family: var(--font-mono); font-size: .9375rem; border: 1px solid var(--ink); padding: 10px 14px; width: fit-content; max-width: 100%; color: var(--ink); }
+
+.budget { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.bt td, .bt th { vertical-align: middle; }
+.bt td:last-child, .bt th:last-child { text-align: right; }
+.bt tfoot td { border-top: 1.5px solid var(--ink); border-bottom: 0; font-weight: 700; }
+.bt .key { display: inline-block; width: 10px; height: 10px; margin-right: 8px; vertical-align: 0; border: 1px solid var(--ink); }
+.bt small { display: block; font-size: .8125rem; color: var(--ink-3); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--ink); }
+.stepper button { border: 0; background: var(--paper); width: 32px; height: 30px; cursor: pointer; font-weight: 700; }
+.stepper button:hover { background: var(--paper-2); }
+.stepper output { min-width: 72px; text-align: center; font-family: var(--font-mono); font-size: 14px; border-left: 1px solid var(--ink); border-right: 1px solid var(--ink); line-height: 30px; }
+.bt select { background: var(--paper); border: 1px solid var(--ink); border-radius: 0; padding: 5px 8px; font-family: var(--font-mono); font-size: 14px; }
+.rx { display: grid; gap: 16px; border: 1.5px solid var(--ink); padding: 16px; }
+.rx-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.rx-big small { width: 100%; font-size: .875rem; color: var(--ink-3); }
+.rx-big b { font-family: var(--font-mono); font-size: clamp(34px, 7vw, 50px); font-weight: 500; line-height: 1; }
+.verdict { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+.verdict.ok { color: var(--ok); } .verdict.warn { color: var(--warn); } .verdict.bad { color: var(--bad); }
+.stack { display: flex; height: 30px; gap: 2px; position: relative; }
+.stack div { height: 100%; min-width: 0; }
+.stack div:first-child { border-radius: 4px 0 0 4px; }
+.stack .margin { background-image: repeating-linear-gradient(135deg, var(--ink-3) 0 1px, transparent 1px 6px); border: 1px dashed var(--ink-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .8125rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border: 1px solid var(--ink); }
+.legend b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); }
+.scale { position: relative; height: 46px; margin-top: 4px; }
+.scale .zones { position: absolute; left: 0; right: 0; top: 6px; height: 8px; display: flex; gap: 2px; }
+.scale .zones div { height: 100%; }
+.scale .marker { position: absolute; top: -4px; width: 0; height: 26px; border-left: 2px solid var(--ink); transition: left .2s; }
+.scale .marker::before { content: ""; position: absolute; left: -7px; top: -8px; border: 6px solid transparent; border-top-color: var(--ink); }
+.scale .tk { position: absolute; left: 0; right: 0; top: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.scale .tk span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.tip { position: fixed; z-index: 50; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 13px; padding: 5px 9px; font-family: var(--font-mono); white-space: nowrap; }
+
+/* ---------- konektor ---------- */
+.conn { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+@media (max-width: 760px) { .conn { grid-template-columns: 1fr; } }
+.conn .fig-draw { display: grid; place-items: center; padding: 16px; min-height: 240px; border-right: 1px solid var(--ink); }
+@media (max-width: 760px) { .conn .fig-draw { border-right: 0; border-bottom: 1px solid var(--ink); } }
+.conn .fig-draw svg { width: 100%; max-width: 400px; height: auto; }
+.conn-info { padding: 18px; display: grid; gap: 12px; align-content: start; }
+.conn-info h3 { font-size: 2.4rem; }
+.conn-info p { color: var(--ink-2); font-size: .9375rem; }
+.conn-info dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0; margin: 0; font-size: .9375rem; border-top: 1px solid var(--ink); }
+.conn-info dt, .conn-info dd { padding: 6px 0; border-bottom: 1px solid var(--rule); margin: 0; }
+.conn-info dt { color: var(--ink-3); padding-right: 16px; }
+.polish-view { aspect-ratio: 16 / 6.5; min-height: 220px; max-width: 100%; }
+.polish-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ---------- kuis ---------- */
+.quiz { display: grid; gap: 0; border-top: 1.5px solid var(--ink); }
+.qitem { padding: 22px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 12px; }
+.qitem h4 { font-family: var(--font-body); font-weight: 700; font-size: 1.125rem; line-height: 1.4; display: flex; gap: 10px; }
+.qitem h4 span { font-family: var(--font-display); font-weight: 600; color: var(--ink-3); flex: none; }
+.opts { display: grid; gap: 6px; padding-left: 28px; }
+.opts button { display: grid; grid-template-columns: 26px minmax(0, 1fr) 22px; gap: 10px; align-items: center; text-align: left; border: 0; background: none; padding: 5px 4px; cursor: pointer; line-height: 1.4; }
+.opts button .l { width: 24px; height: 24px; border: 1px solid var(--ink); display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+.opts button:hover:not(:disabled) .l { background: var(--paper-2); }
+.opts button:disabled { cursor: default; }
+.opts button .m { font-weight: 700; font-size: 18px; }
+.opts button.right .l { background: var(--ok); border-color: var(--ok); color: #fff; }
+.opts button.right .m { color: var(--ok); }
+.opts button.wrong .l { background: var(--bad); border-color: var(--bad); color: #fff; }
+.opts button.wrong .m { color: var(--bad); }
+.qexp { font-size: .9375rem; color: var(--ink-2); padding-left: 28px; }
+.score { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; padding: 22px 0; }
+.grade { width: 96px; height: 96px; border: 3px solid var(--red); border-radius: 50%; display: grid; place-items: center; color: var(--red-ink); font-family: var(--font-display); font-weight: 700; font-size: 2rem; transform: rotate(-8deg); flex: none; }
+.next { margin-top: 56px; border: 1.5px dashed var(--ink-3); padding: 18px 20px; display: grid; gap: 6px; color: var(--ink-2); }
+footer { padding-block: 40px 56px; color: var(--ink-3); font-size: .875rem; }
+footer .col { border-top: 1.5px solid var(--ink); padding-top: 14px; }
+
+/* ---------- ponsel ---------- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, input, select { touch-action: manipulation; }
+.bm, .hero-legend { display: none; }
+.balloon.big circle { stroke-width: 1.6; }
+.balloon.big text { font-size: 24px; }
+@media (max-width: 640px) {
+  .sheet-draw { padding: 8px; overflow: visible; }
+  .sheet-draw svg { min-width: 0; }
+  .bd { display: none; }
+  .bm { display: inline; }
+  .hero-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; list-style: none; margin: 0; padding: 10px 12px; border-top: 1px solid var(--ink); font-size: .9375rem; color: var(--ink-2); }
+  .hero-legend li { display: flex; gap: 8px; align-items: center; }
+  .hero-legend b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 13px; color: var(--ink); flex: none; }
+}
+@media (max-width: 760px) {
+  .dive-stage { height: 56vh; height: 56svh; z-index: 2; }
+  .dive-steps { margin-top: 0; z-index: 1; }
+  .dive-step { min-height: 72vh; min-height: 72svh; align-items: center; padding-block: 12px; }
+  .dive-card { padding: 14px 16px; gap: 8px; }
+  .dive-card h3 { font-size: 1.3rem; }
+  .dive-card ol { grid-template-columns: 1fr 1fr; }
+  .dive-hud { top: 10px; }
+  .dive-hud b { font-size: 1rem; }
+}
+@media (max-width: 600px) {
+  .fig-bar { padding: 8px; }
+  .fig-bar .lbl { width: 100%; }
+  .fig-bar .tabs, .dive-card .tabs { display: flex; width: 100%; }
+  .fig-bar .tabs button, .dive-card .tabs button { flex: 1 1 0; padding-inline: 6px; }
+  .fig-ctl { padding: 12px; }
+  .tbl.rs { min-width: 0; }
+  .tbl.rs thead { display: none; }
+  .tbl.rs tr { display: grid; gap: 6px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .tbl.rs th, .tbl.rs td { display: block; padding: 0; border: 0; }
+  .tbl.rs tbody th { color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .tbl.rs td[data-label]::before { content: attr(data-label); display: block; font-size: .8125rem; color: var(--ink-3); }
+  .bt { min-width: 0; }
+  .bt thead { display: none; }
+  .bt tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  .bt td { border: 0; padding: 0; }
+  .bt td:first-child { grid-row: span 2; }
+  .bt td:nth-child(3) { grid-column: 2; text-align: right; font-size: .8125rem; color: var(--ink-3); padding-top: 4px; }
+  .bt tfoot tr { border-bottom: 0; border-top: 1.5px solid var(--ink); }
+  .bt tfoot td { border: 0; }
+  .bt tfoot td:nth-child(2) { display: none; }
+  .bt tfoot td:nth-child(3) { grid-row: 1; color: var(--ink); font-size: 1rem; padding: 0; }
+  .rx { padding: 14px; }
+  .opts, .qexp { padding-left: 0; }
+  .sheet-q, .game { padding: 16px; }
+  .sheet-q .q, .game-q { font-size: 1.3rem; }
+  .conn svg .txt-2 { font-size: 15px; }
+  .db-stats div { padding: 8px; }
+  .db-stats b { font-size: 1.1rem; }
+  .dbbar { grid-template-columns: 52px minmax(0, 1fr) 54px; }
+}
+@media (pointer: coarse) {
+  .tabs button { min-height: 44px; }
+  .stepper button { width: 42px; height: 40px; }
+  .stepper output { line-height: 40px; min-width: 64px; }
+  .chips button { min-height: 40px; padding-inline: 12px; }
+  .btn { min-height: 46px; }
+  .opts button { padding-block: 8px; }
+  input[type="range"] { height: 34px; }
+  .bt select, .field select, .field input { font-size: 16px; min-height: 40px; }
+}
+
+/* angka sejajar kolom tanpa font monospace */
+.range output, .bits, .field input, .finder-result .formula, .db-stats b, .dbbar output, .formula-line, .stepper output,
+.bt select, .rx-big b, .legend b, .scale .tk, .tip, .scalebar span, .dive-hud b, .tblock b, .fiber-btn b, .game-q .num, .grade, .tbl .num { font-variant-numeric: tabular-nums; }
+.rx-big b { font-weight: 650; letter-spacing: -.02em; }
+.db-stats b, .range output, .stepper output { font-weight: 600; }
+.conn-info h3 { font-weight: 750; letter-spacing: -.02em; }
+
+/* ---------- Garamond untuk judul, Source Serif 4 untuk teks bacaan ---------- */
+h1, h2, h3, h4, .sheet-q .q, .game-q, .qitem h4 { font-family: var(--font-serif); font-variant-numeric: lining-nums; }
+.prose, .lede, .dive-card p, .msg, .qexp, .conn-info p, .mark, .next p, footer, .cap {
+  font-family: var(--font-read); font-variant-numeric: lining-nums; font-optical-sizing: auto;
+}
+h1 { font-size: clamp(2.9rem, 7.4vw, 5.2rem); font-weight: 500; letter-spacing: -.015em; line-height: 1; }
+h2 { font-size: clamp(2.1rem, 4.8vw, 3.1rem); font-weight: 500; letter-spacing: -.01em; line-height: 1.05; }
+h3 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; }
+h4 { font-size: 1.25rem; font-weight: 600; letter-spacing: 0; }
+.conn-info h3 { font-size: 2.6rem; font-weight: 600; letter-spacing: 0; }
+.prose { font-size: 1.125rem; line-height: 1.62; }
+.hero .lede { font-size: 1.3rem; line-height: 1.5; }
+.msg, .dive-card p, .conn-info p, .qexp, .mark { font-size: 1rem; line-height: 1.58; }
+.cap { font-size: .9375rem; font-style: italic; }
+.cap b { font-style: normal; font-weight: 600; }
+.sheet-q .q, .game-q { font-size: 1.6rem; font-weight: 500; line-height: 1.2; }
+.qitem h4 { font-size: 1.3rem; font-weight: 600; line-height: 1.3; }
+.qitem h4 span { font-family: var(--font-serif); }
+.mark b { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; }
+.prose .mono, .msg .mono { font-family: var(--font-mono); font-size: .92em; }
+footer { font-size: 1rem; }
+@media (max-width: 600px) {
+  .prose { font-size: 1.0625rem; }
+  .sheet-q .q, .game-q { font-size: 1.4rem; }
+}
+
+/* ---------- Tahap 2 ---------- */
+.kicker a { color: var(--ink-2); }
+.fig-draw > svg { display: block; width: 100%; height: auto; }
+.toolkit-wrap { padding: 14px; }
+.toolkit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.toolkit svg, .tool-opt svg { min-width: 0 !important; width: 100%; height: auto; display: block; }
+.tool { display: grid; gap: 4px; padding: 8px 10px 10px; text-decoration: none; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); }
+.tool:hover { border-color: var(--ink); }
+.tool span { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: .9375rem; line-height: 1.2; }
+.tool span b { width: 22px; height: 22px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; flex: none; }
+.parts { list-style: none; margin: 0; padding: 14px; border-top: 1px solid var(--ink); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 22px; }
+.parts li { display: flex; gap: 10px; align-items: baseline; font-family: var(--font-read); font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.parts li strong { color: var(--ink); }
+.parts li b { width: 24px; height: 24px; border: 1.2px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink); flex: none; transform: translateY(5px); font-family: var(--font-body); }
+.rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 4px; max-width: 640px; }
+.rule b { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); }
+.rule p { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.5; }
+.tool-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tool-opt { border: 1px solid var(--rule); background: var(--paper); padding: 6px 8px 8px; cursor: pointer; display: grid; gap: 2px; text-align: left; }
+.tool-opt:hover:not(:disabled) { border-color: var(--ink); }
+.tool-opt span { font-size: .875rem; font-weight: 650; }
+.tool-opt:disabled { cursor: default; }
+.tool-opt.right { border: 2px solid var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.tool-opt.wrong { border: 2px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+.otdr-read { font-size: .9375rem; color: var(--ink-2); }
+.otdr-info { display: grid; gap: 4px; border-top: 1px solid var(--rule); padding-top: 10px; }
+.otdr-info b { font-weight: 700; }
+.otdr-info .mono { font-size: .875rem; color: var(--ink-2); }
+.otdr-info p { font-family: var(--font-read); font-size: 1rem; line-height: 1.55; color: var(--ink-2); }
+#otdrCanvas { touch-action: pan-y; cursor: crosshair; }
+@media (max-width: 600px) {
+  #stripSvg .txt, #stripSvg .txt-2 { font-size: 24px; }
+  #sleeveSvg .txt, #sleeveSvg .txt-2 { font-size: 20px; }
+  #opmSvg .txt-2 { font-size: 18px; }
+  .parts { grid-template-columns: 1fr; }
+  .tool span { font-size: .8125rem; }
+  .tool-opt span { font-size: .75rem; }
+  .toolkit-wrap { padding: 8px; }
+}
+
+/* ---------- Tahap 3 ---------- */
+.tabs button:disabled { opacity: .4; cursor: default; }
+.order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.order-list li { display: flex; gap: 12px; align-items: center; padding: 8px 2px; border-bottom: 1px solid var(--rule); min-height: 42px; }
+.order-list li b { width: 24px; height: 24px; border: 1.2px solid var(--ink-3); border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: var(--ink-3); flex: none; }
+.order-list li.ok b { border-color: var(--ok); background: var(--ok); color: #fff; }
+.order-list li.ok span { font-weight: 650; }
+.step-pool { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.step-btn { border: 1.5px solid var(--ink); background: var(--paper); padding: 10px 12px; text-align: left; cursor: pointer; line-height: 1.35; min-height: 48px; }
+.step-btn:hover { background: var(--paper-2); }
+.step-btn.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent); }
+@media (max-width: 600px) { .step-pool { grid-template-columns: 1fr; } }
+svg .ln-thin.bad { stroke: var(--bad); } svg .f-ink.bad { fill: var(--bad); } svg text.bad { fill: var(--bad); }
+svg .ln-thin.warn { stroke: var(--warn); } svg .f-ink.warn { fill: var(--warn); } svg text.warn { fill: var(--warn); }
+.checks { display: grid; gap: 6px; }
+.check { display: flex; gap: 10px; align-items: baseline; font-size: .9375rem; color: var(--ink-2); }
+.check i { font-style: normal; font-weight: 800; width: 20px; height: 20px; display: grid; place-items: center; flex: none; border: 1.5px solid currentColor; font-size: 12px; transform: translateY(4px); }
+.check.ok i { color: var(--ok); } .check.warn i { color: var(--warn); } .check.bad i { color: var(--bad); }
+.check strong { color: var(--ink); }
+.checklist { border: 1.5px solid var(--ink); display: grid; }
+.check-head { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--ink); }
+.check-head b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ck-bar { flex: 1; height: 8px; border: 1px solid var(--ink); }
+.ck-bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .2s; }
+.ck { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.ck:hover { background: var(--paper-2); }
+.ck input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--ok); flex: none; }
+.ck b { display: block; font-weight: 650; }
+.ck small { display: block; color: var(--ink-3); font-size: .875rem; margin-top: 2px; }
+.ck:has(input:checked) b { text-decoration: line-through; text-decoration-color: var(--ok); text-decoration-thickness: 2px; }
+.checklist .msg { padding: 12px 14px; }
+@media (max-width: 600px) {
+  #lenSvg .txt, #lenSvg .txt-2 { font-size: 18px; }
+  #heroSvg .txt, #heroSvg .txt-2 { font-size: 17px; }
+}
+
+/* ---------- Tahap 4 ---------- */
+.prose ol { margin: 0; padding-left: 1.4em; display: grid; gap: .4rem; }
+.hot { cursor: pointer; }
+.halo { paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; }
+.hot:focus-visible { outline: none; stroke: var(--red); stroke-width: 2; stroke-dasharray: 4 3; }
+.found { margin: 0; padding-left: 1.4em; display: grid; gap: 6px; font-family: var(--font-read); font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.found:empty { display: none; }
+.found b { color: var(--ink); font-family: var(--font-body); }
+.fig-bar .lbl + .lbl { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+@media (max-width: 600px) { #heroSvg .txt { font-size: 22px; } }
+
+/* ---------- Tahap 5 ---------- */
+.setgrid { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; align-items: center; }
+.setgrid > span { font-size: .875rem; color: var(--ink-2); }
+.setgrid .tabs { justify-self: start; }
+.setrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.setrow .btn { padding: 5px 14px; }
+.game .scale { margin: 0 0 6px; }
+.crread { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule); }
+.crread div { padding: 8px 10px; display: grid; gap: 2px; border-left: 1px solid var(--rule); }
+.crread div:first-child { border-left: 0; }
+.crread small { font-size: .75rem; letter-spacing: .06em; color: var(--ink-3); }
+.crread b { font-weight: 650; font-variant-numeric: tabular-nums; font-size: .9375rem; }
+.check:not(.ok):not(.warn):not(.bad) i { color: var(--ink-3); }
+#crCanvas { touch-action: pan-y; cursor: ew-resize; }
+@media (max-width: 600px) {
+  .setgrid { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .setgrid > span { margin-top: 6px; }
+  .crread div { padding: 6px 8px; }
+  .crread b { font-size: .875rem; }
+  #heroSvg .txt { font-size: 18px; }
+  #heroSvg .txt-m { font-size: 19px; }
+  #ptSvg .txt, #ptSvg .txt-2 { font-size: 17px; }
+  #lsSvg .txt, #lsSvg .txt-2 { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<nav class="rail" aria-label="Bagian Tahap 5">
+  <ol>
+    <li><a href="#bersih" style="--c:var(--c1)"><i></i><span>5.1 Konektor bersih dulu</span></a></li>
+    <li><a href="#opm" style="--c:var(--c2)"><i></i><span>5.2 OPM di pelanggan</span></a></li>
+    <li><a href="#redaman" style="--c:var(--c3)"><i></i><span>5.3 Light source &amp; OPM</span></a></li>
+    <li><a href="#vfl" style="--c:var(--c4)"><i></i><span>5.4 VFL</span></a></li>
+    <li><a href="#setelan" style="--c:var(--c5)"><i></i><span>5.5 Setelan OTDR</span></a></li>
+    <li><a href="#kursor" style="--c:var(--c6)"><i></i><span>5.6 Membaca OTDR</span></a></li>
+    <li><a href="#kuis" style="--c:var(--c7)"><i></i><span>Cek pemahaman</span></a></li>
+  </ol>
+</nav>
+
+<header class="hero wrap">
+  <div class="col">
+    <p class="kicker"><b>Jalur Cahaya</b> · modul pelatihan teknisi fiber optik · <a href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">← Tahap 4</a></p>
+    <h1>Pengukuran</h1>
+    <p class="lede">Sambungan yang rapi belum tentu bagus sebelum diukur. Tahap ini membahas cara memakai OPM, light source, VFL, dan OTDR dengan benar, serta cara membaca angka yang keluar.</p>
+    <div class="sheet">
+      <div class="sheet-draw"><svg id="heroSvg" viewBox="0 0 720 360" role="img" aria-label="Susunan ukur OTDR dengan kabel peluncur, dan jejak OTDR yang dihasilkan di bawahnya"></svg></div>
+      <ol class="hero-legend" aria-hidden="true"><li><b>1</b>Kabel peluncur 1 km</li><li><b>2</b>Konektor di ODC</li><li><b>3</b>Sambungan</li><li><b>4</b>Dua konektor</li><li><b>5</b>Sambungan</li><li><b>6</b>Ujung serat</li></ol>
+      <div class="tblock">
+        <div><small>Judul</small><b>Pengukuran</b></div>
+        <div><small>Tahap</small><b>5 dari 7</b></div>
+        <div><small>Durasi</small><b>±45 menit</b></div>
+        <div><small>Isi</small><b>6 bagian + kuis</b></div>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:-12px"><b>Gambar 0</b> Atas: susunan ukur OTDR. Bawah: jejak yang dihasilkan. Setiap komponen di jalur muncul di jejak tepat pada jaraknya dari OTDR.</p>
+    <table class="stages" aria-label="Tujuh tahap pelatihan">
+      <tr><td>Tahap 1</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/">K3 &amp; teori</a></td><td>buka</td></tr>
+      <tr><td>Tahap 2</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-2/">Pengenalan alat</a></td><td>buka</td></tr>
+      <tr><td>Tahap 3</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-3/">Praktik persiapan</a></td><td>buka</td></tr>
+      <tr><td>Tahap 4</td><td><a href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">Penyambungan &amp; finishing</a></td><td>buka</td></tr>
+      <tr class="now"><td>Tahap 5</td><td>Pengukuran</td><td>sedang dibaca</td></tr>
+      <tr><td>Tahap 6</td><td>Troubleshooting &amp; perawatan</td><td>berikutnya</td></tr>
+      <tr><td>Tahap 7</td><td>Aplikasi lapangan</td><td></td></tr>
+    </table>
+  </div>
+</header>
+
+<main>
+<!-- ================= 5.1 BERSIH ================= -->
+<section class="chapter wrap" id="bersih" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c1)"><i></i>5.1 · Konektor bersih dulu</p>
+      <h2>Periksa sebelum mencolok</h2>
+      <div class="prose">
+        <p>Debu sebesar beberapa mikron di ujung konektor sudah cukup untuk menambah redaman dan memantulkan cahaya. Debu itu juga bisa menggores konektor pasangannya saat dicolok. Karena itu setiap konektor, termasuk patchcord alat ukur, <strong>diperiksa dengan inspection scope lalu dibersihkan</strong> sebelum dicolok.</p>
+        <p>Yang paling penting adalah area <strong>core</strong> di tengah. Kotoran bisa dibersihkan. Kerusakan permanen di core, seperti goresan atau gompal, tidak bisa: konektor atau patchcord-nya harus diganti.</p>
+        <p>Jangan mengintip ujung konektor langsung dengan mata. Pakai scope, dan pastikan tidak ada sumber cahaya yang menyala di ujung seberang. Nilai enam tampilan scope berikut.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="scLbl">Tampilan 1 dari 6</span><span class="lbl" id="scScore"></span></div>
+        <div class="fig-draw"><canvas id="scCanvas" style="height:280px" aria-label="Ujung konektor dilihat lewat inspection scope" role="img"></canvas></div>
+        <div class="fig-ctl" id="scCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 5.1</b> Ujung ferrule SC dilihat lewat inspection scope, disederhanakan. Lingkaran putus-putus menandai batas core dan cladding.</p>
+    </div>
+    <div class="block">
+      <h3>Cara membersihkan</h3>
+      <div class="prose"><ol>
+        <li>Bersihkan kering dulu dengan pembersih sekali tekan (one-click cleaner) atau kaset pita pembersih. Untuk lubang adaptor, pakai pembersih model tusuk.</li>
+        <li>Periksa lagi dengan scope.</li>
+        <li>Kalau masih ada noda, misalnya minyak dari jari, basahi tisu khusus dengan sedikit alkohol IPA. Usap ujung konektor, lalu segera usap kering. Alkohol yang dibiarkan mengering sendiri meninggalkan bekas.</li>
+        <li>Periksa sekali lagi, baru colok.</li>
+        <li>Pasang tutup debu pada konektor yang tidak dipakai. Tutup debu melindungi dari benturan, tetapi bagian dalamnya belum tentu bersih.</li>
+      </ol></div>
+      <div class="rule"><b>Aturan</b><p>Periksa, bersihkan, periksa lagi, baru colok. Berlaku untuk kedua sisi: konektor dan adaptornya.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5.2 OPM ================= -->
+<section class="chapter wrap" id="opm" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c2)"><i></i>5.2 · OPM di pelanggan</p>
+      <h2>Mengukur daya yang sampai</h2>
+      <div class="prose">
+        <p>OPM membaca daya cahaya dalam <strong>dBm</strong>. Untuk GPON, atur OPM ke <strong>1490 nm</strong>, panjang gelombang yang dikirim OLT ke pelanggan. Ada juga PON power meter yang dipasang di tengah jalur dan membaca 1490 nm serta 1310 nm sekaligus.</p>
+        <p>Saat memasang pelanggan baru, ukur di tiga titik: port ODP sebelum drop cable dipasang, ujung drop cable di rumah, lalu di ONT. Angka di tiap titik dalam dBm. <strong>Selisih</strong> dua titik adalah redaman bagian di antaranya, dalam dB.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar">
+          <span class="lbl">OPM diatur ke 1490 nm</span>
+          <div class="tabs" role="group" aria-label="Titik ukur">
+            <button type="button" data-pt="0" aria-pressed="true">A · Port ODP</button>
+            <button type="button" data-pt="1" aria-pressed="false">B · Ujung drop</button>
+            <button type="button" data-pt="2" aria-pressed="false">C · Di ONT</button>
+          </div>
+        </div>
+        <div class="fig-draw"><svg id="ptSvg" viewBox="0 0 720 270" role="img" aria-label="Jalur dari ODP ke ONT dengan OPM di titik ukur yang dipilih"></svg></div>
+        <div class="fig-ctl"><p class="msg" id="ptMsg" aria-live="polite"></p></div>
+      </figure>
+      <p class="cap"><b>Gambar 5.2</b> Angka contoh. Panjang drop cable 150 m dengan fast connector di rumah pelanggan.</p>
+    </div>
+    <div class="block">
+      <h3>Membaca angkanya</h3>
+      <div class="prose"><p>Batasnya sama dengan Tahap 1 (GPON kelas B+): aman di −8 sampai −24 dBm, mepet di −24 sampai −27 dBm, dan tidak cukup di bawah −27 dBm. Di atas −8 dBm, daya terlalu kuat untuk ONT. Nilai lima bacaan berikut.</p></div>
+      <div class="game" id="rxGame"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5.3 LIGHT SOURCE + OPM ================= -->
+<section class="chapter wrap" id="redaman" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c3)"><i></i>5.3 · Light source &amp; OPM</p>
+      <h2>Mengukur redaman jalur</h2>
+      <div class="prose">
+        <p>Jalur baru diuji dulu sebelum diserahkan. Caranya: <strong>light source</strong> di satu ujung, OPM di ujung lain. Light source adalah sumber cahaya dengan daya yang stabil. Hasilnya adalah redaman total jalur dalam dB, termasuk konektor di kedua ujung.</p>
+        <p>Kuncinya adalah <strong>referensi</strong>. OPM lebih dulu membaca light source lewat patchcord saja, lalu angka itu dijadikan nol dengan tombol REF. Setelah jalur dipasang, angka yang terbaca langsung menjadi redaman jalur.</p>
+        <p>Ukur jalur di bawah pada 1310 nm dan 1550 nm. Ikuti langkahnya; urutan yang salah akan memberi angka yang salah.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl">Jalur uji: 4,2 km, 3 sambungan, 2 konektor</span></div>
+        <div class="fig-draw"><svg id="lsSvg" viewBox="0 0 720 250" role="img" aria-label="Light source dan OPM, tersambung lewat patchcord atau lewat jalur yang diuji"></svg></div>
+        <div class="fig-ctl">
+          <div class="setgrid">
+            <span>Light source</span>
+            <div class="tabs" role="group" aria-label="Panjang gelombang light source"><button type="button" data-ls="1310" aria-pressed="true">1310 nm</button><button type="button" data-ls="1550" aria-pressed="false">1550 nm</button></div>
+            <span>OPM</span>
+            <div class="tabs" role="group" aria-label="Panjang gelombang OPM"><button type="button" data-om="1310" aria-pressed="false">1310 nm</button><button type="button" data-om="1550" aria-pressed="true">1550 nm</button></div>
+            <span>Dipasang</span>
+            <div class="tabs" role="group" aria-label="Yang dipasang di antara alat"><button type="button" data-cn="ref" aria-pressed="false">Patchcord saja</button><button type="button" data-cn="link" aria-pressed="true">Lewat jalur</button></div>
+            <span>Layar OPM</span>
+            <div class="setrow"><div class="tabs" role="group" aria-label="Satuan layar OPM"><button type="button" data-md="dbm" aria-pressed="true">dBm</button><button type="button" data-md="db" aria-pressed="false">dB</button></div><button type="button" class="btn" id="refBtn">Tekan REF</button></div>
+          </div>
+          <ol class="order-list" id="lsSteps"></ol>
+          <p class="msg" id="lsMsg" aria-live="polite"></p>
+          <div class="tbl-wrap"><table class="tbl" id="lsRes"></table></div>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 5.3</b> Daya light source dan redaman dibuat sebagai contoh. Anggaran dihitung seperti di Tahap 1: 0,35 dB/km di 1310 nm, 0,25 dB/km di 1550 nm, 0,1 dB per sambungan, 0,5 dB per pasang konektor.</p>
+    </div>
+    <div class="block">
+      <h3>Kenapa dua panjang gelombang?</h3>
+      <div class="prose"><p>Kabel sedikit lebih bening di 1550 nm, jadi hasil 1550 nm biasanya sedikit lebih kecil. Sebaliknya, tekukan jauh lebih berpengaruh di 1550 nm. Membandingkan keduanya memberi petunjuk penyebab masalah.</p></div>
+      <div class="tbl-wrap">
+        <table class="tbl rs">
+          <thead><tr><th>Pola hasil</th><th>1310 nm</th><th>1550 nm</th><th>Artinya</th></tr></thead>
+          <tbody>
+            <tr><th>Normal</th><td class="num">2,41 dB</td><td class="num">2,02 dB</td><td>1550 nm sedikit lebih kecil. Keduanya di bawah anggaran.</td></tr>
+            <tr><th>Tekukan</th><td class="num">2,60 dB</td><td class="num">3,85 dB</td><td>1550 nm jauh lebih besar. Ada serat tertekuk atau terjepit; cari dengan OTDR atau VFL.</td></tr>
+            <tr><th>Konektor kotor</th><td class="num">3,40 dB</td><td class="num">3,05 dB</td><td>Keduanya naik hampir sama. Periksa dan bersihkan konektor, lalu ukur ulang.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5.4 VFL ================= -->
+<section class="chapter wrap" id="vfl" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c4)"><i></i>5.4 · VFL</p>
+      <h2>Menelusuri serat dengan cahaya merah</h2>
+      <div class="prose">
+        <p>VFL menembakkan cahaya merah yang bisa dilihat mata. Cahaya itu terlihat di tempat ia bocor: di tekukan, di sambungan yang buruk, di serat yang patah, dan samar-samar di sepanjang lilitan serat di tray. Jangkauannya hanya beberapa kilometer, jadi VFL dipakai untuk jarak dekat: closure, ODP, ODC, dan patchcord.</p>
+        <p>Salah satu pemakaiannya adalah memastikan core sebelum menyambung atau memotong. Rekanmu menembakkan VFL ke satu core di ODC, kamu mengamati tray di closure. Pakai mode kedip supaya cahaya VFL mudah dibedakan dari pantulan senter.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl" id="vfLbl">Uji 1 dari 4</span><span class="lbl" id="vfScore"></span></div>
+        <div class="fig-draw"><canvas id="vfCanvas" style="height:300px" aria-label="Tray closure dengan 12 serat dan cahaya VFL" role="img"></canvas></div>
+        <div class="fig-ctl" id="vfCtl"></div>
+      </figure>
+      <p class="cap"><b>Gambar 5.4</b> Tray closure tampak atas, disederhanakan. Kiri dari arah ODC, kanan ke arah ODP. Cahaya yang bocor dibesarkan supaya terlihat.</p>
+    </div>
+    <div class="tbl-wrap" style="margin-top:24px">
+      <table class="tbl rs">
+        <thead><tr><th>Pekerjaan</th><th>Pakai VFL?</th><th>Catatan</th></tr></thead>
+        <tbody>
+          <tr><th>Memastikan patchcord atau pigtail tidak putus</th><td>Ya</td><td>Ujung seberang menyala merah.</td></tr>
+          <tr><th>Mencari tekukan atau sambungan bocor di closure dan ODP</th><td>Ya</td><td>Titik bocor menyala terang.</td></tr>
+          <tr><th>Mencocokkan core sebelum disambung atau dipotong</th><td>Ya</td><td>Pakai mode kedip.</td></tr>
+          <tr><th>Mencari titik putus di kabel sepanjang 10 km</th><td>Tidak</td><td>Cahaya merah habis sebelum sampai. Pakai OTDR.</td></tr>
+          <tr><th>Melihat cahaya menembus jaket kabel hitam</th><td>Tidak</td><td>Hanya tembus di serat 250 atau 900 µm dan patchcord berjaket terang.</td></tr>
+          <tr><th>Mengukur redaman dalam dB</th><td>Tidak</td><td>Pakai light source dan OPM, atau OTDR.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5.5 SETELAN OTDR ================= -->
+<section class="chapter wrap" id="setelan" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c5)"><i></i>5.5 · Setelan OTDR</p>
+      <h2>Mengatur OTDR sebelum mengukur</h2>
+      <div class="prose">
+        <p>OTDR mengirim pulsa cahaya ke satu ujung serat, lalu menangkap pantulan kecil yang kembali dari sepanjang serat. Dari waktu tempuhnya, OTDR menghitung jarak. Dari kekuatannya, OTDR menghitung redaman. Hasilnya adalah jejak seperti di Gambar 0. Cara mengenali event dasar sudah dibahas di Tahap 2.</p>
+        <p>Ada tiga setelan utama:</p>
+        <ul>
+          <li><strong>Rentang</strong>: sejauh apa jejak ditampilkan. Pilih sekitar 1,5 sampai 2 kali panjang jalur.</li>
+          <li><strong>Lebar pulsa</strong>: pulsa pendek memberi detail tajam tetapi jangkauannya pendek. Pulsa panjang menjangkau jauh, tetapi event yang berdekatan menyatu.</li>
+          <li><strong>Waktu rata-rata</strong>: makin lama, jejak makin halus.</li>
+        </ul>
+        <p>Selain itu, pasang <strong>kabel peluncur</strong> di depan OTDR supaya konektor pertama tidak tertutup zona mati. Jalur di bawah panjangnya ±11,5 km, dengan dua konektor yang hanya berjarak 300 m. Cari setelan yang membuat semua event terlihat.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl">Jalur ±11,5 km, panjang gelombang 1310 nm</span></div>
+        <div class="fig-draw"><canvas id="otsCanvas" style="height:280px" aria-label="Jejak OTDR yang berubah sesuai setelan" role="img"></canvas></div>
+        <div class="fig-ctl">
+          <div class="setgrid">
+            <span>Rentang</span>
+            <div class="tabs" role="group" aria-label="Rentang"><button type="button" data-rg="5" aria-pressed="false">5 km</button><button type="button" data-rg="20" aria-pressed="false">20 km</button><button type="button" data-rg="80" aria-pressed="true">80 km</button></div>
+            <span>Lebar pulsa</span>
+            <div class="tabs" role="group" aria-label="Lebar pulsa"><button type="button" data-pw="0" aria-pressed="true">10 ns</button><button type="button" data-pw="1" aria-pressed="false">100 ns</button><button type="button" data-pw="2" aria-pressed="false">1 µs</button></div>
+            <span>Rata-rata</span>
+            <div class="tabs" role="group" aria-label="Waktu rata-rata"><button type="button" data-av="5" aria-pressed="true">5 detik</button><button type="button" data-av="30" aria-pressed="false">30 detik</button></div>
+            <span>Kabel peluncur</span>
+            <div class="tabs" role="group" aria-label="Kabel peluncur"><button type="button" data-lc="0" aria-pressed="true">Tanpa</button><button type="button" data-lc="1" aria-pressed="false">1 km</button></div>
+          </div>
+          <div class="checks" id="otsChecks" aria-live="polite"></div>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 5.5</b> Jejak disederhanakan. Segitiga di bawah grafik menandai letak event yang sebenarnya: K konektor, S sambungan, U ujung serat. Lebar zona mati dibesarkan supaya perbedaan antarsetelan terlihat.</p>
+    </div>
+    <div class="tbl-wrap" style="margin-top:24px">
+      <table class="tbl rs">
+        <thead><tr><th>Panjang jalur</th><th>Rentang</th><th>Lebar pulsa</th></tr></thead>
+        <tbody>
+          <tr><th>Sampai 2 km (gedung, drop)</th><td class="num">2–5 km</td><td class="num">5–10 ns</td></tr>
+          <tr><th>2–20 km (distribusi, feeder FTTH)</th><td class="num">20–40 km</td><td class="num">30–300 ns</td></tr>
+          <tr><th>Di atas 20 km</th><td class="num">1,5–2 × panjang</td><td class="num">1 µs ke atas</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cap">Patokan kasar untuk titik awal. Banyak OTDR punya mode otomatis yang memilih setelan sendiri, tetapi kamu tetap harus bisa menilai jejaknya.</p>
+  </div>
+</section>
+
+<!-- ================= 5.6 KURSOR ================= -->
+<section class="chapter wrap" id="kursor" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c6)"><i></i>5.6 · Membaca OTDR</p>
+      <h2>Mengukur jarak dan redaman dengan kursor</h2>
+      <div class="prose">
+        <p>OTDR punya dua kursor, A dan B. OTDR menampilkan <strong>selisih jarak</strong> dan <strong>selisih level</strong> di antara keduanya. Dari dua angka itu kamu bisa mengukur panjang jalur, redaman sebuah sambungan, dan redaman kabel per kilometer.</p>
+        <p>Jejak di bawah adalah jalur yang sama dengan setelan yang sudah benar, memakai kabel peluncur 1 km. Geser kursor untuk menyelesaikan tiga tugas.</p>
+      </div>
+    </div>
+    <div>
+      <figure class="fig">
+        <div class="fig-bar"><span class="lbl">Pulsa 100 ns · rata-rata 30 detik · 1310 nm</span></div>
+        <div class="fig-draw"><canvas id="crCanvas" style="height:280px" aria-label="Jejak OTDR dengan kursor A dan B" role="img"></canvas></div>
+        <div class="fig-ctl">
+          <div class="range"><label for="crA">Kursor A <output id="crAOut"></output></label><input type="range" id="crA" min="0" max="2000" value="500"></div>
+          <div class="range"><label for="crB">Kursor B <output id="crBOut"></output></label><input type="range" id="crB" min="0" max="2000" value="900"></div>
+          <div class="crread" id="crRead"></div>
+          <div class="checks" id="crTasks"></div>
+          <p class="msg" id="crMsg" aria-live="polite"></p>
+        </div>
+      </figure>
+      <p class="cap"><b>Gambar 5.6</b> Ketuk grafik untuk memindahkan kursor terdekat, atau pakai penggeser. Angka redaman dibulatkan.</p>
+    </div>
+    <div class="block">
+      <h3>Jarak di OTDR bukan jarak di jalan</h3>
+      <div class="prose">
+        <p>OTDR mengukur panjang <strong>serat</strong>, bukan panjang kabel. Serat di dalam tabung dibuat sedikit bergelombang, sehingga sekitar 1–2% lebih panjang dari kabelnya. Ada juga gulungan cadangan di tiang dan closure. Kalau OTDR menunjukkan titik putus di 6,40 km, kurangi dulu panjang kabel peluncur. Setelah itu cocokkan dengan peta jalur dan catatan gulungan cadangan sebelum menggali atau naik tiang. Cara melacak gangguan dibahas di Tahap 6.</p>
+        <p>Sambungan antara dua serat yang sedikit berbeda bisa terbaca negatif dari satu arah (disebut <em>gainer</em>), padahal sebenarnya ada redaman. Untuk penerimaan jalur, ukur dari kedua ujung lalu ambil rata-ratanya.</p>
+      </div>
+      <div class="rule"><b>Catat hasil ukur</b><p>Nama jalur dan nomor core, panjang gelombang, setelan OTDR, panjang jalur, redaman tiap sambungan dan total. Simpan juga file jejaknya (format .sor) untuk pembanding saat ada gangguan.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KUIS ================= -->
+<section class="chapter wrap" id="kuis" data-chapter>
+  <div class="col">
+    <div class="chapter-head">
+      <p class="chapter-no" style="--c:var(--c7)"><i></i>Cek pemahaman</p>
+      <h2>Tujuh pertanyaan</h2>
+      <div class="prose"><p>Jawab semuanya, lalu lihat nilaimu. Penjelasan muncul setelah kamu memilih jawaban.</p></div>
+    </div>
+    <div class="quiz" id="quiz"></div>
+    <div class="score" id="score" hidden></div>
+    <div class="next">
+      <p class="small">Berikutnya · Tahap 6</p>
+      <h3>Troubleshooting &amp; perawatan</h3>
+      <p>Mencari penyebab redaman tinggi dan sambungan gagal, serta membersihkan dan mengkalibrasi splicer.</p>
+      <p><a class="btn" href="https://nothinsphere.github.io/jalur-cahaya/tahap-4/">← Kembali ke Tahap 4</a></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap"><div class="col">Jalur Cahaya · Tahap 5: pengukuran. Angka dan gambar di halaman ini adalah contoh umum untuk belajar. Di lapangan, ikuti manual alat dan standar operator tempatmu bekerja.</div></footer>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+/* core.js */
+/* Jalur Cahaya — utilitas bersama: tema, kanvas, animasi, rel bab, tabel ponsel */
+(function () {
+  const JC = (window.JC = {});
+  JC.reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  JC.COLORS = [
+    { n: 1, name: "Biru", hex: "#1f6fe0" },
+    { n: 2, name: "Oranye", hex: "#f47b20" },
+    { n: 3, name: "Hijau", hex: "#22a04b" },
+    { n: 4, name: "Cokelat", hex: "#8b5a2b" },
+    { n: 5, name: "Abu-abu", hex: "#8c969c" },
+    { n: 6, name: "Putih", hex: "#f3f3ef" },
+    { n: 7, name: "Merah", hex: "#d92b2b" },
+    { n: 8, name: "Hitam", hex: "#1b1b1b" },
+    { n: 9, name: "Kuning", hex: "#f5d000" },
+    { n: 10, name: "Ungu", hex: "#7d3cc0" },
+    { n: 11, name: "Merah muda", hex: "#f28cb5" },
+    { n: 12, name: "Toska", hex: "#22c7c0" },
+  ];
+
+  // angka gaya Indonesia: koma desimal, tanda minus asli
+  JC.fmt = function (v, d = 1) {
+    const s = Math.abs(v).toLocaleString("id-ID", { minimumFractionDigits: d, maximumFractionDigits: d });
+    return (v < 0 && Number(s.replace(/\./g, "").replace(",", ".")) !== 0 ? "−" : "") + s;
+  };
+  JC.clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  JC.lerp = (a, b, t) => a + (b - a) * t;
+  JC.smooth = (e0, e1, x) => { const t = JC.clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+
+  // warna tinta & kertas diambil dari token tema, disegarkan saat tema berganti
+  const TOK = ["paper", "paper-2", "grid", "ink", "ink-2", "ink-3", "rule", "red", "red-ink", "ok", "bad", "glass", "glass-2", "jacket", "hatch"];
+  JC.pal = {};
+  const readPal = () => { const cs = getComputedStyle(document.documentElement); TOK.forEach((k) => (JC.pal[k] = cs.getPropertyValue("--" + k).trim())); };
+  readPal();
+  const canvases = [];
+  const onTheme = () => { readPal(); canvases.forEach((st) => st.draw && st.draw(st.ctx, st.w, st.h)); };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", onTheme);
+  if (document.fonts) document.fonts.ready.then(onTheme); // gambar ulang setelah font web selesai dimuat
+  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class"] });
+
+  // pola arsir potongan (gambar teknik), jarak garis tetap di layar
+  JC.hatch = function (ctx, color, gap = 7, cross = false) {
+    const c = document.createElement("canvas"); c.width = c.height = gap;
+    const x = c.getContext("2d"); x.strokeStyle = color; x.lineWidth = 1;
+    x.beginPath(); x.moveTo(0, gap); x.lineTo(gap, 0); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(gap - 1, gap + 1); x.lineTo(gap + 1, gap - 1);
+    if (cross) { x.moveTo(0, 0); x.lineTo(gap, gap); }
+    x.stroke();
+    return ctx.createPattern(c, "repeat");
+  };
+
+  // kanvas tajam di layar retina; draw(ctx, w, h) dipanggil saat ukuran atau tema berubah
+  // minW: lebar gambar minimum; di layar lebih sempit gambar diperkecil utuh, bukan ditumpuk
+  JC.canvas = function (cv, draw, minW = 0) {
+    const ctx = cv.getContext("2d");
+    const st = { ctx, w: 0, h: 0, draw };
+    const fit = (redraw) => {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const k = minW && r.width < minW ? Math.max(r.width, 1) / minW : 1;
+      st.w = Math.max(1, r.width) / k; st.h = Math.max(1, r.height) / k;
+      cv.width = Math.round(Math.max(1, r.width) * dpr); cv.height = Math.round(Math.max(1, r.height) * dpr);
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, 0, 0);
+      if (redraw !== false && st.draw && r.width >= 2 && r.height >= 2) st.draw(ctx, st.w, st.h);
+    };
+    st.fit = fit;
+    fit(false); // ukur dulu; gambar pertama menunggu pemanggil selesai menyimpan st
+    new ResizeObserver(() => fit()).observe(cv);
+    canvases.push(st);
+    return st;
+  };
+
+  // jalankan loop animasi hanya saat elemen terlihat
+  JC.loop = function (el, frame) {
+    let on = false, raf = 0; const t0 = performance.now();
+    const tick = (t) => { frame((t - t0) / 1000); if (on) raf = requestAnimationFrame(tick); };
+    new IntersectionObserver((es) => {
+      const vis = es[0].isIntersecting;
+      if (JC.reduced) { if (vis) frame(1.3); return; }
+      if (vis && !on) { on = true; raf = requestAnimationFrame(tick); }
+      else if (!vis) { on = false; cancelAnimationFrame(raf); }
+    }).observe(el);
+  };
+
+  // jalankan langkah awal sebuah gambar tanpa menghentikan gambar lain bila gagal
+  JC.safe = (fn) => { try { fn(); } catch (e) { console.error(e); } };
+
+  // grup tombol dengan aria-pressed
+  JC.seg = function (buttons, attr, cb) {
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      buttons.forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      cb(b.dataset[attr], b);
+    }));
+  };
+
+  JC.store = {
+    get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+  };
+
+  /* ---------- rel bab ---------- */
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const railLinks = [...document.querySelectorAll(".rail a")];
+  const topFill = document.getElementById("topFill");
+  function onScroll() {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    topFill.style.width = (max > 0 ? JC.clamp(scrollY / max, 0, 1) : 0) * 100 + "%";
+    let cur = -1;
+    chapters.forEach((c, i) => { if (c.getBoundingClientRect().top < innerHeight * 0.45) cur = i; });
+    railLinks.forEach((a, i) => a.classList.toggle("on", i === cur));
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+
+  /* ---------- ponsel: tabel diberi label kolom ---------- */
+  document.querySelectorAll(".tbl.rs").forEach((tb) => {
+    const heads = [...tb.querySelectorAll("thead th")].map((th) => th.textContent.trim());
+    tb.querySelectorAll("tbody tr").forEach((tr) => [...tr.children].forEach((cell, j) => { if (cell.tagName === "TD" && heads[j]) cell.dataset.label = heads[j]; }));
+  });
+
+})();
+</script>
+<script>
+/* t5-power.js */
+/* Jalur Cahaya · Tahap 5 — inspeksi konektor, OPM di pelanggan, light source + OPM */
+(function () {
+  const JC = window.JC;
+  const el = (id) => document.getElementById(id);
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const sgn = (v, d = 1) => (v > 0 ? "+" : "") + JC.fmt(v, d);
+
+  /* ---------- 5.1 inspection scope ---------- */
+  const SC = [
+    { id: "clean", act: "use", name: "Bersih", why: "Core dan cladding bersih, tidak ada goresan. Boleh dicolok." },
+    { id: "dust", act: "clean", name: "Debu", why: "Ada beberapa partikel debu, satu di dekat core. Bersihkan kering lalu periksa lagi. Debu yang ikut tercolok bisa pindah ke konektor pasangannya dan menggores keduanya." },
+    { id: "oil", act: "clean", name: "Noda minyak", why: "Lapisan buram bergaris adalah minyak dari jari. Bersihkan basah dengan IPA, segera keringkan, lalu periksa lagi." },
+    { id: "scratch", act: "replace", name: "Goresan melintasi core", why: "Goresan di core adalah kerusakan permanen yang menambah redaman dan pantulan. Membersihkan tidak menolong. Ganti patchcord atau konektornya." },
+    { id: "chip", act: "replace", name: "Gompal di core", why: "Ujung kaca gompal di dekat core, biasanya karena terbentur atau dicolok dalam keadaan kotor. Ganti." },
+    { id: "fine", act: "use", name: "Goresan halus jauh dari core", why: "Ada dua goresan tipis, tetapi letaknya di pinggir cladding dan core-nya bersih. Standar inspeksi yang umum dipakai (IEC 61300-3-35) masih menerima goresan tipis di area ini. Boleh dicolok." },
+  ];
+  const ACT = { use: "Siap dipakai", clean: "Bersihkan dulu", replace: "Ganti" };
+  const scCv = el("scCanvas"), scCtl = el("scCtl");
+  let scOrder = [], scIdx = 0, scRes = [], scAns = null;
+  const scSt = JC.canvas(scCv, () => drawScope(), 420);
+  // titik acak tetap supaya bentuk debu tidak berubah tiap digambar ulang
+  const blob = (ctx, x, y, r, seed) => {
+    ctx.beginPath();
+    for (let i = 0; i <= 10; i++) { const a = (i / 10) * Math.PI * 2, rr = r * (0.7 + 0.3 * Math.abs(Math.sin(seed * 7.3 + i * 2.1))); i ? ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr) : ctx.moveTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+    ctx.closePath(); ctx.fill();
+  };
+  function drawScope() {
+    const { ctx, w, h } = scSt, P = JC.pal;
+    if (w < 40 || h < 40 || !scOrder.length) return;
+    ctx.clearRect(0, 0, w, h);
+    const c = SC[scOrder[Math.min(scIdx, scOrder.length - 1)]];
+    const R = Math.min(h / 2 - 14, 122), cx = Math.min(w / 2 - 70, w - R - 170), cy = h / 2;
+    const k = (R * 0.56) / 62.5; // piksel per µm, cladding 125 µm
+    const X = (u) => cx + u * k, Y = (v) => cy + v * k;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.clip();
+    let g = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R);
+    g.addColorStop(0, "#7b858c"); g.addColorStop(1, "#4b5358");
+    ctx.fillStyle = g; ctx.fillRect(cx - R, cy - R, R * 2, R * 2);
+    g = ctx.createRadialGradient(cx - 10, cy - 12, 4, cx, cy, 62.5 * k);
+    g.addColorStop(0, "#e4ebee"); g.addColorStop(1, "#c3cdd2");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, 62.5 * k, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#a9b8bf"; ctx.beginPath(); ctx.arc(cx, cy, 4.6 * k, 0, Math.PI * 2); ctx.fill();
+    // cacat
+    ctx.fillStyle = "rgba(34,38,41,.9)"; ctx.strokeStyle = "rgba(34,38,41,.85)";
+    if (c.id === "dust") { [[-24, 16, 4.5, 1], [32, -34, 6, 2], [7, 4, 3, 3], [-44, -22, 2.6, 4], [52, 40, 3.4, 5], [-70, 46, 5, 6]].forEach(([u, v, r, s]) => blob(ctx, X(u), Y(v), r * k, s)); }
+    if (c.id === "oil") {
+      ctx.fillStyle = "rgba(60,58,40,.22)";
+      [[-6, 6, 40, 26, 0.4], [14, -10, 30, 20, -0.3], [-26, -16, 22, 16, 0.9]].forEach(([u, v, a, b, r]) => { ctx.beginPath(); ctx.ellipse(X(u), Y(v), a * k, b * k, r, 0, Math.PI * 2); ctx.fill(); });
+      ctx.strokeStyle = "rgba(50,48,36,.35)"; ctx.lineWidth = 1.4;
+      for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.ellipse(X(-4), Y(30), (22 + i * 7) * k, (14 + i * 5) * k, -0.25, Math.PI * 1.05, Math.PI * 1.9); ctx.stroke(); }
+    }
+    if (c.id === "scratch") {
+      ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(X(-64), Y(-46)); ctx.quadraticCurveTo(X(0), Y(-4), X(60), Y(38)); ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(X(-63), Y(-44)); ctx.quadraticCurveTo(X(1), Y(-2), X(61), Y(40)); ctx.stroke();
+    }
+    if (c.id === "chip") {
+      ctx.beginPath(); [[2, -14], [14, -10], [16, 2], [9, 10], [0, 6], [-3, -4]].forEach(([u, v], i) => (i ? ctx.lineTo(X(u), Y(v)) : ctx.moveTo(X(u), Y(v)))); ctx.closePath(); ctx.fill();
+      ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X(16), Y(2)); ctx.lineTo(X(34), Y(10)); ctx.moveTo(X(2), Y(-14)); ctx.lineTo(X(-6), Y(-34)); ctx.moveTo(X(9), Y(10)); ctx.lineTo(X(14), Y(30)); ctx.stroke();
+    }
+    if (c.id === "fine") {
+      ctx.lineWidth = 1.2; ctx.strokeStyle = "rgba(34,38,41,.75)";
+      ctx.beginPath(); ctx.moveTo(X(-58), Y(18)); ctx.lineTo(X(-34), Y(50)); ctx.moveTo(X(30), Y(-55)); ctx.lineTo(X(54), Y(-28)); ctx.stroke();
+    }
+    ctx.restore();
+    // bingkai pandangan dan batas zona
+    ctx.strokeStyle = P.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([4, 4]); ctx.lineWidth = 1; ctx.strokeStyle = "rgba(207,42,30,.85)";
+    ctx.beginPath(); ctx.arc(cx, cy, 12.5 * k, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, 62.5 * k, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+    // keterangan
+    const lx = cx + R + 22;
+    ctx.font = "600 13px 'Public Sans', sans-serif"; ctx.fillStyle = P.ink; ctx.strokeStyle = P["ink-2"]; ctx.lineWidth = 1;
+    const lab = (tx, ty, px, py, t1, t2) => {
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(tx - 6, ty - 4); ctx.stroke();
+      ctx.fillStyle = P.ink; ctx.fillText(t1, tx, ty); ctx.fillStyle = P["ink-3"]; ctx.font = "12px 'Public Sans', sans-serif"; ctx.fillText(t2, tx, ty + 16); ctx.font = "600 13px 'Public Sans', sans-serif";
+    };
+    lab(lx, cy - 50, cx + 9 * k, cy - 9 * k, "Area core", "Ø 9 µm, paling penting");
+    lab(lx, cy + 18, cx + 44 * k, cy + 44 * k, "Cladding", "Ø 125 µm");
+    lab(lx, cy + 82, cx + R * 0.84, cy + R * 0.5, "Ferrule", "keramik, Ø 2,5 mm");
+  }
+  function scRender() {
+    el("scLbl").textContent = scIdx < scOrder.length ? `Tampilan ${scIdx + 1} dari ${scOrder.length}` : `${scOrder.length} tampilan`;
+    el("scScore").textContent = `Benar ${scRes.filter(Boolean).length} dari ${scRes.length}`;
+    if (scIdx >= scOrder.length) {
+      const ok = scRes.filter(Boolean).length;
+      scCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${scOrder.length} tepat.</strong> Ingat: kotoran dibersihkan, kerusakan di core diganti.</p><div class="row-actions"><button type="button" class="btn" id="scAgain">Ulangi</button></div>`;
+      el("scAgain").onclick = scStart; drawScope(); return;
+    }
+    const c = SC[scOrder[scIdx]];
+    if (scAns === null) {
+      scCtl.innerHTML = `<p class="msg">Apa yang kamu lakukan dengan konektor ini?</p><div class="row-actions">${Object.entries(ACT).map(([k, t]) => `<button type="button" class="btn" data-act="${k}">${t}</button>`).join("")}</div>`;
+    } else {
+      const right = scAns === c.act;
+      scCtl.innerHTML = `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Tepat" : "✕ Kurang tepat"}: ${ACT[c.act].toLowerCase()}.</b>${c.name}. ${c.why}</div><div class="row-actions"><button type="button" class="btn primary" id="scNext">${scIdx === scOrder.length - 1 ? "Lihat hasil" : "Tampilan berikutnya"}</button></div>`;
+      el("scNext").onclick = () => { scIdx++; scAns = null; scRender(); };
+    }
+    scCtl.querySelectorAll("[data-act]").forEach((b) => b.onclick = () => { scAns = b.dataset.act; scRes.push(scAns === c.act); scRender(); el("scNext").focus(); });
+    drawScope();
+  }
+  function scStart() { scOrder = shuffle(SC.map((_, i) => i)); scIdx = 0; scRes = []; scAns = null; scRender(); }
+  JC.safe(scStart);
+
+  /* ---------- 5.2 tiga titik ukur ---------- */
+  const PTS = [
+    { x: 172, v: -19.4, msg: "<strong>−19,4 dBm</strong> di port ODP, sebelum drop cable dipasang. Ini angka acuan untuk pelanggan ini. Kalau angka di port sudah buruk, masalahnya ada di sebelum ODP, bukan di rumah pelanggan." },
+    { x: 486, v: -20.1, msg: "<strong>−20,1 dBm</strong> di ujung drop cable. Turun 0,7 dB dari port ODP, yaitu dari konektor di ODP, 150 m drop cable, dan fast connector. Wajar." },
+    { x: 616, v: -20.6, msg: "<strong>−20,6 dBm</strong> di ONT. Dari port ODP turun 1,2 dB, dan masih di zona aman (−8 sampai −24 dBm). Kalau selisih A ke C jauh lebih besar, misalnya 3 dB, cari konektor kotor atau drop cable yang tertekuk." },
+  ];
+  function drawPts(p) {
+    const cy = 112, pc = PTS[p];
+    let s = `<rect x="24" y="40" width="148" height="144" rx="6" class="f-paper ln"/><text x="36" y="62" class="txt">ODP</text><text x="36" y="80" class="txt-2">splitter 1:8</text>`;
+    s += `<path d="M24 150 H0" stroke="var(--ink)" stroke-width="7"/><text x="36" y="172" class="txt-2">dari ODC</text>`;
+    for (let i = 0; i < 8; i++) s += `<rect x="160" y="${50 + i * 16}" width="12" height="11" class="ln" style="fill:${i === 3 ? "#2563c9" : "var(--paper-2)"}"/>`;
+    // drop cable: putus-putus selama belum dipasang (titik A)
+    const drop = p === 0 ? `stroke-dasharray="7 6" style="stroke:var(--ink-3)"` : `style="stroke:var(--jacket)"`;
+    s += `<path d="M172 ${cy} C 230 ${cy}, 240 ${cy - 40}, 300 ${cy - 40} H 400 C 450 ${cy - 40}, 440 ${cy}, 476 ${cy}" fill="none" stroke-width="6" ${drop}/>`;
+    s += `<text x="350" y="${cy - 52}" text-anchor="middle" class="txt-2">drop cable 150 m${p === 0 ? " (belum dipasang)" : ""}</text>`;
+    s += `<rect x="476" y="${cy - 7}" width="26" height="14" class="ln" style="fill:#2563c9"/><text x="470" y="${cy + 30}" text-anchor="end" class="txt-2">fast connector</text>`;
+    // roset dan patchcord ke ONT
+    s += `<rect x="520" y="${cy - 22}" width="46" height="44" rx="3" class="f-paper ln"/><text x="543" y="${cy - 30}" text-anchor="middle" class="txt-2">roset</text>`;
+    s += `<path d="M566 ${cy} H612" stroke="var(--ink)" stroke-width="5.5"/><path d="M566 ${cy} H612" stroke="#f2c500" stroke-width="3.5"/>`;
+    s += `<rect x="612" y="${cy - 34}" width="92" height="68" rx="6" class="f-paper ln"/><text x="658" y="${cy - 8}" text-anchor="middle" class="txt">ONT</text>`;
+    [0, 1, 2, 3].forEach((i) => (s += `<circle cx="${634 + i * 16}" cy="${cy + 14}" r="3.5" style="fill:var(--ok);stroke:var(--ink)" stroke-width=".8"/>`));
+    // balon titik ukur
+    PTS.forEach((q, i) => { const on = i === p; s += `<g class="balloon"><circle cx="${q.x}" cy="${cy - 70 - (i === 0 ? 0 : 0)}" r="13" style="fill:${on ? "var(--red)" : "var(--paper)"};stroke:${on ? "var(--red)" : "var(--ink)"}" stroke-width="1.3"/><text x="${q.x}" y="${cy - 65}" text-anchor="middle" style="fill:${on ? "#fff" : "var(--ink)"};font:700 13px var(--font-display)">${"ABC"[i]}</text></g><path d="M${q.x} ${cy - 57} V${cy - 12}" class="ln-thin" stroke-dasharray="3 3"/>`; });
+    // OPM di bawah titik terpilih
+    const ox = JC.clamp(pc.x - 60, 190, 600), oy = 182;
+    s += `<path d="M${pc.x} ${cy + 8} C ${pc.x} ${cy + 50}, ${ox + 60} ${oy - 40}, ${ox + 60} ${oy}" fill="none" stroke="var(--ink)" stroke-width="5.5"/><path d="M${pc.x} ${cy + 8} C ${pc.x} ${cy + 50}, ${ox + 60} ${oy - 40}, ${ox + 60} ${oy}" fill="none" stroke="#f2c500" stroke-width="3.5"/>`;
+    s += `<rect x="${ox}" y="${oy}" width="120" height="78" rx="8" class="f-paper ln"/><rect x="${ox + 10}" y="${oy + 10}" width="100" height="44" rx="3" class="f-glass2 ln"/>`;
+    s += `<text x="${ox + 16}" y="${oy + 24}" class="txt-m" style="fill:var(--ink)">1490 nm</text><text x="${ox + 104}" y="${oy + 47}" text-anchor="end" style="fill:var(--ink);font:650 20px var(--font-mono);font-variant-numeric:tabular-nums">${JC.fmt(pc.v, 1)}</text>`;
+    s += `<text x="${ox + 60}" y="${oy + 70}" text-anchor="middle" class="txt-m">OPM · dBm</text>`;
+    el("ptSvg").innerHTML = s;
+    el("ptMsg").innerHTML = pc.msg;
+  }
+  JC.seg([...document.querySelectorAll("[data-pt]")], "pt", (v) => drawPts(+v));
+  JC.safe(() => drawPts(0));
+
+  /* ---------- 5.2 menilai bacaan ---------- */
+  const RX = [
+    { v: -18.5, k: "ok", why: "Cadangan 8,5 dB sebelum batas −27 dBm." },
+    { v: -25.6, k: "warn", why: "ONT masih menyala, tetapi cadangannya tinggal 1,4 dB. Sedikit debu atau satu tekukan bisa memutus layanan. Periksa konektor dan drop cable sebelum ditinggal." },
+    { v: -6.8, k: "over", why: "Penerima ONT bisa jenuh. Biasanya terjadi bila pelanggan sangat dekat dengan OLT dan redaman jalurnya kecil. Pasang attenuator." },
+    { v: -29.2, k: "bad", why: "Di bawah −27 dBm, ONT tidak bisa membaca sinyal dengan andal. Ukur mundur ke ODP untuk mencari di mana redaman hilang." },
+    { v: null, k: "bad", why: "LO berarti tidak ada cahaya yang terbaca. Kemungkinan serat putus, konektor lepas, atau OPM dicolok ke port yang salah. Cek dengan VFL." },
+  ];
+  const KIND = { ok: "Aman", warn: "Mepet", over: "Terlalu kuat", bad: "Tidak cukup" };
+  const S0 = -35, S1 = 0, pos = (v) => ((JC.clamp(v, S0, S1) - S0) / (S1 - S0)) * 100;
+  const zones = [[S0, -27, "var(--bad)"], [-27, -24, "var(--warn)"], [-24, -8, "var(--ok)"], [-8, S1, "var(--warn)"]];
+  const ticks = [-35, -27, -24, -8, 0];
+  const rxEl = el("rxGame");
+  let rxOrder = [], rxIdx = 0, rxRes = [], rxAns = null;
+  function rxRender() {
+    if (rxIdx >= rxOrder.length) {
+      const ok = rxRes.filter(Boolean).length;
+      rxEl.innerHTML = `<p class="msg"><strong>${ok} dari ${rxOrder.length} tepat.</strong> Angka di ONT selalu dibaca bersama batasnya: −8, −24, dan −27 dBm.</p><div class="row-actions"><button type="button" class="btn" id="rxAgain">Ulangi</button></div>`;
+      el("rxAgain").onclick = rxStart; return;
+    }
+    const r = RX[rxOrder[rxIdx]], txt = r.v == null ? "LO" : JC.fmt(r.v, 1) + " dBm";
+    let h = `<p class="small">Bacaan ${rxIdx + 1} dari ${rxOrder.length} · benar ${rxRes.filter(Boolean).length}</p>`;
+    h += `<div class="game-q">OPM di ONT, 1490 nm: <span class="num">${txt}</span></div>`;
+    h += `<div class="scale" aria-hidden="true"><div class="zones">${zones.map(([a, b, c]) => `<div style="width:${pos(b) - pos(a)}%;background:${c}"></div>`).join("")}</div>` +
+      (rxAns !== null && r.v != null ? `<div class="marker" style="left:${pos(r.v)}%"></div>` : "") +
+      `<div class="tk">${ticks.map((t, i) => `<span style="left:${pos(t)}%;${i === 0 ? "transform:none" : i === ticks.length - 1 ? "transform:translateX(-100%)" : ""}">${sgn(t, 0)}</span>`).join("")}</div></div>`;
+    if (rxAns === null) h += `<div class="row-actions">${Object.entries(KIND).map(([k, t]) => `<button type="button" class="btn" data-rx="${k}">${t}</button>`).join("")}</div>`;
+    else {
+      const right = rxAns === r.k;
+      h += `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Tepat" : "✕ Kurang tepat"}: ${KIND[r.k].toLowerCase()}.</b>${r.why}</div><div class="row-actions"><button type="button" class="btn primary" id="rxNext">${rxIdx === rxOrder.length - 1 ? "Lihat hasil" : "Bacaan berikutnya"}</button></div>`;
+    }
+    rxEl.innerHTML = h;
+    rxEl.querySelectorAll("[data-rx]").forEach((b) => b.onclick = () => { rxAns = b.dataset.rx; rxRes.push(rxAns === r.k); rxRender(); el("rxNext").focus(); });
+    const nx = el("rxNext"); if (nx) nx.onclick = () => { rxIdx++; rxAns = null; rxRender(); };
+  }
+  function rxStart() { rxOrder = shuffle(RX.map((_, i) => i)); rxIdx = 0; rxRes = []; rxAns = null; rxRender(); }
+  JC.safe(rxStart);
+
+  /* ---------- 5.3 light source + OPM ---------- */
+  const LSP = { 1310: -6.95, 1550: -7.1 }, PC = 0.2, LINK = { 1310: 2.41, 1550: 2.02 }, BUD = { 1310: 2.77, 1550: 2.35 };
+  const RESP = { 1310: 0.88, 1550: 1.0 }; // kepekaan relatif sensor (ilustrasi), sama seperti Tahap 2
+  const ls = { ls: 1310, om: 1550, cn: "link", md: "dbm", ref: {}, rec: {} };
+  const dbm = () => LSP[ls.ls] - PC - (ls.cn === "link" ? LINK[ls.ls] : 0) + 10 * Math.log10(RESP[ls.ls] / RESP[ls.om]);
+  const rel = () => (ls.ref[ls.om] ? dbm() - ls.ref[ls.om].v : null);
+  const other = (l) => (l === 1310 ? 1550 : 1310);
+  function lsDraw() {
+    const cord = (d) => `<path d="${d}" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f2c500" stroke-width="4" stroke-linecap="round"/>`;
+    const r = rel(), refOn = !!ls.ref[ls.om];
+    const val = ls.md === "dbm" ? JC.fmt(dbm(), 2) : r == null ? "– – –" : JC.fmt(Math.abs(r) < 0.005 ? 0 : r, 2);
+    let s = "";
+    // light source
+    s += `<rect x="20" y="34" width="170" height="124" rx="10" class="f-paper ln"/><text x="34" y="56" class="txt">Light source</text>`;
+    s += `<rect x="34" y="68" width="142" height="48" rx="3" class="f-glass2 ln"/><text x="105" y="99" text-anchor="middle" style="fill:var(--ink);font:650 20px var(--font-mono)">${ls.ls} nm</text>`;
+    s += `<text x="34" y="140" class="txt-m">CW · daya stabil</text><rect x="190" y="112" width="14" height="16" class="ln" style="fill:#2563c9"/>`;
+    // OPM
+    s += `<rect x="530" y="34" width="170" height="124" rx="10" class="f-paper ln"/><text x="544" y="56" class="txt">OPM</text>`;
+    s += `<rect x="544" y="68" width="142" height="62" rx="3" class="f-glass2 ln"/><text x="552" y="84" class="txt-m" style="fill:var(--ink)">${ls.om} nm</text>`;
+    if (refOn) s += `<text x="680" y="84" text-anchor="end" class="txt-m" style="fill:var(--ink)">REF</text>`;
+    s += `<text x="644" y="117" text-anchor="end" style="fill:var(--ink);font:650 24px var(--font-mono);font-variant-numeric:tabular-nums">${val}</text><text x="680" y="117" text-anchor="end" class="txt-m" style="fill:var(--ink)">${ls.md === "dbm" ? "dBm" : "dB"}</text>`;
+    s += `<text x="544" y="148" class="txt-m">REF · dB/dBm · λ</text><rect x="516" y="112" width="14" height="16" class="ln" style="fill:#2563c9"/>`;
+    if (ls.cn === "ref") {
+      s += cord("M204 120 C 300 230, 420 230, 516 120");
+      s += `<text x="360" y="232" text-anchor="middle" class="txt-2">patchcord referensi, langsung ke OPM</text>`;
+    } else {
+      s += cord("M204 120 C 230 180, 240 200, 262 200");
+      s += `<rect x="262" y="193" width="16" height="14" class="ln" style="fill:#2563c9"/><rect x="442" y="193" width="16" height="14" class="ln" style="fill:#2563c9"/>`;
+      [0, 1, 2, 3].forEach((i) => (s += `<ellipse cx="360" cy="${196 + i * 3}" rx="${70 - i * 4}" ry="${22 - i * 2}" fill="none" style="stroke:var(--jacket)" stroke-width="4"/>`));
+      s += `<path d="M278 200 H300 M420 200 H442" style="stroke:var(--jacket)" stroke-width="4"/>`;
+      s += `<text x="360" y="244" text-anchor="middle" class="txt-2">jalur yang diuji, 4,2 km</text>`;
+      s += cord("M458 200 C 480 200, 490 180, 516 120");
+    }
+    el("lsSvg").innerHTML = s;
+  }
+  function lsMsg() {
+    const r = rel(), ref = ls.ref[ls.om];
+    if (ls.ls !== ls.om) return `Light source memancarkan ${ls.ls} nm, tetapi OPM diatur ke ${ls.om} nm. OPM memakai kepekaan sensor untuk ${ls.om} nm, jadi angkanya meleset. <strong>Samakan panjang gelombang kedua alat dulu.</strong>`;
+    if (ls.md === "dbm") {
+      if (ls.cn === "ref") return `OPM membaca <strong>${JC.fmt(dbm(), 2)} dBm</strong>, yaitu daya light source setelah patchcord. <strong>Tekan REF</strong> untuk menjadikan angka ini nol.`;
+      if (ref && ref.ok) return `Layar masih dalam dBm, yaitu daya mutlak. Pindahkan ke <strong>dB</strong> untuk melihat redaman terhadap referensi.`;
+      return `OPM membaca ${JC.fmt(dbm(), 2)} dBm lewat jalur. Ini belum angka redaman karena belum ada referensi yang benar untuk ${ls.om} nm. <strong>Pasang patchcord saja, lalu tekan REF.</strong>`;
+    }
+    if (!ref) return `Belum ada referensi untuk ${ls.om} nm, jadi layar dB belum berarti apa-apa. <strong>Pasang patchcord saja, lalu tekan REF.</strong>`;
+    if (!ref.ok) return ref.why === "link"
+      ? `Referensi diambil saat jalur terpasang, jadi redaman jalur ikut dijadikan nol dan hasilnya salah. <strong>Pasang patchcord saja, lalu tekan REF lagi.</strong>`
+      : `Referensi diambil saat panjang gelombang light source dan OPM berbeda. <strong>Samakan, pasang patchcord saja, lalu tekan REF lagi.</strong>`;
+    if (ls.cn === "ref") return `<strong>0,00 dB: referensi tersimpan.</strong> Sekarang pasang jalur yang diuji. Jangan lepas patchcord dari light source, karena referensinya akan ikut berubah.`;
+    const o = other(ls.om);
+    let m = `Redaman jalur di ${ls.om} nm: <strong>${JC.fmt(-r, 2)} dB</strong>. Anggarannya ${JC.fmt(BUD[ls.om], 2)} dB, jadi <strong>lolos</strong>. Hasil tercatat.`;
+    m += ls.rec[o] == null ? ` Sekarang ulangi di ${o} nm: ganti panjang gelombang kedua alat, pasang patchcord saja, tekan REF, lalu ukur jalurnya lagi.` : ` Kedua panjang gelombang sudah tercatat. 1550 nm sedikit lebih kecil dari 1310 nm: pola normal.`;
+    return m;
+  }
+  function lsRender() {
+    const r = rel(), ref = ls.ref[ls.om];
+    if (ls.cn === "link" && ls.md === "db" && ls.ls === ls.om && ref && ref.ok) ls.rec[ls.om] = -r;
+    lsDraw();
+    el("lsMsg").innerHTML = lsMsg();
+    const steps = [
+      ["Samakan panjang gelombang light source dan OPM", ls.ls === ls.om],
+      ["Pasang patchcord saja, lalu tekan REF", !!(ref && ref.ok)],
+      ["Pasang jalur, baca hasilnya di layar dB", ls.rec[ls.om] != null],
+      ["Ulangi untuk panjang gelombang yang lain", ls.rec[1310] != null && ls.rec[1550] != null],
+    ];
+    el("lsSteps").innerHTML = steps.map(([t, ok], i) => `<li class="${ok ? "ok" : ""}"><b>${ok ? "✓" : i + 1}</b><span>${t}</span></li>`).join("");
+    el("lsRes").innerHTML = `<thead><tr><th>Panjang gelombang</th><th>Hasil ukur</th><th>Anggaran</th><th>Status</th></tr></thead><tbody>` +
+      [1310, 1550].map((l) => { const v = ls.rec[l]; return `<tr><th>${l} nm</th><td class="num">${v == null ? "–" : JC.fmt(v, 2) + " dB"}</td><td class="num">${JC.fmt(BUD[l], 2)} dB</td><td>${v == null ? "belum diukur" : v <= BUD[l] ? '<span style="color:var(--ok);font-weight:700">✓ Lolos</span>' : '<span style="color:var(--bad);font-weight:700">✕ Gagal</span>'}</td></tr>`; }).join("") + `</tbody>`;
+    const press = (attr, v) => document.querySelectorAll(`[data-${attr}]`).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset[attr] === String(v))));
+    press("ls", ls.ls); press("om", ls.om); press("cn", ls.cn); press("md", ls.md);
+  }
+  ["ls", "om", "cn", "md"].forEach((k) => JC.seg([...document.querySelectorAll(`[data-${k}]`)], k, (v) => { ls[k] = k === "ls" || k === "om" ? +v : v; lsRender(); }));
+  el("refBtn").addEventListener("click", () => {
+    const ok = ls.cn === "ref" && ls.ls === ls.om;
+    ls.ref[ls.om] = { v: dbm(), ok, why: ls.cn !== "ref" ? "link" : "lam" };
+    if (!ok) delete ls.rec[ls.om];
+    ls.md = "db"; // OPM pindah ke dB setelah REF
+    lsRender();
+  });
+  JC.safe(lsRender);
+})();
+</script>
+<script>
+/* t5-trace.js */
+/* Jalur Cahaya · Tahap 5 — gambar pembuka, VFL di tray, setelan OTDR, kursor OTDR, kuis */
+(function () {
+  const JC = window.JC;
+  const el = (id) => document.getElementById(id);
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const F12 = "12px 'Public Sans', sans-serif", F13B = "650 13px 'Public Sans', sans-serif";
+
+  /* ---------- model jejak OTDR (jarak dalam km, level dalam dB) ---------- */
+  // jalur: konektor di ODC, sambungan, dua konektor berdekatan, sambungan agak tinggi, ujung serat
+  const LINK = [
+    { x: 0, loss: 0.5, refl: 3.5, t: "K" }, { x: 3.0, loss: 0.08, t: "S" }, { x: 6.0, loss: 0.5, refl: 3, t: "K" },
+    { x: 6.3, loss: 0.5, refl: 3, t: "K" }, { x: 8.5, loss: 0.18, t: "S" }, { x: 11.5, end: true, refl: 5, t: "U" },
+  ];
+  const DZ = [0.04, 0.15, 0.7], FRONT = [0.12, 0.35, 1.4], FLOOR = [-6, -13, -17]; // per lebar pulsa 10 ns, 100 ns, 1 µs
+  let seed = 7; const NZ = Array.from({ length: 4096 }, () => ((seed = (seed * 16807) % 2147483647) / 2147483647) * 2 - 1);
+  function model(o) {
+    const off = o.launch ? 1 : 0, W = DZ[o.pw], F = FRONT[o.pw];
+    const ev = LINK.map((e) => ({ ...e, x: e.x + off }));
+    const fl = FLOOR[o.pw] - (o.av === 30 ? 1.5 : 0), A = o.av === 30 ? 0.45 : 1.1;
+    const clean = (x) => {
+      let y = -1.5 - 0.35 * x, pk = x < F ? 6 * (1 - JC.smooth(F * 0.55, F, x)) : 0;
+      for (const e of ev) {
+        if (x < e.x) continue;
+        if (e.end) { if (x > e.x + W) return -60; pk = Math.max(pk, e.refl * (1 - JC.smooth(e.x + W * 0.6, e.x + W, x))); continue; }
+        if (e.refl) { y -= e.loss * JC.smooth(e.x + W * 0.6, e.x + W, x); pk = Math.max(pk, e.refl * JC.clamp((x - e.x) / 0.004, 0, 1) * (1 - JC.smooth(e.x + W * 0.6, e.x + W, x))); }
+        else y -= e.loss * JC.smooth(e.x, e.x + W, x);
+      }
+      return y + pk;
+    };
+    const shown = (x) => {
+      const y = clean(x), d = y - fl, n = NZ[Math.floor(x * 200) % NZ.length];
+      return d <= 0 ? fl + n * A * 0.9 : y + n * A * Math.pow(10, -d / 5);
+    };
+    return { clean, shown, ev, W, F, fl };
+  }
+
+  /* ---------- gambar pembuka ---------- */
+  function hero() {
+    const m = model({ pw: 1, launch: true, av: 30 });
+    const X = (km) => 70 + km * 47.7, Y = (db) => 175 - JC.clamp(db, -9.6, 4.2) * 14;
+    let d = "";
+    for (let i = 0; i <= 620; i++) { const km = i / 620 * 13; let v = m.clean(km); v = v < -9.6 ? -9.6 + NZ[i % NZ.length] * 0.25 : v; d += (i ? "L" : "M") + X(km).toFixed(1) + " " + Y(v).toFixed(1); }
+    let s = `<rect x="12" y="58" width="58" height="40" rx="4" class="f-paper ln"/><text x="41" y="83" text-anchor="middle" class="txt">OTDR</text>`;
+    s += `<path d="M70 78 H666" class="ln" stroke-width="2"/>`;
+    [[16, 9], [12, 6.5], [8, 4]].forEach(([a, b]) => (s += `<ellipse cx="94" cy="78" rx="${a}" ry="${b}" fill="none" class="ln"/>`));
+    const conn = (x) => `<rect x="${x - 6}" y="71" width="12" height="14" class="ln" style="fill:#2563c9"/>`;
+    const slv = (x) => `<rect x="${x - 9}" y="74.5" width="18" height="7" rx="3.5" class="ln f-glass"/>`;
+    s += conn(X(1)) + slv(X(4)) + conn(X(7)) + conn(X(7.3)) + slv(X(9.5)) + `<path d="M666 70 V86" class="ln" stroke-width="2.4"/>`;
+    [1, 4, 7.15, 9.5, 12.5].forEach((k) => (s += `<path d="M${X(k)} 92 V152" class="ln-thin" stroke-dasharray="3 3"/>`));
+    // sumbu
+    s += `<path d="M70 322 H690" class="ln-thin"/>`;
+    for (let k = 0; k <= 12; k += 2) s += `<path d="M${X(k)} 322 V328" class="ln-thin"/><text x="${X(k)}" y="344" text-anchor="middle" class="txt-m">${k}${k === 12 ? " km" : ""}</text>`;
+    s += `<path d="${d}" fill="none" style="stroke:var(--red)" stroke-width="1.8" stroke-linejoin="round"/>`;
+    // keterangan (layar lebar)
+    s += `<g class="bd"><text x="72" y="34" class="txt-2">kabel peluncur 1 km</text><text x="126" y="58" class="txt-2">konektor ODC</text>`;
+    s += `<text x="${X(4)}" y="58" text-anchor="middle" class="txt-2">sambungan</text><text x="${X(7.15)}" y="58" text-anchor="middle" class="txt-2">dua konektor</text>`;
+    s += `<text x="${X(9.5)}" y="58" text-anchor="middle" class="txt-2">sambungan</text><text x="${X(12.5) - 4}" y="58" text-anchor="middle" class="txt-2">ujung serat</text>`;
+    s += `<text x="88" y="124" class="txt-2 halo">zona mati awal</text><text x="${X(7.15)}" y="186" text-anchor="middle" class="txt-2 halo">pantulan</text>`;
+    s += `<text x="330" y="262" text-anchor="middle" class="txt-2 halo">garis menurun = redaman kabel</text><text x="704" y="290" text-anchor="end" class="txt-2 halo">derau</text></g>`;
+    // balon bernomor (layar sempit)
+    const bal = [[1, 96, X(0.5)], [2, 156, X(1)], [3, X(4), X(4)], [4, X(7.15), X(7.15)], [5, X(9.5), X(9.5)], [6, 648, X(12.5)]];
+    s += `<g class="bm">` + bal.map(([n, bx, tx]) => `<path d="M${bx} 50 L${tx} 70" class="ln-thin"/><g class="balloon big"><circle cx="${bx}" cy="30" r="20"/><text x="${bx}" y="31">${n}</text></g>`).join("") + `</g>`;
+    el("heroSvg").innerHTML = s;
+  }
+  JC.safe(hero);
+
+  /* ---------- 5.4 VFL di tray closure ---------- */
+  const VR = [
+    { n: 2, ans: "ok", why: "Cahaya masuk lewat serat hijau dan keluar lewat serat hijau. Core 3 tersambung ke core 3 dengan baik." },
+    { n: 4, ans: "swap", why: "Cahaya masuk lewat serat abu-abu, tetapi keluar lewat serat putih. Core 5 tersambung ke core 6, jadi pelanggan yang salah akan tersambung. Sambung ulang sesuai kode warna." },
+    { n: 8, ans: "none", why: "Tidak ada cahaya sama sekali di tray. Core 9 putus di antara ODC dan closure ini, atau VFL dicolok ke port yang salah. Pastikan port di ODC dulu, lalu cari titik putus dengan OTDR." },
+    { n: 1, ans: "leak", why: "Sleeve di slot 2 menyala terang dan serat keluarnya redup: cahaya bocor di sambungan. Sambungan ini perlu diulang." },
+  ];
+  const VOPT = { ok: "Cocok, tersambung baik", swap: "Warna tertukar", leak: "Bocor di sambungan", none: "Cahaya tidak sampai" };
+  const OUT = [0, 1, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11]; // slot 5 dan 6 tertukar di sisi keluar
+  const vfCv = el("vfCanvas"), vfCtl = el("vfCtl");
+  let vOrder = [], vIdx = 0, vRes = [], vAns = null, vT = 0;
+  const vs = JC.canvas(vfCv, () => drawTray(vT), 520);
+  function drawTray(t) {
+    const { ctx, w, h } = vs, P = JC.pal;
+    if (w < 40 || h < 40 || !vOrder.length) return;
+    vT = t;
+    ctx.clearRect(0, 0, w, h);
+    const r = VR[vOrder[Math.min(vIdx, vOrder.length - 1)]];
+    const cy = h / 2, top = 36, dy = (h - 72) / 11, hL = w * 0.4, hR = w * 0.6, tL = 64, tR = w - 64;
+    const yi = (i) => top + i * dy, ty = (i) => cy + (i - 5.5) * 1.6;
+    const pathIn = (i) => { ctx.beginPath(); ctx.moveTo(tL, ty(i)); ctx.bezierCurveTo(tL + (hL - tL) * 0.55, ty(i), hL - (hL - tL) * 0.35, yi(i), hL, yi(i)); ctx.lineTo(hL + 22, yi(i)); };
+    const pathOut = (i) => { ctx.beginPath(); ctx.moveTo(hR - 14, yi(i)); ctx.lineTo(hR, yi(i)); ctx.bezierCurveTo(hR + (tR - hR) * 0.35, yi(i), tR - (tR - hR) * 0.55, ty(i), tR, ty(i)); };
+    // pemegang sleeve
+    ctx.fillStyle = P["paper-2"]; ctx.strokeStyle = P.ink; ctx.lineWidth = 1.2;
+    ctx.fillRect(hL, top - 14, hR - hL, h - 2 * top + 28); ctx.strokeRect(hL + 0.5, top - 13.5, hR - hL, h - 2 * top + 28);
+    // serat masuk dan keluar
+    for (let i = 0; i < 12; i++) {
+      [[pathIn, JC.COLORS[i].hex], [pathOut, JC.COLORS[OUT[i] === i || r.ans === "swap" ? OUT[i] : i].hex]].forEach(([fn, c]) => {
+        fn(i); ctx.strokeStyle = P.ink; ctx.lineWidth = 3.6; ctx.stroke(); fn(i); ctx.strokeStyle = c; ctx.lineWidth = 2.2; ctx.stroke();
+      });
+      ctx.fillStyle = P.glass; ctx.strokeStyle = P.ink; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(hL + 22, yi(i) - 3.5, hR - hL - 36, 7, 3.5) : ctx.rect(hL + 22, yi(i) - 3.5, hR - hL - 36, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = P["ink-3"]; ctx.font = "10px 'Public Sans', sans-serif"; ctx.textAlign = "center"; ctx.fillText(String(i + 1), hL + 11, yi(i) - 3);
+    }
+    // tabung
+    [[0, tL], [tR, w]].forEach(([a, b]) => { ctx.fillStyle = P.jacket; ctx.fillRect(a, cy - 12, b - a, 24); ctx.strokeStyle = P.ink; ctx.strokeRect(a + 0.5, cy - 11.5, b - a - 1, 23); });
+    ctx.fillStyle = P["ink-2"]; ctx.font = F12; ctx.textAlign = "left"; ctx.fillText("dari ODC", 4, cy + 32); ctx.textAlign = "right"; ctx.fillText("ke ODP", w - 4, cy + 32);
+    ctx.textAlign = "center"; ctx.fillText("pemegang sleeve", (hL + hR) / 2, top - 20); ctx.textAlign = "left";
+    // cahaya VFL berkedip ±2 kali per detik
+    const on = JC.reduced ? 1 : 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * Math.PI * 4));
+    if (r.ans === "none") return;
+    const glow = (fn, i, a) => {
+      ctx.save(); ctx.lineCap = "round";
+      fn(i); ctx.strokeStyle = `rgba(255,40,30,${0.28 * a})`; ctx.lineWidth = 12; ctx.stroke();
+      ctx.shadowColor = `rgba(255,40,30,${a})`; ctx.shadowBlur = 16; fn(i); ctx.strokeStyle = `rgba(255,70,50,${a})`; ctx.lineWidth = 3.2; ctx.stroke();
+      fn(i); ctx.shadowBlur = 0; ctx.strokeStyle = `rgba(255,225,215,${0.8 * a})`; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+    };
+    glow(pathIn, r.n, 0.9 * on);
+    glow(pathOut, r.n, (r.ans === "leak" ? 0.25 : 0.9) * on);
+    if (r.ans === "leak") {
+      const x = (hL + hR) / 2, y = yi(r.n), g = ctx.createRadialGradient(x, y, 1, x, y, 30);
+      g.addColorStop(0, `rgba(255,240,235,${on})`); g.addColorStop(0.3, `rgba(255,40,30,${0.85 * on})`); g.addColorStop(1, "rgba(255,40,30,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 30, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  function vRender() {
+    el("vfLbl").textContent = vIdx < vOrder.length ? `Uji ${vIdx + 1} dari ${vOrder.length}` : `${vOrder.length} uji`;
+    el("vfScore").textContent = `Benar ${vRes.filter(Boolean).length} dari ${vRes.length}`;
+    if (vIdx >= vOrder.length) {
+      const ok = vRes.filter(Boolean).length;
+      vfCtl.innerHTML = `<p class="msg"><strong>${ok} dari ${vOrder.length} tepat.</strong> Dengan VFL kamu bisa memastikan sambungan tidak putus, tidak tertukar, dan tidak bocor, sebelum closure ditutup.</p><div class="row-actions"><button type="button" class="btn" id="vfAgain">Ulangi</button></div>`;
+      el("vfAgain").onclick = vStart; return;
+    }
+    const r = VR[vOrder[vIdx]], c = JC.COLORS[r.n];
+    if (vAns === null) {
+      vfCtl.innerHTML = `<p class="msg">VFL ditembakkan ke <strong>core ${r.n + 1} (${c.name.toLowerCase()})</strong> di ODC. Apa yang kamu lihat di tray?</p><div class="row-actions">${Object.entries(VOPT).map(([k, t]) => `<button type="button" class="btn" data-vf="${k}">${t}</button>`).join("")}</div>`;
+    } else {
+      const right = vAns === r.ans;
+      vfCtl.innerHTML = `<div class="mark ${right ? "good" : "bad"}"><b>${right ? "✓ Tepat" : "✕ Kurang tepat"}: ${VOPT[r.ans].toLowerCase()}.</b>${r.why}</div><div class="row-actions"><button type="button" class="btn primary" id="vfNext">${vIdx === vOrder.length - 1 ? "Lihat hasil" : "Uji berikutnya"}</button></div>`;
+      el("vfNext").onclick = () => { vIdx++; vAns = null; vRender(); };
+    }
+    vfCtl.querySelectorAll("[data-vf]").forEach((b) => b.onclick = () => { vAns = b.dataset.vf; vRes.push(vAns === r.ans); vRender(); el("vfNext").focus(); });
+    drawTray(vT);
+  }
+  function vStart() { vOrder = shuffle(VR.map((_, i) => i)); vIdx = 0; vRes = []; vAns = null; vRender(); }
+  JC.safe(vStart);
+  JC.loop(vfCv, drawTray);
+
+  /* ---------- grafik jejak bersama ---------- */
+  function axes(ctx, w, h, o) {
+    const P = JC.pal, { L, R, T, B, xmax, yt, yb, ystep, xstep } = o;
+    const X = (km) => L + (km / xmax) * (w - L - R), Y = (db) => T + ((yt - db) / (yt - yb)) * (h - T - B);
+    ctx.font = F12; ctx.fillStyle = P["ink-3"]; ctx.strokeStyle = P.rule; ctx.lineWidth = 1;
+    for (let d = Math.floor(yt / ystep) * ystep; d >= yb; d -= ystep) { ctx.beginPath(); ctx.moveTo(L, Y(d)); ctx.lineTo(w - R, Y(d)); ctx.stroke(); ctx.textAlign = "right"; ctx.fillText((d > 0 ? "+" : d < 0 ? "−" : "") + Math.abs(d), L - 6, Y(d) + 4); }
+    for (let k = 0; k <= xmax + 1e-9; k += xstep) { const last = k + xstep > xmax; ctx.textAlign = last ? "right" : "center"; ctx.fillText(k + (last ? " km" : ""), last ? X(k) + 6 : X(k), Y(yb) + 16); }
+    ctx.textAlign = "left"; ctx.fillText("dB", 4, T + 10);
+    return { X, Y };
+  }
+  function plot(ctx, m, X, Y, xmax, yt, yb, w, color, lw) {
+    ctx.save(); ctx.beginPath(); ctx.rect(X(0), Y(yt), X(xmax) - X(0), Y(yb) - Y(yt)); ctx.clip();
+    ctx.beginPath();
+    const n = Math.max(200, Math.round(w * 1.5));
+    for (let i = 0; i <= n; i++) { const km = (i / n) * xmax; const y = Y(JC.clamp(m.shown(km), yb - 1, yt + 1)); i ? ctx.lineTo(X(km), y) : ctx.moveTo(X(km), y); }
+    ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.lineJoin = "round"; ctx.stroke(); ctx.restore();
+  }
+
+  /* ---------- 5.5 setelan OTDR ---------- */
+  const so = { rg: 80, pw: 0, av: 5, lc: 0 };
+  const otsCv = el("otsCanvas");
+  const ots = JC.canvas(otsCv, () => drawSet(), 480);
+  function drawSet() {
+    const { ctx, w, h } = ots, P = JC.pal;
+    if (w < 40 || h < 40) return;
+    ctx.clearRect(0, 0, w, h);
+    const m = model({ pw: so.pw, launch: !!so.lc, av: so.av });
+    const o = { L: 44, R: 14, T: 12, B: 52, xmax: so.rg, yt: 5, yb: -20, ystep: 5, xstep: so.rg === 5 ? 1 : so.rg === 20 ? 4 : 20 };
+    const { X, Y } = axes(ctx, w, h, o);
+    plot(ctx, m, X, Y, so.rg, o.yt, o.yb, w, P.ink, 1.5);
+    // segitiga letak event yang sebenarnya
+    ctx.font = "650 11px 'Public Sans', sans-serif"; ctx.textAlign = "center";
+    m.ev.forEach((e) => {
+      if (e.x > so.rg) return;
+      const x = X(e.x), y = h - 20;
+      ctx.fillStyle = P.red; ctx.beginPath(); ctx.moveTo(x, y - 9); ctx.lineTo(x - 5, y); ctx.lineTo(x + 5, y); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = P["ink-2"]; ctx.fillText(e.t, x, y + 13);
+    });
+    ctx.textAlign = "left";
+    if (so.rg < 12.5) { ctx.fillStyle = P["red-ink"]; ctx.font = F13B; ctx.textAlign = "right"; ctx.fillText("ujung jalur di luar layar →", w - 18, 28); ctx.textAlign = "left"; }
+  }
+  function setChecks() {
+    const c = [];
+    c.push(so.rg === 5 ? ["bad", "Rentang 5 km lebih pendek dari jalur, jadi ujung jalur tidak tampil."]
+      : so.rg === 80 ? ["warn", "Rentang 80 km jauh lebih panjang dari jalur. Jejak hanya mengisi sebagian kecil layar dan detailnya sulit dibaca."]
+      : ["ok", "Rentang 20 km, sekitar 1,7 kali panjang jalur."]);
+    c.push(so.pw === 0 ? ["bad", "Pulsa 10 ns terlalu lemah untuk jalur ini. Separuh akhir jejak tenggelam dalam derau dan ujungnya tidak terlihat."]
+      : so.pw === 2 ? ["warn", "Pulsa 1 µs menjangkau jauh, tetapi zona matinya lebar. Konektor di 1 km tertutup zona mati awal, dan dua konektor yang berjarak 300 m menyatu menjadi satu event."]
+      : ["ok", "Pulsa 100 ns: jejak sampai ke ujung, dan dua konektor yang berdekatan masih terpisah."]);
+    c.push(so.av === 5 ? ["warn", "Rata-rata 5 detik: jejak masih berderau. Untuk hasil yang dicatat, pakai 30 detik atau lebih."]
+      : ["ok", "Rata-rata 30 detik: derau berkurang dan jejak lebih halus."]);
+    c.push(!so.lc ? ["bad", "Tanpa kabel peluncur, konektor pertama di ODC tertutup zona mati awal sehingga redamannya tidak bisa dinilai."]
+      : ["ok", "Kabel peluncur 1 km: konektor pertama terlihat jelas. Ingat, semua jarak di layar bertambah 1 km."]);
+    const all = c.every(([k]) => k === "ok");
+    el("otsChecks").innerHTML = c.map(([k, t]) => `<div class="check ${k}"><i aria-hidden="true">${k === "ok" ? "✓" : k === "bad" ? "✕" : "!"}</i><span>${t}</span></div>`).join("") +
+      `<p class="msg" style="margin-top:6px">${all ? "<strong>Setelan cocok untuk jalur ini.</strong> Semua event terlihat dan bisa diukur. Jejak yang sama dipakai di bagian berikutnya." : "Ubah setelan yang bertanda ✕ atau ! lalu lihat perubahan jejaknya."}</p>`;
+  }
+  [["rg", "rg"], ["pw", "pw"], ["av", "av"], ["lc", "lc"]].forEach(([k, a]) => JC.seg([...document.querySelectorAll(`[data-${a}]`)], a, (v) => { so[k] = +v; drawSet(); setChecks(); }));
+  JC.safe(setChecks);
+
+  /* ---------- 5.6 kursor ---------- */
+  const cm = model({ pw: 1, launch: true, av: 30 }), XM = 14, SPL = 9.5, END = 12.5;
+  const crCv = el("crCanvas"), inA = el("crA"), inB = el("crB");
+  const cur = { a: 2, b: 3 }, done = {};
+  let cgeo = null, drag = null, lastDone = null;
+  const crs = JC.canvas(crCv, () => drawCur(), 480);
+  function drawCur() {
+    const { ctx, w, h } = crs, P = JC.pal;
+    if (w < 40 || h < 40) return;
+    ctx.clearRect(0, 0, w, h);
+    const o = { L: 44, R: 14, T: 12, B: 30, xmax: XM, yt: 3, yb: -11, ystep: 2, xstep: 2 };
+    const { X, Y } = axes(ctx, w, h, o);
+    cgeo = { X, L: o.L, R: o.R, w };
+    plot(ctx, cm, X, Y, XM, o.yt, o.yb, w, P.ink, 1.5);
+    [["a", "A"], ["b", "B"]].forEach(([k, t]) => {
+      const x = X(cur[k]), y = Y(JC.clamp(cm.clean(cur[k]), o.yb, o.yt));
+      ctx.strokeStyle = P.red; ctx.lineWidth = 1.2; ctx.setLineDash(k === "a" ? [] : [5, 3]);
+      ctx.beginPath(); ctx.moveTo(x, o.T); ctx.lineTo(x, Y(o.yb)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = P.red; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = P.paper; ctx.strokeStyle = P.red; ctx.fillRect(x - 9, o.T, 18, 17); ctx.strokeRect(x - 8.5, o.T + 0.5, 17, 16);
+      ctx.fillStyle = P["red-ink"]; ctx.font = F13B; ctx.textAlign = "center"; ctx.fillText(t, x, o.T + 13); ctx.textAlign = "left";
+    });
+  }
+  const evIn = (lo, hi) => cm.ev.some((e) => e.x + (e.end ? 0 : cm.W) + 0.05 > lo && e.x - 0.01 < hi) || lo < cm.F + 0.05;
+  function crUpdate(from) {
+    if (from !== "input") { inA.value = Math.round((cur.a / XM) * 2000); inB.value = Math.round((cur.b / XM) * 2000); }
+    const la = cm.clean(cur.a), lb = cm.clean(cur.b), dx = cur.b - cur.a, dl = lb - la;
+    el("crAOut").textContent = JC.fmt(cur.a, 3) + " km";
+    el("crBOut").textContent = JC.fmt(cur.b, 3) + " km";
+    const lv = (v) => (v < -30 ? "derau" : JC.fmt(v, 2) + " dB");
+    el("crRead").innerHTML = `<div><small>A</small><b>${JC.fmt(cur.a, 3)} km</b><b>${lv(la)}</b></div><div><small>B</small><b>${JC.fmt(cur.b, 3)} km</b><b>${lv(lb)}</b></div>` +
+      `<div><small>B − A</small><b>${JC.fmt(dx, 3)} km</b><b>${la < -30 || lb < -30 ? "–" : JC.fmt(dl, 2) + " dB"}</b></div>`;
+    // tugas
+    const lo = Math.min(cur.a, cur.b), hi = Math.max(cur.a, cur.b), loss = cm.clean(lo) - cm.clean(hi);
+    let hint = "";
+    if (!done.end && (Math.abs(cur.a - END) <= 0.04 || Math.abs(cur.b - END) <= 0.04)) { done.end = "12,50 km dari OTDR, jadi panjang jalur 11,50 km setelah dikurangi kabel peluncur."; lastDone = "end"; }
+    if (lo < SPL && hi > SPL) {
+      if (lo < 7.3 + cm.W + 0.05) hint = "Di antara kursor masih ada event lain. Letakkan keduanya dekat sambungan di ±9,5 km saja.";
+      else if (hi < SPL + cm.W) hint = "Kursor sesudah sambungan masih berada di bagian yang menurun. Geser sedikit ke kanan sampai jejak kembali lurus.";
+      else if (lo < SPL - 0.3 || hi > SPL + cm.W + 0.3) hint = "Kursor terlalu jauh dari sambungan, jadi redaman kabel ikut terhitung banyak. Dekatkan keduanya ke sambungan.";
+      else if (!done.splice) {
+        const cable = 0.35 * (hi - lo);
+        done.splice = `selisih ${JC.fmt(loss, 2)} dB, ${JC.fmt(cable, 2)} dB di antaranya redaman kabel sepanjang ${JC.fmt(hi - lo, 2)} km. Sambungannya ±${JC.fmt(loss - cable, 2)} dB, di atas target 0,1 dB, jadi sebaiknya disambung ulang.`;
+        lastDone = "splice";
+      }
+    } else if (hi - lo >= 0.3 && hi < END) {
+      if (evIn(lo, hi)) { if (hi - lo >= 2) hint = "Di antara kursor masih ada event, jadi angkanya bukan redaman kabel saja. Cari bagian lurus yang panjang tanpa event."; }
+      else if (hi - lo < 2) hint = "Bagian lurusnya sudah tepat. Jauhkan kedua kursor sampai minimal 2 km supaya hasilnya lebih teliti.";
+      else if (!done.slope) { done.slope = `${JC.fmt(loss / (hi - lo), 2)} dB/km di 1310 nm, sesuai spesifikasi kabel G.652D.`; lastDone = "slope"; }
+    }
+    const T = [["end", "Panjang jalur: taruh satu kursor tepat di awal pantulan ujung serat"], ["splice", "Redaman sambungan di ±9,5 km: satu kursor sedikit sebelum, satu sedikit sesudah"], ["slope", "Redaman kabel per km: kedua kursor di bagian lurus tanpa event, berjarak minimal 2 km"]];
+    el("crTasks").innerHTML = T.map(([k, t]) => `<div class="check ${done[k] ? "ok" : ""}"><i aria-hidden="true">${done[k] ? "✓" : ""}</i><span>${done[k] ? `<strong>${t.split(":")[0]}:</strong> ${done[k]}` : t}</span></div>`).join("");
+    const n = Object.keys(done).length;
+    el("crMsg").innerHTML = hint || (n === 3 ? "<strong>Ketiga tugas selesai.</strong> OTDR modern menghitung angka ini otomatis di tabel event, tetapi cara membacanya sama." : lastDone && from !== "init" ? `<strong>Tugas selesai.</strong> Lanjutkan tugas berikutnya.` : "Geser kursor A dan B. Selisih jarak dan level tampil di atas.");
+    drawCur();
+  }
+  inA.addEventListener("input", () => { cur.a = (inA.value / 2000) * XM; crUpdate("input"); });
+  inB.addEventListener("input", () => { cur.b = (inB.value / 2000) * XM; crUpdate("input"); });
+  const kmAt = (ev) => { const r = crCv.getBoundingClientRect(), k = r.width / crs.w; return JC.clamp((((ev.clientX - r.left) / k - cgeo.L) / (cgeo.w - cgeo.L - cgeo.R)) * XM, 0, XM); };
+  crCv.addEventListener("pointerdown", (ev) => {
+    if (!cgeo) return;
+    const km = kmAt(ev); drag = Math.abs(km - cur.a) <= Math.abs(km - cur.b) ? "a" : "b";
+    cur[drag] = km; crCv.setPointerCapture(ev.pointerId); crUpdate();
+  });
+  crCv.addEventListener("pointermove", (ev) => { if (drag) { cur[drag] = kmAt(ev); crUpdate(); } });
+  ["pointerup", "pointercancel"].forEach((t) => crCv.addEventListener(t, () => (drag = null)));
+  JC.safe(() => crUpdate("init"));
+
+  /* ---------- kuis ---------- */
+  const Q = [
+    { q: "Inspection scope menunjukkan goresan yang melintasi core. Apa tindakannya?", o: ["Bersihkan kering", "Bersihkan basah dengan IPA", "Ganti patchcord atau konektornya", "Pakai saja, goresan tidak berpengaruh"], a: 2, e: "Goresan di core adalah kerusakan permanen. Membersihkan tidak menolong." },
+    { q: "OPM di ONT membaca −25,8 dBm. Artinya…", o: ["Aman, tidak perlu apa-apa", "Mepet: masih menyala, tetapi cadangannya tipis", "Terlalu kuat, perlu attenuator", "Tidak ada cahaya"], a: 1, e: "Angkanya di antara −24 dan −27 dBm. Periksa konektor dan drop cable supaya ada cadangan." },
+    { q: "Pada pengukuran light source dan OPM, kapan tombol REF ditekan?", o: ["Setelah jalur dipasang", "Saat hanya patchcord yang terpasang, dengan panjang gelombang kedua alat sama", "Kapan saja, hasilnya sama", "Sebelum light source dinyalakan"], a: 1, e: "Referensi adalah daya lewat patchcord saja. Kalau REF ditekan saat jalur terpasang, redaman jalur ikut dijadikan nol." },
+    { q: "Hasil ukur jalur: 2,6 dB di 1310 nm dan 3,9 dB di 1550 nm. Dugaan paling kuat?", o: ["Konektor kotor", "Ada tekukan atau serat terjepit", "Jalur terlalu pendek", "OPM rusak"], a: 1, e: "Tekukan jauh lebih berpengaruh di 1550 nm. Konektor kotor menaikkan keduanya hampir sama." },
+    { q: "VFL ditembakkan ke core 4 di ODC, tetapi tidak ada cahaya sama sekali di tray closure. Kemungkinannya?", o: ["Sambungan di tray bocor", "Core putus sebelum closure, atau VFL dicolok ke port yang salah", "Warna di tray tertukar", "VFL terlalu terang"], a: 1, e: "Kalau cahaya tidak sampai sama sekali, masalahnya ada sebelum closure. Pastikan port, lalu cari titik putus dengan OTDR." },
+    { q: "Kenapa OTDR dipasangi kabel peluncur?", o: ["Supaya jangkauannya lebih jauh", "Supaya konektor pertama tidak tertutup zona mati awal", "Supaya pulsanya lebih pendek", "Supaya baterai lebih awet"], a: 1, e: "Pantulan besar di depan OTDR menutupi bagian awal jejak. Kabel peluncur memindahkan konektor pertama keluar dari zona itu." },
+    { q: "Dua kursor di sekitar sambungan menunjukkan selisih 0,30 dB, dengan jarak antarkursor 0,40 km. Redaman kabel 0,35 dB/km. Kira-kira berapa redaman sambungannya?", o: ["0,30 dB", "0,16 dB", "0,44 dB", "0,05 dB"], a: 1, e: "0,35 × 0,40 = 0,14 dB adalah redaman kabel. Sisanya, 0,30 − 0,14 = 0,16 dB, adalah sambungannya." },
+  ];
+  const quizEl = el("quiz"), scoreEl = el("score");
+  let ans = [];
+  function render() {
+    quizEl.innerHTML = Q.map((it, i) => {
+      const dn = ans[i] !== undefined;
+      const opts = it.o.map((o, k) => {
+        let cls = "", m = "";
+        if (dn) { if (k === it.a) { cls = "right"; m = "✓"; } else if (k === ans[i]) { cls = "wrong"; m = "✕"; } }
+        return `<button type="button" id="q${i}-${k}" data-q="${i}" data-k="${k}" class="${cls}" ${dn ? "disabled" : ""}><span class="l">${"ABCD"[k]}</span><span>${o}</span><span class="m" aria-hidden="true">${m}</span></button>`;
+      }).join("");
+      const exp = dn ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
+      return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${opts}</div>${exp}</div>`;
+    }).join("");
+    quizEl.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; render(); });
+    if (ans.filter((v) => v !== undefined).length === Q.length) {
+      const ok = Q.filter((it, i) => ans[i] === it.a).length;
+      const best = Math.max(ok, JC.store.get("t5best", 0)); JC.store.set("t5best", best);
+      scoreEl.hidden = false;
+      scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${Q.length}">${ok}/${Q.length}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === Q.length ? "Sempurna. Siap lanjut ke Tahap 6." : ok >= Q.length - 1 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${Q.length}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
+      el("quizAgain").onclick = () => { ans = []; scoreEl.hidden = true; render(); quizEl.scrollIntoView({ block: "start" }); };
+    } else scoreEl.hidden = true;
+  }
+  render();
+})();
+</script>
+</body>
+</html>

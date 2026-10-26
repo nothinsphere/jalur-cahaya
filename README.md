@@ -6,6 +6,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - Tahap 2: https://nothinsphere.github.io/jalur-cahaya/tahap-2/
 - Tahap 3: https://nothinsphere.github.io/jalur-cahaya/tahap-3/
 - Tahap 4: https://nothinsphere.github.io/jalur-cahaya/tahap-4/
+- Tahap 5: https://nothinsphere.github.io/jalur-cahaya/tahap-5/
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -42,6 +43,16 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 4.4 Menata di tray: cari 5 kesalahan, plus tray yang benar
 - 4.5 Menutup closure: checklist
 - Kuis 6 soal
+
+**Tahap 5 · Pengukuran** (`tahap-5/index.html`)
+
+- 5.1 Konektor bersih dulu: game menilai tampilan inspection scope, cara membersihkan
+- 5.2 OPM di pelanggan: ukur di port ODP, ujung drop, dan ONT; game menilai bacaan dBm
+- 5.3 Light source & OPM: simulasi referensi (REF) dan ukur redaman jalur di 1310/1550 nm
+- 5.4 VFL: game identifikasi core dan kebocoran di tray closure
+- 5.5 Setelan OTDR: rentang, lebar pulsa, waktu rata-rata, kabel peluncur
+- 5.6 Membaca OTDR: dua kursor untuk panjang jalur, redaman sambungan, dan dB/km
+- Kuis 7 soal
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
 Angka di dalamnya adalah patokan umum untuk belajar; di lapangan, ikuti datasheet perangkat dan standar operator.
