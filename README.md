@@ -8,6 +8,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - Tahap 4: https://nothinsphere.github.io/jalur-cahaya/tahap-4/
 - Tahap 5: https://nothinsphere.github.io/jalur-cahaya/tahap-5/
 - Tahap 6: https://nothinsphere.github.io/jalur-cahaya/tahap-6/
+- Tahap 7: https://nothinsphere.github.io/jalur-cahaya/tahap-7/
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -64,6 +65,16 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 6.5 Membersihkan alat: cara membersihkan bagian splicer dan cleaver
 - 6.6 Uji busur dan jadwal perawatan
 - Kuis 7 soal
+
+**Tahap 7 · Aplikasi lapangan** (`tahap-7/index.html`)
+
+- 7.1 Cara kerja PON: animasi data ke pelanggan, dari pelanggan bergiliran, dan tabrakan bila tanpa giliran
+- 7.2 Splitter: rancang splitter ODC dan ODP, lihat jumlah pelanggan dan daya di ONT
+- 7.3 Perangkat di jalur: game menaruh OTB, closure, ODC, ODP, roset, ONT
+- 7.4 Peta core: telusuri jalur tiap ODP dan jawab soal membaca peta core
+- 7.5 Menghitung kebutuhan: ODP, splitter, port PON, dan ukuran kabel untuk satu perumahan
+- 7.6 Simulasi pasang baru: delapan keputusan dari persiapan sampai dokumentasi
+- Kuis 7 soal dan ringkasan nilai kuis ketujuh tahap (tersimpan di perangkat)
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
 Angka di dalamnya adalah patokan umum untuk belajar; di lapangan, ikuti datasheet perangkat dan standar operator.
