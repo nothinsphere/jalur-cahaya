@@ -5,6 +5,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - Tahap 1: https://nothinsphere.github.io/jalur-cahaya/
 - Tahap 2: https://nothinsphere.github.io/jalur-cahaya/tahap-2/
 - Tahap 3: https://nothinsphere.github.io/jalur-cahaya/tahap-3/
+- Tahap 4: https://nothinsphere.github.io/jalur-cahaya/tahap-4/
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -31,6 +32,15 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 3.3 Membersihkan: benar atau salah
 - 3.4 Membelah: langkah memakai cleaver
 - 3.5 Siap sambung: checklist sebelum masuk splicer
+- Kuis 6 soal
+
+**Tahap 4 · Penyambungan & finishing** (`tahap-4/index.html`)
+
+- 4.1 Fusion splicing: langkah di splicer dan game menilai layar hasil sambungan
+- 4.2 Memanaskan sleeve: posisi sleeve dan akibatnya bila tidak di tengah
+- 4.3 Mechanical splice & fast connector: simulasi lengkungan serat, tabel perbandingan
+- 4.4 Menata di tray: cari 5 kesalahan, plus tray yang benar
+- 4.5 Menutup closure: checklist
 - Kuis 6 soal
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
