@@ -1848,11 +1848,12 @@ footer { font-size: 1rem; }
     // radius minimum
     ctx.strokeStyle = P["ink-3"]; ctx.lineWidth = 1; ctx.setLineDash([6, 4]);
     ctx.beginPath(); ctx.arc(cx, cy, minR * scale, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = P["ink-3"]; ctx.textAlign = "center";
-    const ly = cy - minR * scale - 6;
-    ctx.fillText("radius minimum " + JC.fmt(minR, minR % 1 ? 1 : 0) + " mm", cx, ly < 14 ? cy + minR * scale + 16 : ly);
+    // keterangan garis putus-putus di pojok kiri atas, supaya tidak menimpa lilitan
+    ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(12, 20); ctx.lineTo(38, 20); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = P["ink-2"]; ctx.textAlign = "left";
+    ctx.fillText("radius minimum " + JC.fmt(minR, minR % 1 ? 1 : 0) + " mm", 44, 24);
     // serat: masuk kiri, satu lilitan, keluar kanan
-    const path = () => { ctx.beginPath(); ctx.moveTo(0, cy + r); ctx.lineTo(cx, cy + r); ctx.arc(cx, cy, r, Math.PI / 2, Math.PI / 2 + Math.PI * 2 - 0.001, true); ctx.lineTo(w, cy + r); };
+    const path = () => { ctx.beginPath(); ctx.moveTo(0, cy + r); ctx.lineTo(cx, cy + r); ctx.arc(cx, cy, r, Math.PI / 2, Math.PI / 2 - Math.PI * 2 + 0.001, true); ctx.lineTo(w, cy + r); };
     ctx.lineCap = "round"; path(); ctx.strokeStyle = P.ink; ctx.lineWidth = 7; ctx.stroke();
     path(); ctx.strokeStyle = P.glass; ctx.lineWidth = 4.6; ctx.stroke();
     // cahaya bocor
@@ -1873,7 +1874,7 @@ footer { font-size: 1rem; }
     const dd = (JC.reduced ? 0.3 : (time * 0.35) % 1) * total;
     let px, py;
     if (dd < cx) { px = dd; py = cy + r; }
-    else if (dd < cx + Math.PI * 2 * r) { const a = Math.PI / 2 + (dd - cx) / r; px = cx + Math.cos(a) * r; py = cy + Math.sin(a) * r; }
+    else if (dd < cx + Math.PI * 2 * r) { const a = Math.PI / 2 - (dd - cx) / r; px = cx + Math.cos(a) * r; py = cy + Math.sin(a) * r; }
     else { px = cx + (dd - cx - Math.PI * 2 * r); py = cy + r; }
     ctx.globalAlpha = dd > cx + Math.PI * 2 * r ? Math.max(remain, 0.1) : 1;
     ctx.fillStyle = P.red; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
@@ -1883,7 +1884,11 @@ footer { font-size: 1rem; }
     ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ax, ay); ctx.stroke();
     ctx.save(); ctx.translate(ax, ay); ctx.rotate(-0.7); ctx.beginPath(); ctx.moveTo(-4, 0); ctx.lineTo(-12, -3.5); ctx.lineTo(-12, 3.5); ctx.closePath(); ctx.fill(); ctx.restore();
     ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI * 2); ctx.fill();
-    ctx.textAlign = "left"; ctx.fillText("R " + JC.fmt(R, R % 1 ? 1 : 0) + " mm", cx + 8, cy + 16);
+    // label radius di luar lilitan, di ujung panah
+    const rl = "R " + JC.fmt(R, R % 1 ? 1 : 0) + " mm", tw = ctx.measureText(rl).width;
+    const tx = Math.min(cx + Math.cos(-0.7) * (r + 14), w - tw - 10), ty = Math.max(cy + Math.sin(-0.7) * (r + 14), 40);
+    ctx.fillStyle = P.paper; ctx.fillRect(tx - 4, ty - 13, tw + 8, 18);
+    ctx.fillStyle = P["red-ink"]; ctx.textAlign = "left"; ctx.fillText(rl, tx, ty);
   }
   function updateBend() {
     const R = +bendRange.value, loss = bendLoss(R), min = MINR[fiberType];
