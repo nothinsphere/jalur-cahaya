@@ -489,6 +489,84 @@ footer { font-size: 1rem; }
   .sheet-q .q, .game-q { font-size: 1.4rem; }
 }
 
+/* ---------- 1.5 anggaran: tiga penilaian ---------- */
+.rx-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.rx-sm .rx-big b { font-size: clamp(26px, 4.4vw, 34px); }
+.rx-sm .verdict { font-size: 1rem; }
+.odn { display: grid; gap: 4px; }
+.odn-bar { position: relative; }
+.odn .stack { gap: 0; }
+.odn .stack div { box-shadow: inset -2px 0 0 var(--paper); }
+.odn .mk { position: absolute; top: -6px; bottom: -6px; width: 0; }
+.odn .mk-max { border-left: 2.5px solid var(--bad); }
+.odn .mk-design { border-left: 2px dashed var(--warn); }
+.odn .mk-diff { border-left: 2.5px solid var(--ink); }
+.odn-band { position: relative; height: 8px; margin-top: 6px; }
+.odn-band span { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--ok) 55%, transparent); border: 1px solid var(--ok); }
+.odn-tk { position: relative; height: 16px; font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.odn-tk span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.legend .lg-res { background-image: repeating-linear-gradient(135deg, var(--ink-3) 0 1px, transparent 1px 4px); border-style: dashed; }
+.legend .lg-band { background: color-mix(in srgb, var(--ok) 55%, transparent); border-color: var(--ok); }
+.legend .lg-design { width: 0; height: 12px; border: 0; border-left: 2px dashed var(--warn); }
+.legend .lg-diff { width: 0; height: 12px; border: 0; border-left: 2.5px solid var(--ink); }
+.verdict-all { border: 1.5px solid var(--ink); padding: 12px 14px; font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+.verdict-all b { color: var(--ink); }
+.verdict-all.ok { border-color: var(--ok); } .verdict-all.warn { border-color: var(--warn); }
+@media (max-width: 600px) { .rx-pair { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- bersama: progres, navigasi bagian, aksesibilitas (revisi Okt 2026) ---------- */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 6px; max-width: 680px; }
+.rule b { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); font-family: var(--font-body); }
+.rule p { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); margin: 0; }
+.rule small { font-size: .8125rem; color: var(--ink-3); line-height: 1.5; }
+.rule.danger { border-color: var(--red); border-left-width: 6px; }
+.chapter-head .rule { margin-top: 4px; }
+.prose.assume { border-left: 3px solid var(--ink-3); padding-left: 14px; margin-top: 16px; }
+.resume-wrap { margin: 0; }
+.resume { font-size: .9375rem; padding: 7px 14px; text-align: left; }
+.stages td:last-child { white-space: normal; }
+.sts { display: inline-flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+.st { font-size: .75rem; line-height: 1.5; padding: 0 6px; border: 1px solid var(--rule); color: var(--ink-3); white-space: nowrap; font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+.st-on { border-color: var(--ok); color: var(--ok); font-weight: 650; }
+.st-part { border-color: var(--warn); color: var(--warn); }
+.stages-note { margin-top: -10px; }
+.secnav { position: fixed; z-index: 30; top: calc(env(safe-area-inset-top, 0px) + 3px); left: 0; right: 0; display: none; justify-content: center; pointer-events: none; }
+.secnav.show { display: flex; }
+.sn-btn { pointer-events: auto; display: flex; align-items: center; gap: 10px; width: min(880px, calc(100vw - 24px)); margin-top: 6px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 8px 12px; cursor: pointer; font-size: .875rem; min-height: 44px; box-shadow: 0 2px 0 var(--ink); }
+.sn-stage { font-weight: 700; color: var(--red-ink); white-space: nowrap; }
+.sn-cur { flex: 1; min-width: 0; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.sn-list { pointer-events: auto; position: absolute; top: 58px; left: 50%; transform: translateX(-50%); width: min(880px, calc(100vw - 24px)); background: var(--paper); border: 1.5px solid var(--ink); padding: 6px 12px 10px; max-height: 70vh; overflow: auto; }
+.sn-list ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.sn-list a { display: flex; gap: 10px; align-items: center; padding: 8px 4px; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); min-height: 44px; }
+.sn-list a:hover { background: var(--paper-2); }
+.sn-list a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; }
+.sn-list p { margin: 8px 0 0; font-size: .875rem; }
+@media (min-width: 1200px) and (max-width: 1439px) { .rail { display: none; } .topbar { display: block; } }
+@media (min-width: 1440px) {
+  .secnav { display: none !important; }
+  .rail a span { opacity: 1; }
+  .rail a { color: var(--ink-2); }
+  .rail a.on span { border-color: var(--ink); color: var(--ink); font-weight: 650; }
+}
+[data-chapter], #tujuan, #anggaran, #ruang-terbatas { scroll-margin-top: 68px; }
+.tbl-wrap[role="region"]:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+footer .upd { display: block; margin-top: 6px; }
+.goals { margin-top: 8px; }
+.goal-box { border: 1.5px solid var(--ink); padding: clamp(16px, 3vw, 24px); display: grid; gap: 12px; }
+.goal-box h2 { font-size: clamp(1.5rem, 3.2vw, 2rem); }
+.goal-box ol { margin: 0; padding-left: 1.4em; display: grid; gap: .35rem; }
+@media (max-width: 600px) {
+  .stages tr { display: grid; grid-template-columns: 5.2em minmax(0, 1fr); border-bottom: 1px solid var(--rule); }
+  .stages td { border-bottom: 0; }
+  .stages td:last-child { grid-column: 1 / -1; text-align: left; padding-top: 0; }
+  .sts { justify-content: flex-start; }
+}
+@media print {
+  .rail, .topbar, .secnav, .resume-wrap, .tip { display: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -496,7 +574,7 @@ footer { font-size: 1rem; }
 </style>
 </head>
 <body>
-<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<div class="topbar" aria-hidden="true" data-stage="1"><i id="topFill"></i></div>
 <nav class="rail" aria-label="Bagian Tahap 1">
   <ol>
     <li><a href="#k3" style="--c:var(--c1)"><i></i><span>1.1 K3</span></a></li>
@@ -562,7 +640,7 @@ footer { font-size: 1rem; }
       </div>
     </div>
     <p class="cap" style="margin-top:-12px"><b>Gambar 0</b> Kabel loose tube yang dikupas bertahap. Bagian 1.2 membahas tiap lapisan dari luar sampai ke core.</p>
-    <div class="hero-actions"><a class="btn primary" href="#k3">Mulai dari K3</a><span class="small">Cahaya di dalam kaca merambat <span class="mono">±204.000 km/detik</span>.</span></div>
+    <div class="hero-actions"><a class="btn primary" href="#tujuan">Mulai belajar</a><span class="small">Cahaya di dalam kaca merambat <span class="mono">±204.000 km/detik</span>.</span></div>
 
     <table class="stages" aria-label="Tujuh tahap pelatihan">
       <tr class="now"><td>Tahap 1</td><td>K3 &amp; teori</td><td>sedang dibaca</td></tr>
@@ -577,6 +655,27 @@ footer { font-size: 1rem; }
 </header>
 
 <main>
+<section class="wrap goals" id="tujuan" aria-labelledby="tujuanH">
+  <div class="col">
+    <div class="goal-box">
+      <p class="small">Awal modul</p>
+      <h2 id="tujuanH">Tujuan pembelajaran</h2>
+      <div class="prose">
+        <p>Setelah mempelajari modul dan mengikuti latihan terbimbing, kamu diharapkan mampu:</p>
+        <ol>
+          <li>Mengidentifikasi bahaya pekerjaan fiber optik dan menerapkan prosedur keselamatan.</li>
+          <li>Mengenali struktur kabel, kode warna serat, konektor, dan fungsi peralatan.</li>
+          <li>Menyiapkan, menyambung, dan melindungi serat sesuai panduan alat.</li>
+          <li>Mengukur serta menjelaskan daya optik dan redaman jalur.</li>
+          <li>Menelusuri gangguan berdasarkan hasil pengukuran.</li>
+          <li>Mencatat identitas core, hasil pekerjaan, dan hasil pengujian.</li>
+        </ol>
+      </div>
+      <p class="small">Glosarium singkatan, sumber teknis, asumsi simulasi, lembar pencatatan praktik, dan rubrik penilaian ada di <a href="https://nothinsphere.github.io/jalur-cahaya/lampiran/">Lampiran</a>.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 1.1 K3 ================= -->
 <section class="chapter wrap" id="k3" data-chapter>
   <div class="col">
@@ -642,9 +741,16 @@ footer { font-size: 1rem; }
             <tr><th>Dekat jaringan listrik</th><td>Jaga jarak dari kabel PLN</td><td>Kabel fiber sering satu tiang dengan kabel listrik. Jangan sentuh kabel yang bukan milikmu.</td></tr>
             <tr><th>Pinggir jalan</th><td>Rompi reflektif, kerucut lalu lintas</td><td>Pengendara harus melihatmu dari jauh. Pasang rambu sebelum mulai.</td></tr>
             <tr><th>Lapangan</th><td>Sepatu safety, sarung tangan</td><td>Untuk menarik kabel dan membuka closure. Lepas sarung tangan tebal saat memegang serat.</td></tr>
-            <tr><th>Manhole / bak kontrol</th><td>Buka penutup, tunggu udara bersirkulasi</td><td>Ruang tertutup bisa berisi gas. Jangan masuk sendirian.</td></tr>
+            <tr><th>Manhole / bak kontrol</th><td>Perlakukan sebagai ruang terbatas</td><td>Jangan masuk tanpa prosedur K3 ruang terbatas. Lihat penjelasan di bawah tabel.</td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="rule danger" role="note" id="ruang-terbatas">
+        <b>Manhole dan bak kontrol: ruang terbatas</b>
+        <p>Manhole dan bak kontrol dapat memiliki atmosfer berbahaya, seperti kekurangan oksigen, gas beracun, atau gas mudah terbakar. Membuka penutup dan menunggu udara bersirkulasi belum memastikan ruang aman untuk dimasuki.</p>
+        <p>Pekerjaan di ruang terbatas harus mengikuti prosedur K3 yang sesuai, termasuk identifikasi bahaya, pemeriksaan atmosfer menggunakan alat yang tepat, pengendalian bahaya, izin masuk sesuai persyaratan, serta kesiapan personel dan penyelamatan.</p>
+        <p>Untuk latihan pemula, gunakan simulasi pengenalan bahaya. Praktik masuk ruang terbatas hanya dilakukan setelah seluruh persyaratan keselamatan terpenuhi oleh personel yang berwenang dan kompeten.</p>
+        <small>Rujukan: Peraturan Menteri Ketenagakerjaan Republik Indonesia Nomor 11 Tahun 2023 tentang Keselamatan dan Kesehatan Kerja di Ruang Terbatas.</small>
       </div>
     </div>
   </div>
@@ -850,8 +956,7 @@ footer { font-size: 1rem; }
           </tbody>
         </table>
       </div>
-      <p class="formula-line">Daya terima (dBm) = Daya kirim (dBm) − Total redaman (dB)</p>
-      <div class="prose"><p>Contoh: OLT mengirim +3 dBm, total redaman jalur 23 dB, maka ONT menerima −20 dBm.</p></div>
+      <div class="prose"><p>Contoh: OLT mengirim +3 dBm dan total redaman jalur 23 dB, maka ONT menerima +3 − 23 = −20 dBm. Cara menghitungnya dibahas di bagian anggaran redaman di bawah.</p></div>
     </div>
 
     <div class="block">
@@ -860,7 +965,7 @@ footer { font-size: 1rem; }
         <table class="tbl rs">
           <thead><tr><th>Sumber</th><th>Patokan</th><th>Catatan</th></tr></thead>
           <tbody>
-            <tr><th>Panjang kabel</th><td class="num">0,35 dB/km (1310 nm)<br>0,22 dB/km (1550 nm)</td><td>Kaca menyerap dan menghamburkan sedikit cahaya di setiap meter.</td></tr>
+            <tr><th>Panjang kabel</th><td class="num">0,35 dB/km (1310 nm)<br>0,25 dB/km (1550 nm)</td><td>Kaca menyerap dan menghamburkan sedikit cahaya di setiap meter.</td></tr>
             <tr><th>Sambungan fusion</th><td class="num">≤ 0,1 dB</td><td>Sambungan yang bagus biasanya jauh di bawah itu.</td></tr>
             <tr><th>Konektor</th><td class="num">0,3–0,5 dB / pasang</td><td>Debu di ujung ferrule bisa menambah lebih dari 1 dB.</td></tr>
             <tr><th>Splitter</th><td class="num">1:8 ≈ 10,5 dB<br>1:16 ≈ 13,8 dB</td><td>Penyumbang terbesar di FTTH, karena cahaya memang dibagi.</td></tr>
@@ -868,6 +973,7 @@ footer { font-size: 1rem; }
           </tbody>
         </table>
       </div>
+      <div class="prose assume"><p>Untuk latihan dalam modul ini, koefisien redaman kabel diasumsikan sebesar <strong>0,35 dB/km pada 1310 nm</strong> dan <strong>0,25 dB/km pada 1550 nm</strong>.</p><p>Nilai tersebut merupakan asumsi perhitungan latihan. Untuk pekerjaan sebenarnya, gunakan spesifikasi kabel, hasil pengukuran, dan ketentuan operator.</p></div>
       <div>
         <figure class="fig">
           <div class="fig-bar">
@@ -887,31 +993,43 @@ footer { font-size: 1rem; }
       </div>
     </div>
 
-    <div class="block">
+    <div class="block" id="anggaran">
       <h3>Hitung anggaran redaman FTTH</h3>
-      <div class="prose"><p>Jalur contoh: OLT di STO → kabel feeder → ODC (splitter tahap 1) → kabel distribusi → ODP (splitter tahap 2) → drop cable → ONT. Ubah jumlah komponennya dan lihat daya yang sampai ke ONT. Batasnya mengikuti GPON kelas B+: ONT masih bisa membaca sampai <span class="mono">−27 dBm</span> dan kelebihan daya di atas <span class="mono">−8 dBm</span>.</p></div>
+      <div class="prose"><p>Perkiraan daya terima dihitung dengan rumus:</p></div>
+      <p class="formula-line">Daya terima (dBm) = Daya kirim (dBm) − Total redaman (dB)</p>
+      <div class="prose">
+        <p>Pada contoh daya kirim +3 dBm dan sensitivitas ONT −27 dBm, selisih keduanya adalah 30 dB. Angka ini menunjukkan selisih daya pada contoh tersebut.</p>
+        <p>Perencanaan GPON kelas B+ mengacu pada rentang rugi optik ODN sebesar 13–28 dB. Sisakan margin desain sesuai ketentuan operator untuk menghadapi perubahan kondisi jalur, penambahan sambungan, dan perbaikan.</p>
+        <p>Kelayakan jaringan juga harus diperiksa pada kedua arah komunikasi: OLT ke ONT dan ONT ke OLT. Daya terima yang masih terbaca oleh ONT belum cukup untuk menyatakan seluruh rancangan layak.</p>
+        <p>Jalur contoh: OLT di STO → kabel feeder → ODC (splitter tahap 1) → kabel distribusi → ODP (splitter tahap 2) → drop cable → ONT. Ubah komponennya, lalu periksa ketiga penilaian di bawah. Masing-masing dinilai terpisah.</p>
+      </div>
       <div class="budget">
         <div class="tbl-wrap">
           <table class="tbl bt">
-            <thead><tr><th>Komponen</th><th>Jumlah</th><th>Redaman</th></tr></thead>
+            <thead><tr><th>Komponen</th><th>Jumlah</th><th>Nilai</th></tr></thead>
             <tbody id="btBody"></tbody>
-            <tfoot><tr><td>Total redaman</td><td></td><td class="num" id="btTotal"></td></tr></tfoot>
+            <tfoot><tr><td>Total redaman ODN</td><td></td><td class="num" id="btTotal"></td></tr></tfoot>
           </table>
         </div>
         <div class="rx">
-          <div class="rx-big"><small>Daya yang sampai ke ONT</small><b id="rxVal">−20,0 dBm</b><span class="verdict ok" id="rxPill">✓ Aman</span></div>
+          <div class="rx-big"><small>Penilaian 1 · Arah OLT ke ONT: daya terima ONT</small><b id="rxVal">−20,0 dBm</b><span class="verdict ok" id="rxPill"></span></div>
           <p class="msg" id="rxMsg" aria-live="polite"></p>
           <div>
-            <p class="small" style="margin-bottom:8px">Anggaran <span class="mono" id="budgetTotal">30 dB</span> (daya kirim − batas terima), terpakai oleh:</p>
-            <div class="stack" id="stack"></div>
-            <div class="legend" id="legend" style="margin-top:10px"></div>
-          </div>
-          <div>
-            <p class="small" style="margin-bottom:10px">Posisi daya terima (dBm)</p>
+            <p class="small" style="margin-bottom:10px">Posisi daya terima ONT (dBm). Hijau: kriteria simulasi −24 s.d. −8 dBm; sensitivitas ONT −27 dBm.</p>
             <div class="scale" id="scale"></div>
           </div>
         </div>
-        <p class="small">Nilai komponen adalah patokan umum. Banyak operator memakai batas kerja lebih ketat dari −27 dBm, misalnya −25 dBm. Ikuti standar tempatmu bekerja.</p>
+        <div class="rx-pair">
+          <div class="rx rx-sm"><div class="rx-big"><small>Penilaian 2 · Arah ONT ke OLT: daya terima OLT</small><b id="upVal"></b><span class="verdict" id="upPill"></span></div><p class="msg" id="upMsg" aria-live="polite"></p></div>
+          <div class="rx rx-sm"><div class="rx-big"><small>Penilaian 3 · Anggaran ODN kelas B+ (13–28 dB)</small><b id="odnVal"></b><span class="verdict" id="odnPill"></span></div><p class="msg" id="odnMsg" aria-live="polite"></p></div>
+        </div>
+        <div class="rx">
+          <p class="small">Total redaman ODN pada satu sumbu dB, dibandingkan dengan rentang kelas B+, batas desain, dan selisih daya kirim terhadap sensitivitas ONT.</p>
+          <div class="odn" id="odnChart"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+        <p class="verdict-all" id="allMsg" aria-live="polite"></p>
+        <p class="small">Asumsi simulasi: koefisien kabel 1310 nm (0,35 dB/km) dipakai untuk kedua arah karena nilainya paling besar. Batas penerima mengikuti GPON kelas B+: sensitivitas ONT −27 dBm, sensitivitas OLT −28 dBm, batas jenuh keduanya −8 dBm. Batas −24 dBm untuk "memenuhi kriteria simulasi" dan margin desain 3 dB hanyalah contoh; banyak operator memakai batas kerja sendiri.</p>
       </div>
     </div>
   </div>
@@ -1992,10 +2110,11 @@ footer { font-size: 1rem; }
   const JC = window.JC;
   const tip = document.getElementById("tip");
 
-  /* ---------- anggaran redaman ---------- */
+  /* ---------- anggaran redaman: tiga penilaian terpisah ---------- */
+  // asumsi bersama: koefisien 1310 nm (0,35 dB/km) dipakai untuk kedua arah karena nilainya paling besar
   const SPLIT = { "0": 0, "2": 3.7, "4": 7.3, "8": 10.5, "16": 13.8 };
-  const SENS = -27, OVER = -8;
-  const st = { tx: 3, km: 7.5, splice: 6, conn: 4, odc: "4", odp: "8" };
+  const ONT_SENS = -27, ONT_OVER = -8, OLT_SENS = -28, OLT_OVER = -8, ODN_MIN = 13, ODN_MAX = 28, COMFORT = -24;
+  const st = { tx: 3, ontTx: 2, mg: 3, km: 7.5, splice: 6, conn: 4, odc: "4", odp: "8" };
   const ITEMS = [
     { key: "km", name: "Kabel", color: "--s1", loss: () => st.km * 0.35, detail: () => `${JC.fmt(st.km, 1)} km × 0,35 dB/km` },
     { key: "splice", name: "Sambungan fusion", color: "--s2", loss: () => st.splice * 0.1, detail: () => `${st.splice} × 0,1 dB` },
@@ -2004,17 +2123,19 @@ footer { font-size: 1rem; }
     { key: "odp", name: "Splitter ODP", color: "--s5", loss: () => SPLIT[st.odp], detail: () => (st.odp === "0" ? "tanpa splitter" : `1:${st.odp}`) },
   ];
   const body = document.getElementById("btBody");
-  const stepper = (id, label) => `<div class="stepper"><button type="button" data-step="${id}" data-d="-1" aria-label="Kurangi ${label}">−</button><output id="${id}"></output><button type="button" data-step="${id}" data-d="1" aria-label="Tambah ${label}">+</button></div>`;
-  const select = (id, opts) => `<select id="${id}" aria-label="Rasio splitter">${opts.map((o) => `<option value="${o}" ${st[id.slice(2)] === o ? "selected" : ""}>${o === "0" ? "Tanpa" : "1:" + o}</option>`).join("")}</select>`;
+  const stepper = (id, label) => `<div class="stepper"><button type="button" data-step="${id}" data-d="-1" aria-label="Kurangi ${label}">−</button><output id="${id}" aria-live="polite"></output><button type="button" data-step="${id}" data-d="1" aria-label="Tambah ${label}">+</button></div>`;
+  const select = (id, opts) => `<select id="${id}" aria-label="Rasio ${id === "b-odc" ? "splitter ODC" : "splitter ODP"}">${opts.map((o) => `<option value="${o}" ${st[id.slice(2)] === o ? "selected" : ""}>${o === "0" ? "Tanpa" : "1:" + o}</option>`).join("")}</select>`;
   const row = (key, color, label, sub, ctl) => `<tr><td>${color ? `<i class="key" style="background:var(${color})"></i>` : ""}${label}<small>${sub}</small></td><td>${ctl}</td><td class="num" id="v-${key}"></td></tr>`;
   body.innerHTML =
-    row("tx", null, "Daya kirim OLT", "GPON B+: +1,5 s.d. +5 dBm", stepper("b-tx", "daya kirim")) +
-    row("km", "--s1", "Kabel", "0,35 dB per km", stepper("b-km", "panjang kabel")) +
+    row("tx", null, "Daya kirim OLT", "arah OLT ke ONT · kelas B+: +1,5 s.d. +5 dBm", stepper("b-tx", "daya kirim OLT")) +
+    row("ontTx", null, "Daya kirim ONT", "arah ONT ke OLT · kelas B+: +0,5 s.d. +5 dBm", stepper("b-ontTx", "daya kirim ONT")) +
+    row("mg", null, "Margin desain", "contoh; ikuti ketentuan operator", stepper("b-mg", "margin desain")) +
+    row("km", "--s1", "Kabel", "0,35 dB per km (1310 nm)", stepper("b-km", "panjang kabel")) +
     row("splice", "--s2", "Sambungan fusion", "0,1 dB per sambungan", stepper("b-splice", "sambungan")) +
     row("conn", "--s3", "Pasang konektor", "0,5 dB per pasang", stepper("b-conn", "konektor")) +
     row("odc", "--s4", "Splitter di ODC", "tahap 1", select("b-odc", ["0", "2", "4", "8"])) +
     row("odp", "--s5", "Splitter di ODP", "tahap 2", select("b-odp", ["0", "2", "4", "8", "16"]));
-  const LIMIT = { tx: [1.5, 5, 0.5], km: [0, 20, 0.5], splice: [0, 30, 1], conn: [0, 12, 1] };
+  const LIMIT = { tx: [1.5, 5, 0.5], ontTx: [0.5, 5, 0.5], mg: [0, 6, 0.5], km: [0, 20, 0.5], splice: [0, 30, 1], conn: [0, 12, 1] };
   body.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.step.slice(2), [lo, hi, step] = LIMIT[k];
     st[k] = JC.clamp(Math.round((st[k] + step * +b.dataset.d) * 10) / 10, lo, hi);
@@ -2022,53 +2143,87 @@ footer { font-size: 1rem; }
   }));
   ["odc", "odp"].forEach((k) => document.getElementById("b-" + k).addEventListener("change", (e) => { st[k] = e.target.value; renderBudget(); }));
 
-  const stack = document.getElementById("stack"), legend = document.getElementById("legend"), scale = document.getElementById("scale");
-  const rxVal = document.getElementById("rxVal"), rxPill = document.getElementById("rxPill"), rxMsg = document.getElementById("rxMsg");
-  const budgetTotal = document.getElementById("budgetTotal");
+  const $ = (id) => document.getElementById(id);
   const sgn = (v, d = 1) => (v > 0 ? "+" : "") + JC.fmt(v, d);
+  const pill = (id, cls, text) => { const p = $(id); p.className = "verdict " + cls; p.textContent = (cls === "ok" ? "✓ " : cls === "bad" ? "✕ " : "! ") + text; };
 
-  // skala daya terima
+  // skala daya terima ONT
   const S0 = -35, S1 = 5, pos = (v) => ((JC.clamp(v, S0, S1) - S0) / (S1 - S0)) * 100;
-  const zones = [[S0, SENS, "var(--bad)"], [SENS, -24, "var(--warn)"], [-24, OVER, "var(--ok)"], [OVER, S1, "var(--warn)"]];
+  const zones = [[S0, ONT_SENS, "var(--bad)"], [ONT_SENS, COMFORT, "var(--warn)"], [COMFORT, ONT_OVER, "var(--ok)"], [ONT_OVER, S1, "var(--warn)"]];
   const ticks = [-35, -27, -20, -8, 0, 5];
-  scale.innerHTML = `<div class="zones">${zones.map(([a, b, c]) => `<div style="width:${pos(b) - pos(a)}%;background:${c}"></div>`).join("")}</div>
+  $("scale").innerHTML = `<div class="zones">${zones.map(([a, b, c]) => `<div style="width:${pos(b) - pos(a)}%;background:${c}"></div>`).join("")}</div>
     <div class="marker" id="rxMarker"></div>
     <div class="tk">${ticks.map((t, i) => `<span style="left:${pos(t)}%;${i === 0 ? "transform:none" : i === ticks.length - 1 ? "transform:translateX(-100%)" : ""}">${sgn(t, 0)}</span>`).join("")}</div>`;
-  const rxMarker = document.getElementById("rxMarker");
 
   function renderBudget() {
-    document.getElementById("b-tx").textContent = sgn(st.tx) + " dBm";
-    document.getElementById("b-km").textContent = JC.fmt(st.km, 1) + " km";
-    document.getElementById("b-splice").textContent = st.splice;
-    document.getElementById("b-conn").textContent = st.conn;
+    ["tx", "ontTx"].forEach((k) => { $("b-" + k).textContent = sgn(st[k]) + " dBm"; $("v-" + k).textContent = sgn(st[k]) + " dBm"; });
+    $("b-mg").textContent = JC.fmt(st.mg, 1) + " dB"; $("v-mg").textContent = JC.fmt(st.mg, 1) + " dB";
+    $("b-km").textContent = JC.fmt(st.km, 1) + " km";
+    $("b-splice").textContent = st.splice;
+    $("b-conn").textContent = st.conn;
     const parts = ITEMS.map((it) => ({ ...it, v: it.loss() }));
-    const loss = parts.reduce((a, p) => a + p.v, 0);
-    document.getElementById("v-tx").textContent = sgn(st.tx) + " dBm";
-    parts.forEach((p) => (document.getElementById("v-" + p.key).textContent = JC.fmt(p.v, 2) + " dB"));
-    document.getElementById("btTotal").textContent = JC.fmt(loss, 2) + " dB";
-    const budget = st.tx - SENS, rx = st.tx - loss, margin = budget - loss;
-    const max = Math.max(budget, loss);
-    budgetTotal.textContent = JC.fmt(budget, 1) + " dB";
-    stack.style.position = "relative";
-    stack.innerHTML = parts.filter((p) => p.v > 0).map((p) => `<div data-tip="${p.name}: ${JC.fmt(p.v, 2)} dB (${p.detail()})" style="width:${(p.v / max) * 100}%;background:var(${p.color})"></div>`).join("") +
-      (margin > 0 ? `<div class="margin" data-tip="Cadangan: ${JC.fmt(margin, 1)} dB" style="width:${(margin / max) * 100}%"></div>` : "") +
-      (margin < 0 ? `<span style="position:absolute;left:${(budget / max) * 100}%;top:-6px;bottom:-6px;width:2px;background:var(--bad)"></span>` : "");
-    legend.innerHTML = parts.map((p) => `<span><i style="background:var(${p.color})"></i>${p.name} <b>${JC.fmt(p.v, 1)}</b></span>`).join("") +
-      `<span><i style="background:var(--bg-3);border:1px dashed var(--fg-3)"></i>${margin >= 0 ? "Cadangan" : "Kekurangan"} <b>${JC.fmt(Math.abs(margin), 1)}</b></span>` +
-      `<span>Total redaman <b>${JC.fmt(loss, 1)} dB</b></span>`;
-    rxVal.textContent = sgn(rx) + " dBm";
-    rxMarker.style.left = pos(rx) + "%";
-    let cls, label, msg;
-    if (rx > OVER) { cls = "warn"; label = "Terlalu kuat"; msg = "Di atas −8 dBm, penerima ONT bisa jenuh. Biasanya terjadi pada jarak sangat dekat tanpa splitter. Solusinya pasang attenuator."; }
-    else if (rx >= -24) { cls = "ok"; label = "Aman"; msg = `Masih ada cadangan ${JC.fmt(margin, 1)} dB sebelum batas −27 dBm.`; }
-    else if (rx >= SENS) { cls = "warn"; label = "Mepet"; msg = `Cadangan tinggal ${JC.fmt(margin, 1)} dB. Sedikit debu di konektor atau satu tekukan tajam bisa membuat layanan putus.`; }
-    else { cls = "bad"; label = "Tidak cukup"; msg = `Kurang ${JC.fmt(-margin, 1)} dB. Kurangi sambungan dan konektor, perpendek jalur, atau pakai splitter dengan rasio lebih kecil.`; }
-    rxPill.className = "verdict " + cls; rxPill.textContent = (cls === "ok" ? "✓ " : cls === "bad" ? "✕ " : "! ") + label;
-    rxMsg.textContent = msg;
+    const loss = Math.round(parts.reduce((a, p) => a + p.v, 0) * 100 + 1e-4) / 100; // dibulatkan supaya 29,525 tampil 29,53
+    parts.forEach((p) => ($("v-" + p.key).textContent = JC.fmt(p.v, 2) + " dB"));
+    $("btTotal").textContent = JC.fmt(loss, 2) + " dB";
+
+    // 1. arah OLT ke ONT
+    const rx = st.tx - loss, diffDown = st.tx - ONT_SENS, resDown = rx - ONT_SENS;
+    $("rxVal").textContent = sgn(rx) + " dBm";
+    $("rxMarker").style.left = pos(rx) + "%";
+    let d;
+    if (rx > ONT_OVER) d = ["warn", "Melebihi batas jenuh ONT", "Di atas −8 dBm, penerima ONT bisa jenuh. Biasanya terjadi pada jarak sangat dekat dengan redaman kecil. Solusinya pasang attenuator."];
+    else if (rx >= COMFORT) d = ["ok", "Daya terima memenuhi kriteria simulasi", `Cadangan daya arah OLT ke ONT ${JC.fmt(resDown, 1)} dB sebelum sensitivitas ONT −27 dBm. Ini baru satu dari tiga penilaian.`];
+    else if (rx >= ONT_SENS) d = ["warn", "Terbaca, tetapi mepet", `Cadangan daya arah OLT ke ONT tinggal ${JC.fmt(resDown, 1)} dB. Sedikit debu di konektor atau satu tekukan tajam bisa membuat layanan putus.`];
+    else d = ["bad", "Di bawah sensitivitas ONT", `Kurang ${JC.fmt(-resDown, 1)} dB dari sensitivitas ONT −27 dBm.`];
+    pill("rxPill", d[0], d[1]); $("rxMsg").textContent = d[2];
+
+    // 2. arah ONT ke OLT, memakai total redaman yang sama
+    const up = st.ontTx - loss, resUp = up - OLT_SENS;
+    $("upVal").textContent = sgn(up) + " dBm";
+    let u;
+    if (up > OLT_OVER) u = ["warn", "Melebihi batas jenuh OLT", "Daya yang sampai ke OLT terlalu besar untuk penerimanya."];
+    else if (up >= OLT_SENS) u = ["ok", "Daya terima OLT memenuhi kriteria simulasi", `Cadangan daya arah ONT ke OLT ${JC.fmt(resUp, 1)} dB sebelum sensitivitas OLT −28 dBm.`];
+    else u = ["bad", "Di bawah sensitivitas OLT", `Kurang ${JC.fmt(-resUp, 1)} dB. ONT bisa saja menerima sinyal, tetapi OLT tidak mendengar balasannya.`];
+    pill("upPill", u[0], u[1]); $("upMsg").textContent = u[2];
+
+    // 3. anggaran ODN kelas B+
+    const design = ODN_MAX - st.mg;
+    $("odnVal").textContent = JC.fmt(loss, 1) + " dB";
+    let o;
+    if (loss < ODN_MIN) o = ["warn", "Di bawah rugi minimum kelas B+", `Total redaman ${JC.fmt(loss, 1)} dB lebih kecil dari ${ODN_MIN} dB. Penerima bisa terlalu kuat; perlu attenuator atau evaluasi rancangan.`];
+    else if (loss <= design) o = ["ok", "Dalam rentang kelas B+ dengan margin desain", `Masuk rentang 13–28 dB dan masih menyisakan margin desain ${JC.fmt(st.mg, 1)} dB (batas desain ${JC.fmt(design, 1)} dB).`];
+    else if (loss <= ODN_MAX) o = ["warn", "Dalam rentang kelas B+, margin desain belum terpenuhi", `Masih di bawah 28 dB, tetapi melewati batas desain ${JC.fmt(design, 1)} dB. Tidak ada cukup ruang untuk sambungan tambahan atau perbaikan.`];
+    else o = ["bad", "Melebihi batas rugi ODN kelas B+", `Total redaman ${JC.fmt(loss, 1)} dB melampaui 28 dB, bahkan sebelum menyisihkan margin desain.`];
+    pill("odnPill", o[0], o[1]); $("odnMsg").textContent = o[2];
+
+    // grafik: satu sumbu dB
+    const max = Math.max(32, loss + 2, diffDown + 1), pc = (v) => (v / max) * 100;
+    const resSeg = diffDown - loss;
+    $("odnChart").innerHTML = `<div class="odn-bar"><div class="stack">${parts.filter((p) => p.v > 0).map((p) => `<div data-tip="${p.name}: ${JC.fmt(p.v, 2)} dB (${p.detail()})" style="width:${pc(p.v)}%;background:var(${p.color})"></div>`).join("")}` +
+      (resSeg > 0 ? `<div class="margin" data-tip="Cadangan daya arah OLT ke ONT: ${JC.fmt(resSeg, 1)} dB" style="width:${pc(resSeg)}%"></div>` : "") + `</div>` +
+      `<i class="mk mk-design" style="left:${pc(design)}%" title="Batas desain"></i><i class="mk mk-max" style="left:${pc(ODN_MAX)}%" title="Batas kelas B+"></i><i class="mk mk-diff" style="left:${pc(diffDown)}%" title="Selisih daya kirim terhadap sensitivitas ONT"></i></div>` +
+      `<div class="odn-band"><span style="left:${pc(ODN_MIN)}%;width:${pc(ODN_MAX - ODN_MIN)}%"></span></div>` +
+      `<div class="odn-tk"><span style="left:0;transform:none">0</span><span style="left:${pc(ODN_MIN)}%">13</span><span style="left:${pc(ODN_MAX)}%">28</span><span style="left:100%;transform:translateX(-100%)">${Math.round(max)} dB</span></div>`;
+    $("legend").innerHTML = parts.map((p) => `<span><i style="background:var(${p.color})"></i>${p.name} <b>${JC.fmt(p.v, 1)}</b></span>`).join("") +
+      `<span><i class="lg-res"></i>${resSeg >= 0 ? "Cadangan daya arah OLT ke ONT" : "Kekurangan daya arah OLT ke ONT"} <b>${JC.fmt(Math.abs(resSeg), 1)}</b></span>` +
+      `<span><i class="lg-band"></i>Rentang rugi ODN kelas B+ <b>13–28</b></span>` +
+      `<span><i class="lg-design"></i>Batas desain (28 − margin) <b>${JC.fmt(design, 1)}</b></span>` +
+      `<span><i class="lg-diff"></i>Selisih daya kirim terhadap sensitivitas ONT <b>${JC.fmt(diffDown, 1)}</b></span>`;
+
+    // kesimpulan: semua penilaian harus terpenuhi
+    const fails = [];
+    if (d[0] !== "ok") fails.push("daya terima ONT");
+    if (u[0] !== "ok") fails.push("arah ONT ke OLT");
+    if (o[0] !== "ok") fails.push("anggaran ODN dan margin desain");
+    $("allMsg").className = "verdict-all " + (fails.length ? "warn" : "ok");
+    $("allMsg").innerHTML = fails.length
+      ? `<b>Kesimpulan simulasi: belum memenuhi semua kriteria.</b> Periksa: ${fails.join(", ")}.`
+      : `<b>Kesimpulan simulasi: ketiga penilaian terpenuhi.</b> Di lapangan, rancangan tetap diverifikasi dengan pengukuran dan ketentuan operator.`;
   }
   let tipTimer = 0;
-  stack.addEventListener("pointerdown", (e) => { clearTimeout(tipTimer); showTip(e); tipTimer = setTimeout(() => (tip.hidden = true), 2200); });
-  stack.addEventListener("pointermove", showTip);
+  const chart = $("odnChart");
+  chart.addEventListener("pointerdown", (e) => { clearTimeout(tipTimer); showTip(e); tipTimer = setTimeout(() => (tip.hidden = true), 2200); });
+  chart.addEventListener("pointermove", showTip);
   function showTip(e) {
     const d = e.target.closest("[data-tip]");
     if (!d) { tip.hidden = true; return; }
@@ -2076,7 +2231,7 @@ footer { font-size: 1rem; }
     const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8);
     tip.style.left = Math.max(8, x) + "px"; tip.style.top = e.clientY - 38 + "px";
   }
-  stack.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") tip.hidden = true; });
+  chart.addEventListener("pointerleave", (e) => { if (e.pointerType === "mouse") tip.hidden = true; });
   renderBudget();
 
   /* ---------- konektor ---------- */
@@ -2137,7 +2292,9 @@ footer { font-size: 1rem; }
     { q: "Konektor dengan badan berwarna hijau artinya…", o: ["Poles UPC", "Poles APC (miring 8°)", "Multimode", "Konektor rusak"], a: 1, e: "Hijau = APC, biru = UPC. Keduanya tidak boleh disambungkan satu sama lain." },
   ];
   const el = document.getElementById("quiz"), scoreEl = document.getElementById("score");
-  let ans = [];
+  // jawaban sementara disimpan supaya tidak hilang saat halaman dimuat ulang
+  const QK = "qa:t1";
+  let ans = (JC.store.get(QK, []) || []).map((v) => (v == null ? undefined : v));
   function render() {
     el.innerHTML = Q.map((it, i) => {
       const done = ans[i] !== undefined;
@@ -2149,7 +2306,7 @@ footer { font-size: 1rem; }
       const exp = done ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
       return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${opts}</div>${exp}</div>`;
     }).join("");
-    el.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; render(); });
+    el.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; JC.store.set(QK, ans); render(); });
     const n = ans.filter((v) => v !== undefined).length;
     if (n === Q.length) {
       const ok = Q.filter((it, i) => ans[i] === it.a).length;
@@ -2157,10 +2314,124 @@ footer { font-size: 1rem; }
       JC.store.set("best", best);
       scoreEl.hidden = false;
       scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${Q.length}">${ok}/${Q.length}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === Q.length ? "Lulus sempurna. Siap lanjut ke Tahap 2." : ok >= 7 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${Q.length}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
-      document.getElementById("quizAgain").onclick = () => { ans = []; scoreEl.hidden = true; render(); el.scrollIntoView({ block: "start" }); };
+      document.getElementById("quizAgain").onclick = () => { ans = []; JC.store.set(QK, []); scoreEl.hidden = true; render(); el.scrollIntoView({ block: "start" }); };
     } else scoreEl.hidden = true;
   }
   render();
+})();
+</script>
+<script>
+/* progress.js */
+/* Jalur Cahaya — progres belajar bersama semua halaman: posisi terakhir, status tahap, navigasi bagian, tabel yang bisa digulir dengan keyboard */
+(function () {
+  const BASE = "https://nothinsphere.github.io/jalur-cahaya/";
+  const PATH = ["", "tahap-2/", "tahap-3/", "tahap-4/", "tahap-5/", "tahap-6/", "tahap-7/"];
+  const TOPIC = ["K3 & teori", "Pengenalan alat", "Praktik persiapan", "Penyambungan & finishing", "Pengukuran", "Troubleshooting & perawatan", "Aplikasi lapangan"];
+  const QUIZ = [["best", 9], ["t2best", 14], ["t3best", 6], ["t4best", 6], ["t5best", 7], ["t6best", 7], ["t7best", 7]];
+  const UPDATED = "27 Oktober 2026";
+  const get = (k, d) => { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const set = (k, v) => { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} };
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const top = document.querySelector(".topbar");
+  const stage = top && top.dataset.stage ? top.dataset.stage : "";
+  const n = /^[1-7]$/.test(stage) ? +stage : 0;
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const names = {};
+  document.querySelectorAll(".rail a").forEach((a) => (names[a.getAttribute("href").slice(1)] = a.textContent.trim()));
+  const href = (s, id) => (s === n ? "" : BASE + PATH[s - 1]) + (id ? "#" + id : "");
+
+  /* ---------- bagian yang sudah dibaca dan posisi terakhir ---------- */
+  if (n) set("nch:t" + n, chapters.length);
+  const seen = new Set(get("seen:t" + n, []));
+  const dwell = {};
+  const current = () => { let c = null; chapters.forEach((s) => { const r = s.getBoundingClientRect(); if (r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.3) c = s; }); return c; };
+  if (n) setInterval(() => {
+    if (document.hidden) return;
+    const c = current();
+    if (!c || !c.id) return;
+    set("pos", { s: n, id: c.id, name: names[c.id] || "", t: Date.now() });
+    dwell[c.id] = (dwell[c.id] || 0) + 1;
+    // bagian dianggap dibaca setelah berada di tengah layar minimal 4 detik
+    if (dwell[c.id] >= 4 && !seen.has(c.id)) { seen.add(c.id); set("seen:t" + n, [...seen]); renderStages(); }
+  }, 1000);
+
+  /* ---------- tombol lanjutkan belajar ---------- */
+  const pos = get("pos", null);
+  const kicker = document.querySelector(".hero .kicker");
+  if (pos && pos.s && kicker) {
+    const p = document.createElement("p");
+    p.className = "resume-wrap";
+    p.innerHTML = `<a class="btn resume" href="${href(pos.s, pos.id)}">Lanjutkan belajar: Tahap ${pos.s}${pos.name ? " · " + esc(pos.name) : ""} →</a>`;
+    kicker.insertAdjacentElement("afterend", p);
+  }
+
+  /* ---------- status tiap tahap ---------- */
+  function status(s) {
+    const total = get("nch:t" + s, 0), read = get("seen:t" + s, []).length;
+    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = (get("qa:t" + s, []) || []).filter((v) => v != null).length;
+    const prac = (get("prac", []) || []).filter((a) => (a.stages || []).includes(s));
+    return {
+      m: total && read >= total ? ["on", "Materi ✓", "Materi sudah dibaca"] : read ? ["part", `Materi ${read}/${total || "?"}`, `Materi: ${read} dari ${total || "?"} bagian dibaca`] : ["off", "Materi –", "Materi belum dibaca"],
+      q: best != null ? ["on", `Kuis ${best}/${qn}`, `Kuis sudah dikerjakan, nilai terbaik ${best} dari ${qn}`] : draft ? ["part", "Kuis berjalan", "Kuis sedang dikerjakan"] : ["off", "Kuis –", "Kuis belum dikerjakan"],
+      p: prac.length ? ["on", "Praktik ✓", `Praktik sudah dinilai ${prac.length} kali`] : ["off", "Praktik –", "Praktik belum dinilai"],
+    };
+  }
+  function renderStages() {
+    const tb = document.querySelector("table.stages");
+    if (!tb) return;
+    tb.querySelectorAll("tr").forEach((tr, i) => {
+      const s = i + 1, cells = tr.children;
+      if (s > 7 || cells.length < 3) return;
+      const st = status(s);
+      cells[2].innerHTML = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+    });
+    if (!document.getElementById("stagesNote")) {
+      const p = document.createElement("p");
+      p.id = "stagesNote"; p.className = "small stages-note";
+      p.innerHTML = `Status tersimpan di peramban ini: materi dibaca, kuis dikerjakan, dan praktik dinilai pembimbing.` + (stage === "L" ? "" : ` <a href="${BASE}lampiran/">Lampiran</a>: glosarium, sumber teknis, asumsi simulasi, lembar praktik, dan rubrik.`);
+      tb.insertAdjacentElement("afterend", p);
+    }
+  }
+  renderStages();
+
+  /* ---------- navigasi bagian yang selalu terlihat ---------- */
+  const rail = document.querySelector(".rail");
+  if (rail) {
+    const nav = document.createElement("nav");
+    nav.className = "secnav"; nav.setAttribute("aria-label", "Navigasi bagian");
+    const title = n ? `Tahap ${n}` : "Lampiran";
+    const links = [...rail.querySelectorAll("a")].map((a) => `<li><a href="${a.getAttribute("href")}" style="${a.getAttribute("style") || ""}"><i></i>${a.textContent.trim()}</a></li>`).join("");
+    nav.innerHTML = `<button type="button" class="sn-btn" aria-expanded="false" aria-controls="snList"><span class="sn-stage">${title}</span><span class="sn-cur" id="snCur">${n ? esc(TOPIC[n - 1]) : "Daftar isi"}</span><span class="sn-ico" aria-hidden="true">▾</span></button>` +
+      `<div class="sn-list" id="snList" hidden><ol>${links}</ol><p><a href="#top">↑ Ke atas</a>${stage !== "L" ? ` · <a href="${BASE}lampiran/">Lampiran</a>` : ""}</p></div>`;
+    document.body.appendChild(nav);
+    const btn = nav.querySelector(".sn-btn"), list = nav.querySelector(".sn-list"), cur = nav.querySelector("#snCur");
+    const toggle = (open) => { list.hidden = !open; btn.setAttribute("aria-expanded", String(open)); if (open) { const a = list.querySelector("a"); if (a) a.focus(); } };
+    btn.addEventListener("click", () => toggle(list.hidden));
+    list.addEventListener("click", (e) => { if (e.target.closest("a")) toggle(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !list.hidden) { toggle(false); btn.focus(); } });
+    document.addEventListener("click", (e) => { if (!list.hidden && !nav.contains(e.target)) toggle(false); });
+    const hero = document.querySelector(".hero");
+    const onScroll = () => {
+      nav.classList.toggle("show", scrollY > (hero ? hero.offsetHeight * 0.5 : 200));
+      const c = current();
+      cur.textContent = c && names[c.id] ? names[c.id] : n ? TOPIC[n - 1] : "Daftar isi";
+    };
+    addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  }
+  if (!document.getElementById("top")) { const a = document.createElement("span"); a.id = "top"; document.body.prepend(a); }
+
+  /* ---------- tabel lebar bisa digulir dengan keyboard ---------- */
+  const regions = () => document.querySelectorAll(".tbl-wrap").forEach((w) => {
+    const wide = w.scrollWidth > w.clientWidth + 2;
+    if (wide) { w.tabIndex = 0; w.setAttribute("role", "region"); if (!w.getAttribute("aria-label")) { const h = w.closest(".block, figure, section")?.querySelector("h3, h2, .lbl"); w.setAttribute("aria-label", "Tabel " + (h ? h.textContent.trim() : "") + ", geser ke samping"); } }
+    else if (w.getAttribute("role") === "region") { w.removeAttribute("tabindex"); w.removeAttribute("role"); w.removeAttribute("aria-label"); }
+  });
+  addEventListener("load", regions); addEventListener("resize", regions); setTimeout(regions, 800);
+
+  /* ---------- tanggal pembaruan dan rujukan di kaki halaman ---------- */
+  const foot = document.querySelector("footer .col");
+  if (foot && !foot.querySelector(".upd")) foot.insertAdjacentHTML("beforeend", ` <span class="upd">Materi diperbarui ${UPDATED}.${stage !== "L" ? ` Sumber teknis, asumsi simulasi, dan glosarium ada di <a href="${BASE}lampiran/">Lampiran</a>.` : ""}</span>`);
 })();
 </script>
 </body>

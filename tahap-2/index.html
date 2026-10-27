@@ -529,6 +529,59 @@ footer { font-size: 1rem; }
   .toolkit-wrap { padding: 8px; }
 }
 
+/* ---------- bersama: progres, navigasi bagian, aksesibilitas (revisi Okt 2026) ---------- */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 6px; max-width: 680px; }
+.rule b { font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red-ink); font-family: var(--font-body); }
+.rule p { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.55; color: var(--ink-2); margin: 0; }
+.rule small { font-size: .8125rem; color: var(--ink-3); line-height: 1.5; }
+.rule.danger { border-color: var(--red); border-left-width: 6px; }
+.chapter-head .rule { margin-top: 4px; }
+.prose.assume { border-left: 3px solid var(--ink-3); padding-left: 14px; margin-top: 16px; }
+.resume-wrap { margin: 0; }
+.resume { font-size: .9375rem; padding: 7px 14px; text-align: left; }
+.stages td:last-child { white-space: normal; }
+.sts { display: inline-flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+.st { font-size: .75rem; line-height: 1.5; padding: 0 6px; border: 1px solid var(--rule); color: var(--ink-3); white-space: nowrap; font-family: var(--font-body); font-variant-numeric: tabular-nums; }
+.st-on { border-color: var(--ok); color: var(--ok); font-weight: 650; }
+.st-part { border-color: var(--warn); color: var(--warn); }
+.stages-note { margin-top: -10px; }
+.secnav { position: fixed; z-index: 30; top: calc(env(safe-area-inset-top, 0px) + 3px); left: 0; right: 0; display: none; justify-content: center; pointer-events: none; }
+.secnav.show { display: flex; }
+.sn-btn { pointer-events: auto; display: flex; align-items: center; gap: 10px; width: min(880px, calc(100vw - 24px)); margin-top: 6px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); padding: 8px 12px; cursor: pointer; font-size: .875rem; min-height: 44px; box-shadow: 0 2px 0 var(--ink); }
+.sn-stage { font-weight: 700; color: var(--red-ink); white-space: nowrap; }
+.sn-cur { flex: 1; min-width: 0; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.sn-list { pointer-events: auto; position: absolute; top: 58px; left: 50%; transform: translateX(-50%); width: min(880px, calc(100vw - 24px)); background: var(--paper); border: 1.5px solid var(--ink); padding: 6px 12px 10px; max-height: 70vh; overflow: auto; }
+.sn-list ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.sn-list a { display: flex; gap: 10px; align-items: center; padding: 8px 4px; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); min-height: 44px; }
+.sn-list a:hover { background: var(--paper-2); }
+.sn-list a i { width: 9px; height: 9px; background: var(--c); border: 1px solid var(--ink); flex: none; }
+.sn-list p { margin: 8px 0 0; font-size: .875rem; }
+@media (min-width: 1200px) and (max-width: 1439px) { .rail { display: none; } .topbar { display: block; } }
+@media (min-width: 1440px) {
+  .secnav { display: none !important; }
+  .rail a span { opacity: 1; }
+  .rail a { color: var(--ink-2); }
+  .rail a.on span { border-color: var(--ink); color: var(--ink); font-weight: 650; }
+}
+[data-chapter], #tujuan, #anggaran, #ruang-terbatas { scroll-margin-top: 68px; }
+.tbl-wrap[role="region"]:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+footer .upd { display: block; margin-top: 6px; }
+.goals { margin-top: 8px; }
+.goal-box { border: 1.5px solid var(--ink); padding: clamp(16px, 3vw, 24px); display: grid; gap: 12px; }
+.goal-box h2 { font-size: clamp(1.5rem, 3.2vw, 2rem); }
+.goal-box ol { margin: 0; padding-left: 1.4em; display: grid; gap: .35rem; }
+@media (max-width: 600px) {
+  .stages tr { display: grid; grid-template-columns: 5.2em minmax(0, 1fr); border-bottom: 1px solid var(--rule); }
+  .stages td { border-bottom: 0; }
+  .stages td:last-child { grid-column: 1 / -1; text-align: left; padding-top: 0; }
+  .sts { justify-content: flex-start; }
+}
+@media print {
+  .rail, .topbar, .secnav, .resume-wrap, .tip { display: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -536,7 +589,7 @@ footer { font-size: 1rem; }
 </style>
 </head>
 <body>
-<div class="topbar" aria-hidden="true"><i id="topFill"></i></div>
+<div class="topbar" aria-hidden="true" data-stage="2"><i id="topFill"></i></div>
 <nav class="rail" aria-label="Bagian Tahap 2">
   <ol>
     <li><a href="#potong" style="--c:var(--c1)"><i></i><span>2.1 Alat potong &amp; kupas</span></a></li>
@@ -783,7 +836,7 @@ footer { font-size: 1rem; }
 
     <div class="block">
       <h3>OTDR: peta seluruh jalur</h3>
-      <div class="prose"><p>OTDR menembakkan pulsa cahaya pendek dan mendengarkan pantulan yang kembali. Dari waktu tempuhnya, OTDR tahu jaraknya. Hasilnya grafik: makin jauh makin turun, dan setiap sambungan, konektor, atau tekukan tampak sebagai <strong>event</strong>. Ketuk nomor event di grafik.</p></div>
+      <div class="prose"><p>OTDR menembakkan pulsa cahaya pendek dan mendengarkan pantulan yang kembali. Dari waktu tempuhnya, OTDR tahu jaraknya. Hasilnya grafik: makin jauh makin turun, dan setiap sambungan, konektor, atau tekukan tampak sebagai <strong>event</strong>. Pilih nomor event di bawah grafik.</p><p>OTDR standar dipakai pada serat yang sudah diisolasi dari perangkat aktif. Pemeriksaan sebelum memasang OTDR dibahas di Tahap 5.5.</p></div>
       <div>
         <figure class="fig">
           <div class="fig-bar">
@@ -795,6 +848,7 @@ footer { font-size: 1rem; }
           </div>
           <div class="fig-draw"><canvas id="otdrCanvas" style="height:320px" aria-label="Grafik OTDR redaman terhadap jarak dengan event bernomor" role="img"></canvas></div>
           <div class="fig-ctl">
+            <div class="chips" id="otdrEv" role="group" aria-label="Pilih event OTDR"></div>
             <div class="otdr-read" id="otdrRead"></div>
             <div class="otdr-info" id="otdrInfo" aria-live="polite"></div>
           </div>
@@ -1445,7 +1499,7 @@ footer { font-size: 1rem; }
   const KM = 12, YT = 10, YB = -20;
   let seed = 11; const noise = Array.from({ length: 1200 }, () => ((seed = (seed * 16807) % 2147483647) / 2147483647) * 2 - 1);
   function level(x) {
-    const li = lam === 1310 ? 0 : 1, slope = lam === 1310 ? 0.35 : 0.21;
+    const li = lam === 1310 ? 0 : 1, slope = lam === 1310 ? 0.35 : 0.25; // asumsi latihan modul
     if (x > 10.56) return -17.5 + noise[Math.floor(x * 100) % noise.length] * 0.9;
     let y = -1 - slope * x;
     EVENTS.forEach((e) => { if (e.loss[li]) y -= e.loss[li] * JC.smooth(e.x, e.x + 0.04, x); });
@@ -1488,6 +1542,7 @@ footer { font-size: 1rem; }
   function showEvent(i) {
     selected = i; const e = EVENTS[i], li = lam === 1310 ? 0 : 1;
     const lossTxt = e.loss[li] ? ` · redaman ${JC.fmt(e.loss[li], 2)} dB di ${lam} nm` : "";
+    document.querySelectorAll("#otdrEv [data-ev]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.ev === i)));
     otInfo.innerHTML = `<b>Event ${i + 1} · ${e.name}</b><span class="mono">${JC.fmt(e.x, 2)} km${lossTxt}</span><p>${e.txt}</p>`;
     drawOtdr();
   }
@@ -1506,8 +1561,11 @@ footer { font-size: 1rem; }
     if (best >= 0) showEvent(best);
   });
   JC.seg([...document.querySelectorAll("[data-otdr]")], "otdr", (v) => { lam = +v; if (selected != null) showEvent(selected); else drawOtdr(); if (cursor != null) readAt(cursor); });
+  // tombol yang setara dengan mengetuk grafik, untuk keyboard dan layar kecil
+  el("otdrEv").innerHTML = EVENTS.map((e, i) => `<button type="button" data-ev="${i}" aria-pressed="false">${i + 1} · ${e.name}</button>`).join("");
+  el("otdrEv").querySelectorAll("[data-ev]").forEach((b) => b.addEventListener("click", () => { readAt(EVENTS[+b.dataset.ev].x); showEvent(+b.dataset.ev); }));
   otRead.innerHTML = "Geser jari atau kursor di atas grafik untuk membaca jarak dan level.";
-  otInfo.innerHTML = "<p>Ketuk nomor event di bawah grafik, atau ketuk grafik di dekat sebuah event.</p>";
+  otInfo.innerHTML = "<p>Pilih event dengan tombol di atas, atau ketuk grafik di dekat sebuah event.</p>";
   JC.safe(() => showEvent(3));
 })();
 </script>
@@ -1536,7 +1594,9 @@ footer { font-size: 1rem; }
   ];
   const ids = Object.keys(JC.TOOLS);
   const matchEl = document.getElementById("match"), quizEl = document.getElementById("quiz"), scoreEl = document.getElementById("score");
-  let order = [], mi = 0, mRes = [], ans = [];
+  // jawaban sementara disimpan supaya tidak hilang saat halaman dimuat ulang
+  let order = [], mi = 0, mRes = [], ans = (JC.store.get("qa:t2", []) || []).map((v) => (v == null ? undefined : v));
+  const saveM = () => JC.store.set("qm:t2", { order, mi, mRes });
   const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
   function renderMatch(picked) {
@@ -1558,11 +1618,11 @@ footer { font-size: 1rem; }
       fb = `<div class="mark ${picked === right ? "good" : "bad"}"><b>${picked === right ? "✓ Tepat." : "✕ Belum tepat."}</b>${picked === right ? "" : `Yang tepat: ${JC.TOOLS[right].name}.`}</div><div><button type="button" class="btn primary" id="matchNext">${mi === order.length - 1 ? "Lihat hasil" : "Pekerjaan berikutnya"}</button></div>`;
     }
     matchEl.innerHTML = `<div class="ticks">${ticks}<span>${mi + 1} / ${order.length}</span></div><p class="game-q">${task}</p><div class="tool-opts">${opts}</div>${fb}`;
-    matchEl.querySelectorAll("[data-tool]").forEach((b) => b.onclick = () => { mRes.push(b.dataset.tool === right); renderMatch(b.dataset.tool); document.getElementById("matchNext").focus(); });
+    matchEl.querySelectorAll("[data-tool]").forEach((b) => b.onclick = () => { mRes.push(b.dataset.tool === right); saveM(); renderMatch(b.dataset.tool); document.getElementById("matchNext").focus(); });
     const nx = document.getElementById("matchNext");
-    if (nx) nx.onclick = () => { mi++; renderMatch(); };
+    if (nx) nx.onclick = () => { mi++; saveM(); renderMatch(); };
   }
-  function startMatch() { order = shuffle(TASKS.map((_, i) => i)); mi = 0; mRes = []; renderMatch(); updateScore(); }
+  function startMatch() { order = shuffle(TASKS.map((_, i) => i)); mi = 0; mRes = []; saveM(); renderMatch(); updateScore(); }
 
   function renderQuiz() {
     quizEl.innerHTML = Q.map((it, i) => {
@@ -1575,7 +1635,7 @@ footer { font-size: 1rem; }
       const exp = done ? `<p class="qexp"><strong style="color:${ans[i] === it.a ? "var(--ok)" : "var(--bad)"}">${ans[i] === it.a ? "Benar." : "Belum tepat."}</strong> ${it.e}</p>` : "";
       return `<div class="qitem"><h4><span>${i + 1}.</span>${it.q}</h4><div class="opts">${opts}</div>${exp}</div>`;
     }).join("");
-    quizEl.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; renderQuiz(); updateScore(); });
+    quizEl.querySelectorAll("[data-q]").forEach((b) => b.onclick = () => { ans[+b.dataset.q] = +b.dataset.k; JC.store.set("qa:t2", ans); renderQuiz(); updateScore(); });
   }
   function updateScore() {
     const qDone = ans.filter((v) => v !== undefined).length === Q.length, mDone = mi >= order.length;
@@ -1584,10 +1644,128 @@ footer { font-size: 1rem; }
     const best = Math.max(ok, JC.store.get("t2best", 0)); JC.store.set("t2best", best);
     scoreEl.hidden = false;
     scoreEl.innerHTML = `<div class="grade" aria-label="Nilai ${ok} dari ${total}">${ok}/${total}</div><div style="flex:1;min-width:200px"><p style="font-weight:700">${ok === total ? "Sempurna. Siap lanjut ke Tahap 3." : ok >= total - 2 ? "Bagus. Baca lagi bagian yang salah, lalu lanjut." : "Ulangi bagian yang masih salah sebelum lanjut."}</p><p class="small">Nilai terbaikmu di perangkat ini: ${best}/${total}</p></div><button type="button" class="btn" id="quizAgain">Ulangi kuis</button>`;
-    document.getElementById("quizAgain").onclick = () => { ans = []; renderQuiz(); startMatch(); matchEl.scrollIntoView({ block: "start" }); };
+    document.getElementById("quizAgain").onclick = () => { ans = []; JC.store.set("qa:t2", []); renderQuiz(); startMatch(); matchEl.scrollIntoView({ block: "start" }); };
   }
-  startMatch();
+  const saved = JC.store.get("qm:t2", null);
+  if (saved && Array.isArray(saved.order) && saved.order.length === TASKS.length) {
+    order = saved.order; mRes = saved.mRes || []; mi = Math.max(saved.mi || 0, mRes.length);
+    renderMatch(); updateScore();
+  } else startMatch();
   renderQuiz();
+})();
+</script>
+<script>
+/* progress.js */
+/* Jalur Cahaya — progres belajar bersama semua halaman: posisi terakhir, status tahap, navigasi bagian, tabel yang bisa digulir dengan keyboard */
+(function () {
+  const BASE = "https://nothinsphere.github.io/jalur-cahaya/";
+  const PATH = ["", "tahap-2/", "tahap-3/", "tahap-4/", "tahap-5/", "tahap-6/", "tahap-7/"];
+  const TOPIC = ["K3 & teori", "Pengenalan alat", "Praktik persiapan", "Penyambungan & finishing", "Pengukuran", "Troubleshooting & perawatan", "Aplikasi lapangan"];
+  const QUIZ = [["best", 9], ["t2best", 14], ["t3best", 6], ["t4best", 6], ["t5best", 7], ["t6best", 7], ["t7best", 7]];
+  const UPDATED = "27 Oktober 2026";
+  const get = (k, d) => { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+  const set = (k, v) => { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} };
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const top = document.querySelector(".topbar");
+  const stage = top && top.dataset.stage ? top.dataset.stage : "";
+  const n = /^[1-7]$/.test(stage) ? +stage : 0;
+  const chapters = [...document.querySelectorAll("[data-chapter]")];
+  const names = {};
+  document.querySelectorAll(".rail a").forEach((a) => (names[a.getAttribute("href").slice(1)] = a.textContent.trim()));
+  const href = (s, id) => (s === n ? "" : BASE + PATH[s - 1]) + (id ? "#" + id : "");
+
+  /* ---------- bagian yang sudah dibaca dan posisi terakhir ---------- */
+  if (n) set("nch:t" + n, chapters.length);
+  const seen = new Set(get("seen:t" + n, []));
+  const dwell = {};
+  const current = () => { let c = null; chapters.forEach((s) => { const r = s.getBoundingClientRect(); if (r.top < innerHeight * 0.5 && r.bottom > innerHeight * 0.3) c = s; }); return c; };
+  if (n) setInterval(() => {
+    if (document.hidden) return;
+    const c = current();
+    if (!c || !c.id) return;
+    set("pos", { s: n, id: c.id, name: names[c.id] || "", t: Date.now() });
+    dwell[c.id] = (dwell[c.id] || 0) + 1;
+    // bagian dianggap dibaca setelah berada di tengah layar minimal 4 detik
+    if (dwell[c.id] >= 4 && !seen.has(c.id)) { seen.add(c.id); set("seen:t" + n, [...seen]); renderStages(); }
+  }, 1000);
+
+  /* ---------- tombol lanjutkan belajar ---------- */
+  const pos = get("pos", null);
+  const kicker = document.querySelector(".hero .kicker");
+  if (pos && pos.s && kicker) {
+    const p = document.createElement("p");
+    p.className = "resume-wrap";
+    p.innerHTML = `<a class="btn resume" href="${href(pos.s, pos.id)}">Lanjutkan belajar: Tahap ${pos.s}${pos.name ? " · " + esc(pos.name) : ""} →</a>`;
+    kicker.insertAdjacentElement("afterend", p);
+  }
+
+  /* ---------- status tiap tahap ---------- */
+  function status(s) {
+    const total = get("nch:t" + s, 0), read = get("seen:t" + s, []).length;
+    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = (get("qa:t" + s, []) || []).filter((v) => v != null).length;
+    const prac = (get("prac", []) || []).filter((a) => (a.stages || []).includes(s));
+    return {
+      m: total && read >= total ? ["on", "Materi ✓", "Materi sudah dibaca"] : read ? ["part", `Materi ${read}/${total || "?"}`, `Materi: ${read} dari ${total || "?"} bagian dibaca`] : ["off", "Materi –", "Materi belum dibaca"],
+      q: best != null ? ["on", `Kuis ${best}/${qn}`, `Kuis sudah dikerjakan, nilai terbaik ${best} dari ${qn}`] : draft ? ["part", "Kuis berjalan", "Kuis sedang dikerjakan"] : ["off", "Kuis –", "Kuis belum dikerjakan"],
+      p: prac.length ? ["on", "Praktik ✓", `Praktik sudah dinilai ${prac.length} kali`] : ["off", "Praktik –", "Praktik belum dinilai"],
+    };
+  }
+  function renderStages() {
+    const tb = document.querySelector("table.stages");
+    if (!tb) return;
+    tb.querySelectorAll("tr").forEach((tr, i) => {
+      const s = i + 1, cells = tr.children;
+      if (s > 7 || cells.length < 3) return;
+      const st = status(s);
+      cells[2].innerHTML = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+    });
+    if (!document.getElementById("stagesNote")) {
+      const p = document.createElement("p");
+      p.id = "stagesNote"; p.className = "small stages-note";
+      p.innerHTML = `Status tersimpan di peramban ini: materi dibaca, kuis dikerjakan, dan praktik dinilai pembimbing.` + (stage === "L" ? "" : ` <a href="${BASE}lampiran/">Lampiran</a>: glosarium, sumber teknis, asumsi simulasi, lembar praktik, dan rubrik.`);
+      tb.insertAdjacentElement("afterend", p);
+    }
+  }
+  renderStages();
+
+  /* ---------- navigasi bagian yang selalu terlihat ---------- */
+  const rail = document.querySelector(".rail");
+  if (rail) {
+    const nav = document.createElement("nav");
+    nav.className = "secnav"; nav.setAttribute("aria-label", "Navigasi bagian");
+    const title = n ? `Tahap ${n}` : "Lampiran";
+    const links = [...rail.querySelectorAll("a")].map((a) => `<li><a href="${a.getAttribute("href")}" style="${a.getAttribute("style") || ""}"><i></i>${a.textContent.trim()}</a></li>`).join("");
+    nav.innerHTML = `<button type="button" class="sn-btn" aria-expanded="false" aria-controls="snList"><span class="sn-stage">${title}</span><span class="sn-cur" id="snCur">${n ? esc(TOPIC[n - 1]) : "Daftar isi"}</span><span class="sn-ico" aria-hidden="true">▾</span></button>` +
+      `<div class="sn-list" id="snList" hidden><ol>${links}</ol><p><a href="#top">↑ Ke atas</a>${stage !== "L" ? ` · <a href="${BASE}lampiran/">Lampiran</a>` : ""}</p></div>`;
+    document.body.appendChild(nav);
+    const btn = nav.querySelector(".sn-btn"), list = nav.querySelector(".sn-list"), cur = nav.querySelector("#snCur");
+    const toggle = (open) => { list.hidden = !open; btn.setAttribute("aria-expanded", String(open)); if (open) { const a = list.querySelector("a"); if (a) a.focus(); } };
+    btn.addEventListener("click", () => toggle(list.hidden));
+    list.addEventListener("click", (e) => { if (e.target.closest("a")) toggle(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !list.hidden) { toggle(false); btn.focus(); } });
+    document.addEventListener("click", (e) => { if (!list.hidden && !nav.contains(e.target)) toggle(false); });
+    const hero = document.querySelector(".hero");
+    const onScroll = () => {
+      nav.classList.toggle("show", scrollY > (hero ? hero.offsetHeight * 0.5 : 200));
+      const c = current();
+      cur.textContent = c && names[c.id] ? names[c.id] : n ? TOPIC[n - 1] : "Daftar isi";
+    };
+    addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  }
+  if (!document.getElementById("top")) { const a = document.createElement("span"); a.id = "top"; document.body.prepend(a); }
+
+  /* ---------- tabel lebar bisa digulir dengan keyboard ---------- */
+  const regions = () => document.querySelectorAll(".tbl-wrap").forEach((w) => {
+    const wide = w.scrollWidth > w.clientWidth + 2;
+    if (wide) { w.tabIndex = 0; w.setAttribute("role", "region"); if (!w.getAttribute("aria-label")) { const h = w.closest(".block, figure, section")?.querySelector("h3, h2, .lbl"); w.setAttribute("aria-label", "Tabel " + (h ? h.textContent.trim() : "") + ", geser ke samping"); } }
+    else if (w.getAttribute("role") === "region") { w.removeAttribute("tabindex"); w.removeAttribute("role"); w.removeAttribute("aria-label"); }
+  });
+  addEventListener("load", regions); addEventListener("resize", regions); setTimeout(regions, 800);
+
+  /* ---------- tanggal pembaruan dan rujukan di kaki halaman ---------- */
+  const foot = document.querySelector("footer .col");
+  if (foot && !foot.querySelector(".upd")) foot.insertAdjacentHTML("beforeend", ` <span class="upd">Materi diperbarui ${UPDATED}.${stage !== "L" ? ` Sumber teknis, asumsi simulasi, dan glosarium ada di <a href="${BASE}lampiran/">Lampiran</a>.` : ""}</span>`);
 })();
 </script>
 </body>

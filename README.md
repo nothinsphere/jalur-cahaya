@@ -9,6 +9,9 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - Tahap 5: https://nothinsphere.github.io/jalur-cahaya/tahap-5/
 - Tahap 6: https://nothinsphere.github.io/jalur-cahaya/tahap-6/
 - Tahap 7: https://nothinsphere.github.io/jalur-cahaya/tahap-7/
+- Lampiran: https://nothinsphere.github.io/jalur-cahaya/lampiran/ (glosarium, asumsi simulasi, sumber teknis, lembar praktik, rubrik)
+
+Materi diperbarui 27 Oktober 2026.
 
 **Tahap 1 · K3 & teori dasar** (`index.html`)
 
@@ -16,7 +19,7 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 1.2 Struktur kabel: 6 jenis kabel (duct, udara figure-8, ADSS, tanam langsung, drop FTTH, indoor), diselami dari jaket luar sampai core dengan skala ukuran sebenarnya
 - 1.3 Single-mode & multimode: pelebaran pulsa terhadap jarak
 - 1.4 Kode warna TIA-598 dan pencari nomor core
-- 1.5 Redaman: dB, dBm, tekukan, dan kalkulator anggaran redaman FTTH (GPON B+)
+- 1.5 Redaman: dB, dBm, tekukan, dan kalkulator anggaran FTTH dengan tiga penilaian terpisah: daya terima ONT, arah ONT ke OLT, dan rugi ODN kelas B+ (13–28 dB) dengan margin desain
 - 1.6 Konektor SC/LC/FC/ST serta poles UPC/APC
 - Kuis 9 soal
 
@@ -75,6 +78,24 @@ Modul belajar interaktif untuk teknisi fiber optik, bergaya lembar datasheet dan
 - 7.5 Menghitung kebutuhan: ODP, splitter, port PON, dan ukuran kabel untuk satu perumahan
 - 7.6 Simulasi pasang baru: delapan keputusan dari persiapan sampai dokumentasi
 - Kuis 7 soal dan ringkasan nilai kuis ketujuh tahap (tersimpan di perangkat)
+
+**Lampiran** (`lampiran/index.html`)
+
+- L.1 Glosarium singkatan dengan pencarian
+- L.2 Asumsi simulasi yang dipakai di semua tahap
+- L.3 Sumber teknis dan tanggal pembaruan
+- L.4 Lembar pencatatan praktik (tersimpan di peramban, bisa dicetak)
+- L.5 Rubrik penilaian: K3, ketepatan core, kualitas sambungan, pengukuran, dokumentasi
+
+**Fitur bersama semua halaman**
+
+- Tujuan pembelajaran di awal Tahap 1
+- Tombol "Lanjutkan belajar" ke posisi terakhir
+- Status per tahap: materi dibaca, kuis dikerjakan, praktik dinilai
+- Jawaban kuis sementara tidak hilang saat halaman dimuat ulang
+- Navigasi bagian yang selalu terlihat, tombol setara untuk diagram OTDR (Tahap 2) dan tray (Tahap 4)
+
+Progres disimpan di `localStorage` peramban, tidak dikirim ke mana pun.
 
 Tiap tahap adalah satu file HTML mandiri tanpa dependensi selain Google Fonts.
 Angka di dalamnya adalah patokan umum untuk belajar; di lapangan, ikuti datasheet perangkat dan standar operator.
