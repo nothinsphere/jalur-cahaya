@@ -514,6 +514,9 @@ footer { font-size: 1rem; }
 .verdict-all.ok { border-color: var(--ok); } .verdict-all.warn { border-color: var(--warn); }
 @media (max-width: 600px) { .rx-pair { grid-template-columns: minmax(0, 1fr); } }
 
+/* ---------- 1.4 pencari core: nomor tidak valid ---------- */
+.field input[aria-invalid="true"] { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); background: color-mix(in srgb, var(--bad) 9%, var(--paper)); }
+
 /* ---------- bersama: progres, navigasi bagian, aksesibilitas (revisi Okt 2026) ---------- */
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .rule { margin-top: 18px; border: 2px solid var(--ink); padding: 14px 16px; display: grid; gap: 6px; max-width: 680px; }
@@ -890,7 +893,7 @@ footer .upd { display: block; margin-top: 6px; }
           <div class="finder-form">
             <div class="field"><label for="fTubes">Jumlah tabung</label><select id="fTubes"></select></div>
             <div class="field"><label for="fPer">Core per tabung</label><select id="fPer"><option>4</option><option>6</option><option>8</option><option selected>12</option></select></div>
-            <div class="field"><label for="fNum">Nomor core</label><input id="fNum" type="number" inputmode="numeric" min="1" value="30"></div>
+            <div class="field"><label for="fNum">Nomor core</label><input id="fNum" type="number" inputmode="numeric" min="1" max="72" step="1" value="30" aria-describedby="fResult"></div>
             <div class="finder-result" id="fResult" aria-live="polite"></div>
           </div>
           <div class="fig-draw"><svg id="fSvg" viewBox="-120 -120 240 240" role="img" aria-label="Penampang kabel dengan tabung dan core yang dicari ditandai"></svg></div>
@@ -1217,7 +1220,11 @@ footer .upd { display: block; margin-top: 6px; }
 
   JC.store = {
     get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+    set(k, v) {
+      try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {}
+      // umumkan perubahan supaya komponen lain (misalnya status tahap) langsung diperbarui tanpa memuat ulang
+      try { window.dispatchEvent(new CustomEvent("jc:store", { detail: { key: k } })); } catch (e) {}
+    },
   };
 
   /* ---------- rel bab ---------- */
@@ -1359,19 +1366,28 @@ footer .upd { display: block; margin-top: 6px; }
     return [...Array.from({ length: 4 }, (_, i) => [0.24, (i / 4) * Math.PI * 2 - Math.PI / 2]),
       ...Array.from({ length: per - 4 }, (_, i) => [0.62, (i / (per - 4)) * Math.PI * 2 - Math.PI / 2])];
   }
+  // nomor core harus bilangan bulat 1..total; nilai pecahan ditolak, tidak dibulatkan
+  function readCore(total) {
+    const raw = fNum.value.trim();
+    if (raw === "") return fNum.validity && fNum.validity.badInput ? { state: "bad" } : { state: "empty" };
+    const n = Number(raw);
+    return Number.isFinite(n) && Number.isInteger(n) && n >= 1 && n <= total ? { state: "ok", n } : { state: "bad" };
+  }
   function renderFinder() {
     const T = +fTubes.value, P = +fPer.value, total = T * P;
-    fNum.max = total;
-    const N = Math.round(+fNum.value || 0);
-    const valid = N >= 1 && N <= total;
+    fNum.min = 1; fNum.step = 1; fNum.max = total;
+    const r = readCore(total), valid = r.state === "ok", N = valid ? r.n : 0;
+    fNum.setAttribute("aria-invalid", String(r.state === "bad"));
     const tube = valid ? Math.ceil(N / P) : 0, idx = valid ? N - (tube - 1) * P : 0;
     if (valid) {
       const tc = JC.COLORS[(tube - 1) % 12], cc = JC.COLORS[(idx - 1) % 12];
       fRes.innerHTML = `<div class="row"><span class="chip" style="background:${tc.hex}"></span><span>Tabung <b>${tube}</b> · ${tc.name}</span></div>
         <div class="row"><span class="chip" style="background:${cc.hex}"></span><span>Core <b>${idx}</b> di dalam tabung · ${cc.name}</span></div>
         <p class="formula">Kabel ${total} core (${T} × ${P})<br>Tabung = ⌈${N} ÷ ${P}⌉ = ${tube}<br>Urutan = ${N} − (${tube - 1} × ${P}) = ${idx}</p>`;
+    } else if (r.state === "empty") {
+      fRes.innerHTML = `<p class="formula">Isi nomor core: bilangan bulat antara 1 dan ${total} untuk kabel ${T} × ${P}.</p>`;
     } else {
-      fRes.innerHTML = `<p class="formula" style="color:var(--bad)">Nomor core harus antara 1 dan ${total} untuk kabel ${T} × ${P}.</p>`;
+      fRes.innerHTML = `<p class="formula" style="color:var(--bad)">Nomor core harus berupa bilangan bulat antara 1 dan ${total}.</p><p class="formula">Kabel ${T} × ${P} berisi ${total} core.</p>`;
     }
     let s = `<defs><pattern id="fh" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" style="stroke:var(--ink-2)" stroke-width="1"/></pattern>
       <pattern id="fx" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V5M0 0H5" style="stroke:var(--ink-2)" stroke-width=".9"/></pattern></defs>
@@ -1401,7 +1417,8 @@ footer .upd { display: block; margin-top: 6px; }
     }
     fSvg.innerHTML = s + label;
   }
-  [fTubes, fPer, fNum].forEach((el) => el.addEventListener("input", renderFinder));
+  // kapasitas kabel berubah: nomor core divalidasi ulang, tidak dipotong otomatis ke batas baru
+  [fTubes, fPer, fNum].forEach((el) => ["input", "change"].forEach((t) => el.addEventListener(t, renderFinder)));
   renderFinder();
 
   /* ---------- kode warna: latihan ---------- */
@@ -2367,9 +2384,17 @@ footer .upd { display: block; margin-top: 6px; }
   }
 
   /* ---------- status tiap tahap ---------- */
+  // jumlah soal yang sudah dijawab pada percobaan yang sedang berjalan: pilihan ganda (qa) ditambah,
+  // khusus Tahap 2, pencocokan alat (qm). Jawaban salah tetap dihitung; keadaan awal pencocokan tanpa jawaban tidak.
+  function answered(s) {
+    const qa = get("qa:t" + s, []), qm = s === 2 ? get("qm:t2", null) : null;
+    const mc = Array.isArray(qa) ? qa.filter((v) => v != null).length : 0;
+    const match = qm && Array.isArray(qm.mRes) ? qm.mRes.filter((v) => typeof v === "boolean").length : 0;
+    return mc + match;
+  }
   function status(s) {
     const total = get("nch:t" + s, 0), read = get("seen:t" + s, []).length;
-    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = (get("qa:t" + s, []) || []).filter((v) => v != null).length;
+    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = answered(s);
     const prac = (get("prac", []) || []).filter((a) => (a.stages || []).includes(s));
     return {
       m: total && read >= total ? ["on", "Materi ✓", "Materi sudah dibaca"] : read ? ["part", `Materi ${read}/${total || "?"}`, `Materi: ${read} dari ${total || "?"} bagian dibaca`] : ["off", "Materi –", "Materi belum dibaca"],
@@ -2377,6 +2402,7 @@ footer .upd { display: block; margin-top: 6px; }
       p: prac.length ? ["on", "Praktik ✓", `Praktik sudah dinilai ${prac.length} kali`] : ["off", "Praktik –", "Praktik belum dinilai"],
     };
   }
+  const shown = {};
   function renderStages() {
     const tb = document.querySelector("table.stages");
     if (!tb) return;
@@ -2384,7 +2410,9 @@ footer .upd { display: block; margin-top: 6px; }
       const s = i + 1, cells = tr.children;
       if (s > 7 || cells.length < 3) return;
       const st = status(s);
-      cells[2].innerHTML = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+      const html = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+      // hanya sel yang statusnya berubah yang ditulis ulang
+      if (shown[s] !== html) { cells[2].innerHTML = html; shown[s] = html; }
     });
     if (!document.getElementById("stagesNote")) {
       const p = document.createElement("p");
@@ -2394,6 +2422,19 @@ footer .upd { display: block; margin-top: 6px; }
     }
   }
   renderStages();
+
+  // status diperbarui segera setiap kali data kuis, bacaan, atau penilaian praktik disimpan (JC.store.set memancarkan
+  // "jc:store"), juga bila tab lain mengubahnya. Beberapa penyimpanan dalam satu klik digabung menjadi satu pembaruan.
+  const RELEVANT = /^(best|t\dbest|qa:t\d|qm:t\d|seen:t\d|nch:t\d|prac)$/;
+  let queued = false;
+  const refresh = () => {
+    if (queued) return;
+    queued = true;
+    Promise.resolve().then(() => { queued = false; renderStages(); });
+  };
+  addEventListener("jc:store", (e) => { if (e.detail && RELEVANT.test(e.detail.key)) refresh(); });
+  addEventListener("storage", (e) => { if (e.key == null || (e.key.startsWith("jc1:") && RELEVANT.test(e.key.slice(4)))) refresh(); });
+  window.JCProgress = { refresh, status };
 
   /* ---------- navigasi bagian yang selalu terlihat ---------- */
   const rail = document.querySelector(".rail");

@@ -921,7 +921,11 @@ footer .upd { display: block; margin-top: 6px; }
 
   JC.store = {
     get(k, d) { try { const v = localStorage.getItem("jc1:" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {} },
+    set(k, v) {
+      try { localStorage.setItem("jc1:" + k, JSON.stringify(v)); } catch (e) {}
+      // umumkan perubahan supaya komponen lain (misalnya status tahap) langsung diperbarui tanpa memuat ulang
+      try { window.dispatchEvent(new CustomEvent("jc:store", { detail: { key: k } })); } catch (e) {}
+    },
   };
 
   /* ---------- rel bab ---------- */
@@ -1297,9 +1301,17 @@ footer .upd { display: block; margin-top: 6px; }
   }
 
   /* ---------- status tiap tahap ---------- */
+  // jumlah soal yang sudah dijawab pada percobaan yang sedang berjalan: pilihan ganda (qa) ditambah,
+  // khusus Tahap 2, pencocokan alat (qm). Jawaban salah tetap dihitung; keadaan awal pencocokan tanpa jawaban tidak.
+  function answered(s) {
+    const qa = get("qa:t" + s, []), qm = s === 2 ? get("qm:t2", null) : null;
+    const mc = Array.isArray(qa) ? qa.filter((v) => v != null).length : 0;
+    const match = qm && Array.isArray(qm.mRes) ? qm.mRes.filter((v) => typeof v === "boolean").length : 0;
+    return mc + match;
+  }
   function status(s) {
     const total = get("nch:t" + s, 0), read = get("seen:t" + s, []).length;
-    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = (get("qa:t" + s, []) || []).filter((v) => v != null).length;
+    const [qk, qn] = QUIZ[s - 1], best = get(qk, null), draft = answered(s);
     const prac = (get("prac", []) || []).filter((a) => (a.stages || []).includes(s));
     return {
       m: total && read >= total ? ["on", "Materi ✓", "Materi sudah dibaca"] : read ? ["part", `Materi ${read}/${total || "?"}`, `Materi: ${read} dari ${total || "?"} bagian dibaca`] : ["off", "Materi –", "Materi belum dibaca"],
@@ -1307,6 +1319,7 @@ footer .upd { display: block; margin-top: 6px; }
       p: prac.length ? ["on", "Praktik ✓", `Praktik sudah dinilai ${prac.length} kali`] : ["off", "Praktik –", "Praktik belum dinilai"],
     };
   }
+  const shown = {};
   function renderStages() {
     const tb = document.querySelector("table.stages");
     if (!tb) return;
@@ -1314,7 +1327,9 @@ footer .upd { display: block; margin-top: 6px; }
       const s = i + 1, cells = tr.children;
       if (s > 7 || cells.length < 3) return;
       const st = status(s);
-      cells[2].innerHTML = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+      const html = `<span class="sts">${["m", "q", "p"].map((k) => `<span class="st st-${st[k][0]}" title="${st[k][2]}"><span class="vh">${st[k][2]}</span><span aria-hidden="true">${st[k][1]}</span></span>`).join("")}</span>`;
+      // hanya sel yang statusnya berubah yang ditulis ulang
+      if (shown[s] !== html) { cells[2].innerHTML = html; shown[s] = html; }
     });
     if (!document.getElementById("stagesNote")) {
       const p = document.createElement("p");
@@ -1324,6 +1339,19 @@ footer .upd { display: block; margin-top: 6px; }
     }
   }
   renderStages();
+
+  // status diperbarui segera setiap kali data kuis, bacaan, atau penilaian praktik disimpan (JC.store.set memancarkan
+  // "jc:store"), juga bila tab lain mengubahnya. Beberapa penyimpanan dalam satu klik digabung menjadi satu pembaruan.
+  const RELEVANT = /^(best|t\dbest|qa:t\d|qm:t\d|seen:t\d|nch:t\d|prac)$/;
+  let queued = false;
+  const refresh = () => {
+    if (queued) return;
+    queued = true;
+    Promise.resolve().then(() => { queued = false; renderStages(); });
+  };
+  addEventListener("jc:store", (e) => { if (e.detail && RELEVANT.test(e.detail.key)) refresh(); });
+  addEventListener("storage", (e) => { if (e.key == null || (e.key.startsWith("jc1:") && RELEVANT.test(e.key.slice(4)))) refresh(); });
+  window.JCProgress = { refresh, status };
 
   /* ---------- navigasi bagian yang selalu terlihat ---------- */
   const rail = document.querySelector(".rail");
